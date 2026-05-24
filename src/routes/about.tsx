@@ -9,11 +9,12 @@ import solImage from "/media/yo.jfif";
 import aceImage from "/media/yoy.jfif";
 
 // Modular Section Components Imports
-import { StorySection } from "./story-section";
-import { TeamSection } from "./TeamSection";
-import { WhyChooseUsSection } from "./WhyChooseUsSection";
-import { ValuesSection } from "./ValuesSection";
-import { PartnershipsSection } from "./PartnershipsSection";
+import { StorySection } from "../components/story-section";
+import { TeamSection } from "../components/TeamSection";
+import { WhyChooseUsSection } from "../components/WhyChooseUsSection";
+import { ValuesSection } from "../components/ValuesSection";
+import { PartnershipsSection } from "../components/PartnershipsSection";
+import { MissionVisionSection } from "../components/MissionVisionSection";
 
 export const Route = createFileRoute("/about")({
   head: () =>

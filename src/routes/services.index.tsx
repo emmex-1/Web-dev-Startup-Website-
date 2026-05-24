@@ -7,7 +7,7 @@ import { PageHero, CTA } from "@/components/section";
 import { SERVICES } from "@/lib/site";
 import { SERVICE_IMAGES, HERO_IMAGES, STACK } from "@/lib/content";
 import { SERVICES_FAQ, SERVICES_WHY_US, SERVICES_PROCESS } from "@/lib/services-index-data";
-import { WhyChooseUsSection } from "./WhyChooseUsSection";
+import { WhyChooseUsSection } from "../components/WhyChooseUsSection";
 import { seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/services/")({
