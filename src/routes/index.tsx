@@ -15,7 +15,7 @@ import { seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/")({
   head: () => seo({
-    title: "Globe Stack — Web, AI, SEO, Ads, Social, Shopify",
+    title: "Globe Stack — Website, AI, SEO, Ads, Social, Shopify",
     description: "Globe Stack is a full-stack tech studio. We build web apps, ship AI, run ads, manage social, optimize SEO, and design Shopify stores that convert.",
     path: "/",
   }),
