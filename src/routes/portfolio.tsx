@@ -9,10 +9,6 @@ import {
   ArrowRight,
   Plus,
   Minus,
-  Zap,
-  Users,
-  TrendingUp,
-  Clock,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { PageHero, CTA } from "@/components/section";
@@ -65,10 +61,10 @@ const PORTFOLIO_FAQ = [
 ];
 
 const STATS = [
-  { icon: Zap, value: "300+", label: "Projects shipped" },
-  { icon: Users, value: "4.9/5", label: "Client satisfaction" },
-  { icon: TrendingUp, value: "$12M+", label: "Revenue generated" },
-  { icon: Clock, value: "5 days", label: "Avg. kickoff time" },
+  { value: "300+", label: "Projects shipped" },
+  { value: "4.9/5", label: "Client satisfaction" },
+  { value: "$12M+", label: "Revenue generated" },
+  { value: "5 days", label: "Avg. kickoff time" },
 ];
 
 const CATEGORY_ICONS: Record<string, string> = {
@@ -79,6 +75,20 @@ const CATEGORY_ICONS: Record<string, string> = {
   Ads: "◉",
   SEO: "◎",
   Social: "◐",
+  Website: "◻",
+  EdTech: "◈",
+  "Social / Analytics": "◐",
+  "Shopify / E-Commerce": "⬟",
+};
+
+// Rich project metadata for display
+const PROJECT_META: Record<string, { highlight: string; year: string; result?: string }> = {
+  "taskflow-pro":         { highlight: "Real estate education platform", year: "2024", result: "+340% reach" },
+  "shopmart-ecommerce":  { highlight: "Modern law firm web presence", year: "2024", result: "Live & ranking" },
+  "mediconnect-health":  { highlight: "Youth development NGO platform", year: "2025", result: "3x sign-ups" },
+  "realestate-hub":      { highlight: "Cybersecurity e-learning platform", year: "2025", result: "Launch 2025" },
+  "learnify-lms":        { highlight: "Full library operations platform", year: "2025", result: "68% efficiency" },
+  "socialwave-dashboard":{ highlight: "Real-time hotel reservation system", year: "2024", result: "Live bookings" },
 };
 
 function PortfolioPage() {
@@ -112,24 +122,31 @@ function PortfolioPage() {
         </div>
       </PageHero>
 
-      {/* Stats strip */}
-      <div className="border-b border-t border-border bg-card/60">
-        <div className="mx-auto grid max-w-7xl grid-cols-2 divide-x divide-border md:grid-cols-4">
-          {STATS.map(({ icon: Icon, value, label }) => (
-            <div key={label} className="flex items-center gap-3 px-8 py-6">
-              <div className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-glow bg-background">
-                <Icon className="h-4 w-4 text-gradient" />
-              </div>
-              <div>
-                <div className="font-display text-xl font-bold">{value}</div>
-                <div className="text-xs text-muted-foreground">{label}</div>
-              </div>
-            </div>
-          ))}
+      {/* ── Stats strip — clean, no icons ── */}
+      <div className="border-b border-t border-border bg-[var(--section-a)]">
+        <div className="mx-auto max-w-7xl">
+          <div className="grid grid-cols-2 md:grid-cols-4 divide-y divide-border md:divide-y-0 md:divide-x">
+            {STATS.map(({ value, label }, i) => (
+              <motion.div
+                key={label}
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: i * 0.08 }}
+                className="flex flex-col gap-1 px-8 py-8"
+              >
+                <span className="font-display text-4xl font-bold tracking-tight leading-none">
+                  {value}
+                </span>
+                <span className="font-mono text-xs uppercase tracking-widest text-muted-foreground mt-1">
+                  {label}
+                </span>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </div>
 
-      {/* Projects section */}
+      {/* ── Projects section ── */}
       <section className="mx-auto max-w-7xl px-4 py-20 md:px-6">
         <div className="mx-auto mb-12 max-w-2xl text-center">
           <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
@@ -162,123 +179,186 @@ function PortfolioPage() {
           ))}
         </div>
 
-        {/* Grid */}
+        {/* ── Project Grid ── */}
         <motion.div layout className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           <AnimatePresence mode="popLayout">
-            {filtered.map((p, i) => (
-              <motion.div
-                key={p.slug}
-                layout
-                initial={{ opacity: 0, y: 28, scale: 0.97 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.45, delay: (i % 6) * 0.05 }}
-                whileHover={{ y: -6 }}
-              >
-                {/*
-                  Use Link with `state={{ modal: true }}` so the slug route
-                  knows to render as a modal overlay instead of a full page.
-                  TanStack Router will still navigate to /portfolio/$slug,
-                  keeping the URL shareable, but the layout renders the
-                  modal on top of this portfolio grid.
-                */}
-                <Link
-                  to="/portfolio/$slug"
-                  params={{ slug: p.slug }}
-                  state={modalState}
-                  className="group block overflow-hidden rounded-2xl border border-border bg-card transition-all hover:border-glow hover:shadow-[0_8px_40px_-12px_var(--neon)]"
+            {filtered.map((p, i) => {
+              const images = p.images ?? [PROJECT_IMAGES[p.slug]];
+              const meta = PROJECT_META[p.slug];
+              return (
+                <motion.div
+                  key={p.slug}
+                  layout
+                  initial={{ opacity: 0, y: 28, scale: 0.97 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.45, delay: (i % 6) * 0.05 }}
+                  whileHover={{ y: -6 }}
                 >
-                  {/* Image */}
-                  <div className="relative h-56 overflow-hidden">
-                    <img
-                      src={PROJECT_IMAGES[p.slug]}
-                      alt={p.title}
-                      className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-110"
-                      loading="lazy"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-                    <div className="absolute bottom-3 left-3 rounded-full border border-white/20 bg-black/50 px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-white backdrop-blur">
-                      {p.tag}
-                    </div>
-                    <div className="absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full bg-white/10 text-white backdrop-blur transition-all group-hover:bg-white group-hover:text-black">
-                      <ArrowUpRight className="h-4 w-4" />
-                    </div>
-                    {p.year && (
-                      <div className="absolute left-3 top-3 rounded-md bg-black/40 px-2 py-0.5 font-mono text-[10px] text-white/70 backdrop-blur">
-                        {p.year}
+                  <Link
+                    to="/portfolio/$slug"
+                    params={{ slug: p.slug }}
+                    state={modalState}
+                    className="group block overflow-hidden rounded-2xl border border-border bg-card transition-all hover:border-glow hover:shadow-[0_8px_40px_-12px_var(--neon)]"
+                  >
+                    {/* Image */}
+                    <div className="relative h-56 overflow-hidden bg-muted">
+                      <img
+                        src={images[0]}
+                        alt={p.title}
+                        className="absolute inset-0 h-full w-full object-cover object-top transition duration-700 group-hover:scale-110"
+                        loading="lazy"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+
+                      {/* Category pill — bottom left */}
+                      <div className="absolute bottom-3 left-3 rounded-full border border-white/20 bg-black/50 px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-white backdrop-blur">
+                        {p.tag}
                       </div>
-                    )}
-                  </div>
 
-                  {/* Body */}
-                  <div className="p-5">
-                    <div className="flex items-center justify-between">
-                      <span className="font-mono text-xs text-muted-foreground">{p.category}</span>
-                      {p.live && (
-                        <span className="flex items-center gap-1 text-xs font-medium text-gradient">
-                          Live <ExternalLink className="h-3 w-3" />
-                        </span>
+                      {/* Result badge — top right (if present) */}
+                      {meta?.result && (
+                        <div className="absolute top-3 right-3 rounded-full bg-white/95 px-3 py-1 font-mono text-[10px] uppercase tracking-wide text-black font-semibold">
+                          {meta.result}
+                        </div>
                       )}
-                    </div>
-                    <h3 className="mt-1.5 font-display text-lg font-semibold leading-snug">{p.title}</h3>
-                    <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{p.desc}</p>
 
-                    {/* Tech chips */}
-                    <div className="mt-4 flex flex-wrap gap-1.5">
-                      {p.tech.slice(0, 4).map((t) => (
-                        <span key={t} className="rounded-md border border-border bg-muted/60 px-2 py-0.5 font-mono text-[10px] text-muted-foreground">
-                          {t}
-                        </span>
-                      ))}
-                      {p.tech.length > 4 && (
-                        <span className="rounded-md border border-border bg-muted/60 px-2 py-0.5 font-mono text-[10px] text-muted-foreground">
-                          +{p.tech.length - 4}
-                        </span>
+                      {/* Arrow hover button */}
+                      <div className="absolute left-3 top-3 grid h-9 w-9 place-items-center rounded-full bg-white/10 text-white backdrop-blur transition-all group-hover:bg-white group-hover:text-black opacity-0 group-hover:opacity-100">
+                        <ArrowUpRight className="h-4 w-4" />
+                      </div>
+
+                      {/* Multiple shots indicator */}
+                      {images.length > 1 && (
+                        <div className="absolute bottom-3 right-3 rounded-full bg-black/60 px-2 py-0.5 font-mono text-[9px] text-white/80 backdrop-blur">
+                          {images.length} shots
+                        </div>
                       )}
                     </div>
 
+                    {/* Body */}
+                    <div className="p-5">
+                      {/* Top row: category + year + live badge */}
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+                          {p.category}
+                        </span>
+                        <div className="flex items-center gap-2">
+                          {p.year && (
+                            <span className="font-mono text-[10px] text-muted-foreground">
+                              {p.year}
+                            </span>
+                          )}
+                          {p.live && (
+                            <span className="flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-medium text-emerald-500">
+                              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                              Live
+                            </span>
+                          )}
+                        </div>
+                      </div>
 
-                    {/* CTA row */}
-                    <div className="mt-4 flex items-center gap-2">
-                      <span className="inline-flex items-center gap-1.5 text-sm font-medium transition group-hover:text-gradient">
-                        View project <ArrowUpRight className="h-3.5 w-3.5" />
-                      </span>
-                      {p.live && (
-                        <a
-                          href={p.live}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={(e) => e.stopPropagation()}
-                          className="ml-auto flex items-center gap-1 rounded-md border border-border px-2.5 py-1 text-xs hover:bg-muted"
-                        >
-                          <ExternalLink className="h-3 w-3" /> Live demo
-                        </a>
+                      {/* Title */}
+                      <h3 className="mt-2 font-display text-lg font-semibold leading-snug">
+                        {p.title}
+                      </h3>
+
+                      {/* Highlight blurb */}
+                      {meta?.highlight && (
+                        <p className="mt-0.5 font-mono text-[11px] text-[var(--neon)] uppercase tracking-wide">
+                          {meta.highlight}
+                        </p>
                       )}
+
+                      {/* Description */}
+                      <p className="mt-2 text-sm leading-relaxed text-muted-foreground line-clamp-2">
+                        {p.desc}
+                      </p>
+
+                      {/* Client */}
+                      {p.client && (
+                        <div className="mt-2 text-xs text-muted-foreground/60 font-mono">
+                          Client: {p.client}
+                        </div>
+                      )}
+
+                      {/* Tech chips */}
+                      <div className="mt-4 flex flex-wrap gap-1.5">
+                        {p.tech.slice(0, 4).map((t) => (
+                          <span
+                            key={t}
+                            className="rounded-md border border-border bg-muted/60 px-2 py-0.5 font-mono text-[10px] text-muted-foreground"
+                          >
+                            {t}
+                          </span>
+                        ))}
+                        {p.tech.length > 4 && (
+                          <span className="rounded-md border border-border bg-muted/60 px-2 py-0.5 font-mono text-[10px] text-muted-foreground">
+                            +{p.tech.length - 4}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* CTA row */}
+                      <div className="mt-4 flex items-center gap-2 border-t border-border pt-4">
+                        <span className="inline-flex items-center gap-1.5 text-sm font-medium transition group-hover:text-gradient">
+                          View project <ArrowUpRight className="h-3.5 w-3.5" />
+                        </span>
+                        {p.live && (
+                          <a
+                            href={p.live}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            className="ml-auto flex items-center gap-1 rounded-md border border-border px-2.5 py-1 text-xs hover:bg-muted transition"
+                          >
+                            <ExternalLink className="h-3 w-3" /> Live demo
+                          </a>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                </Link>
-              </motion.div>
-            ))}
+                  </Link>
+                </motion.div>
+              );
+            })}
           </AnimatePresence>
         </motion.div>
+
+        {/* All projects CTA */}
+        <div className="mt-14 flex justify-center">
+          <Link
+            to="/contact"
+            className="inline-flex items-center gap-2 rounded-full bg-foreground px-6 py-3 text-sm font-semibold text-background hover:opacity-90"
+          >
+            Start a project with us
+            <span className="grid h-7 w-7 place-items-center rounded-full bg-background text-foreground">
+              <ArrowRight className="h-3.5 w-3.5" />
+            </span>
+          </Link>
+        </div>
       </section>
 
-      {/* Responsive Showcase */}
-      <section className="border-t border-border bg-card/40 px-4 py-20 md:px-6">
+      {/* ── Responsive Showcase ── */}
+      <section className="border-t border-border bg-[var(--section-a)] px-4 py-20 md:px-6">
         <div className="mx-auto max-w-7xl">
           <div className="mb-12 text-center">
-            <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground">Built for every screen</p>
+            <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
+              Built for every screen
+            </p>
             <h2 className="mt-3 font-display text-4xl font-bold md:text-5xl">
               Pixel-perfect <span className="text-gradient">across devices.</span>
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-base text-muted-foreground">
-              Every project is engineered and tested across desktop, tablet, and mobile. Responsive is not an afterthought — it's the default.
+              Every project is engineered and tested across desktop, tablet, and mobile.
+              Responsive is not an afterthought — it's the default.
             </p>
           </div>
           <div className="flex flex-col items-end justify-center gap-4 md:flex-row md:items-end">
             <motion.div
-              initial={{ opacity: 0, y: 32 }} whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }} transition={{ duration: 0.6 }}
+              initial={{ opacity: 0, y: 32 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
               className="w-full md:w-[55%]"
             >
               <div className="rounded-t-xl border border-border bg-card p-1.5 shadow-2xl">
@@ -290,7 +370,11 @@ function PortfolioPage() {
                     globestack.io/portfolio
                   </div>
                 </div>
-                <img src={PROJECT_IMAGES["northwind-saas"]} alt="Desktop" className="h-48 w-full rounded-b-sm object-cover" />
+                <img
+                  src={PROJECT_IMAGES["realestate-hub"]}
+                  alt="Desktop view"
+                  className="h-48 w-full rounded-b-sm object-cover"
+                />
               </div>
               <div className="mt-2 flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
                 <Monitor className="h-3.5 w-3.5" /> Desktop
@@ -298,13 +382,21 @@ function PortfolioPage() {
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, y: 32 }} whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.1 }}
+              initial={{ opacity: 0, y: 32 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.1 }}
               className="w-full md:w-[28%]"
             >
               <div className="rounded-xl border-[3px] border-border bg-card p-1 shadow-xl">
-                <img src={PROJECT_IMAGES["lumen-shopify"]} alt="Tablet" className="h-44 w-full rounded-lg object-cover" />
-                <div className="py-1.5 text-center"><div className="mx-auto h-1 w-6 rounded-full bg-border" /></div>
+                <img
+                  src={PROJECT_IMAGES["realestate-hub"]}
+                  alt="Tablet view"
+                  className="h-44 w-full rounded-lg object-cover"
+                />
+                <div className="py-1.5 text-center">
+                  <div className="mx-auto h-1 w-6 rounded-full bg-border" />
+                </div>
               </div>
               <div className="mt-2 flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
                 <Tablet className="h-3.5 w-3.5" /> Tablet
@@ -312,14 +404,24 @@ function PortfolioPage() {
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, y: 32 }} whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.2 }}
+              initial={{ opacity: 0, y: 32 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2 }}
               className="w-full md:w-[16%]"
             >
               <div className="rounded-[2rem] border-[4px] border-border bg-card p-1.5 shadow-xl">
-                <div className="mb-1 flex justify-center"><div className="h-1.5 w-10 rounded-full bg-border" /></div>
-                <img src={PROJECT_IMAGES["atlas-ai"]} alt="Mobile" className="h-40 w-full rounded-[1.5rem] object-cover" />
-                <div className="mt-1 flex justify-center"><div className="h-4 w-4 rounded-full border border-border" /></div>
+                <div className="mb-1 flex justify-center">
+                  <div className="h-1.5 w-10 rounded-full bg-border" />
+                </div>
+                <img
+                  src={PROJECT_IMAGES["realestate-hub"]}
+                  alt="Mobile view"
+                  className="h-40 w-full rounded-[1.5rem] object-cover"
+                />
+                <div className="mt-1 flex justify-center">
+                  <div className="h-4 w-4 rounded-full border border-border" />
+                </div>
               </div>
               <div className="mt-2 flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
                 <Smartphone className="h-3.5 w-3.5" /> Mobile
@@ -329,14 +431,16 @@ function PortfolioPage() {
         </div>
       </section>
 
-      {/* FAQ */}
+      {/* ── FAQ ── */}
       <section className="border-t border-border px-4 py-24 md:px-6">
         <div className="mx-auto max-w-3xl text-center">
           <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground">FAQ</p>
           <h2 className="mt-3 font-display text-4xl font-bold md:text-5xl">
             Frequently asked <span className="text-gradient">questions.</span>
           </h2>
-          <p className="mt-4 text-base text-muted-foreground">Everything you need to know before reaching out.</p>
+          <p className="mt-4 text-base text-muted-foreground">
+            Everything you need to know before reaching out.
+          </p>
         </div>
         <div className="mx-auto mt-12 max-w-3xl divide-y divide-border rounded-2xl border border-border bg-card">
           {PORTFOLIO_FAQ.map((f, i) => (
@@ -347,9 +451,11 @@ function PortfolioPage() {
             >
               <div className="flex items-center justify-between gap-4">
                 <span className="font-medium">{f.q}</span>
-                {openFaq === i
-                  ? <Minus className="h-4 w-4 shrink-0 text-muted-foreground" />
-                  : <Plus className="h-4 w-4 shrink-0 text-muted-foreground" />}
+                {openFaq === i ? (
+                  <Minus className="h-4 w-4 shrink-0 text-muted-foreground" />
+                ) : (
+                  <Plus className="h-4 w-4 shrink-0 text-muted-foreground" />
+                )}
               </div>
               <AnimatePresence>
                 {openFaq === i && (
@@ -375,13 +481,6 @@ function PortfolioPage() {
         desc="Tell us about your project — we'll send a scoped proposal within one business day."
       />
 
-      {/*
-        Outlet renders the modal when navigating to /portfolio/$slug.
-        When `state.modal` is true the child route renders as an overlay
-        instead of replacing this page. Wire this up in your router layout
-        so that the /portfolio route keeps its content visible while the
-        $slug child is active.
-      */}
       <Outlet />
     </>
   );

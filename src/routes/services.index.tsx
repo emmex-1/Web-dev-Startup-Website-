@@ -72,7 +72,7 @@ function ServicesIndex() {
       />
 
       {/* ── Services Grid with header ── */}
-      <section className="mx-auto max-w-7xl px-4 py-20 md:px-6">
+      <section className="mx-auto max-w-7xl px-4 py-20 md:px-6 bg-[var(--section-a)]">
         {/* Section header */}
         <div className="mx-auto mb-14 max-w-2xl text-center">
           <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground">What we do</p>
@@ -109,7 +109,7 @@ function ServicesIndex() {
                     className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-110"
                     loading="lazy"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/20" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/70 to-black/80" />
                   <div className="absolute right-4 top-4 grid h-11 w-11 place-items-center rounded-xl border border-white/20 bg-white/10 text-white backdrop-blur">
                     <Icon className="h-5 w-5" />
                   </div>
@@ -198,7 +198,7 @@ function ServicesIndex() {
       </section>
 
       {/* ── Tech Stack Section ── */}
-      <section className="border-t border-border px-4 py-24 md:px-6">
+      <section className="border-t border-border px-4 py-24 md:px-6 bg-[var(--section-c)]">
         <div className="mx-auto max-w-7xl">
           <div className="grid gap-16 md:grid-cols-2 md:items-center">
             {/* Left text */}
@@ -272,7 +272,7 @@ function ServicesIndex() {
       <WhyChooseUsSection />
 
       {/* ── FAQ Section ── */}
-      <section className="border-t border-border px-4 py-24 md:px-6">
+      <section className="border-t border-border px-4 py-24 md:px-6 bg-[var(--section-a)]">
         <div className="mx-auto max-w-3xl text-center">
           <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground">FAQ</p>
           <h2 className="mt-3 font-display text-4xl font-bold md:text-5xl">

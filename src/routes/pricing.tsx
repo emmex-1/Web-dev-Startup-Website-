@@ -141,7 +141,7 @@ function PricingPage() {
       </div>
 
       {/* ── Pricing sections ─────────────────────────────────────────────── */}
-      <div className="mx-auto max-w-7xl space-y-20 px-4 py-16 md:px-6">
+      <div className="mx-auto max-w-7xl space-y-20 px-4 py-16 md:px-6 bg-[var(--section-a)]">
         {visible.map((svc, idx) => {
           const Icon = SERVICE_ICONS[svc.slug];
           return (
@@ -361,9 +361,9 @@ function PricingPage() {
 
       {/* ── Custom build CTA ─────────────────────────────────────────────── */}
       <Section>
-        <div className="relative overflow-hidden rounded-3xl border border-glow bg-card">
+        <div className="relative overflow-hidden rounded-3xl border border-glow bg-card bg-[var(--section-a)]">
           <img
-            src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=1600&q=80"
+            src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1200&q=80"
             alt=""
             aria-hidden
             className="absolute inset-0 h-full w-full object-cover opacity-[0.12]"

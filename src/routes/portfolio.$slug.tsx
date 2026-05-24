@@ -107,17 +107,17 @@ function getProjectOverview(slug: string): string {
   );
 }
 
-function getProjectChallenge(slug: string): string {
-  const map: Record<string, string> = {
-    "northwind-saas": "Legacy BI tooling with no real-time capability, a team of 40 relying on stale CSV exports, and a codebase that couldn't be extended without breaking something.",
-    "lumen-shopify": "Mobile LCP above 4.2s, conversion rate stuck at 1.4%, and a merchandising team blocked from shipping landing pages without a developer.",
-    "atlas-ai": "12,000 monthly tickets, 60% repetitive, an offshore team scaling linearly with growth, and no way to measure answer quality before shipping to users.",
-    "orbit-ads": "Creative fatigue after 18 months on one platform, attribution completely broken post-iOS 17, and no clear path to 10x spend without destroying ROAS.",
-    "vector-seo": "Brand-only organic traffic, zero rankings on money keywords, and a fragmented content stack spread across three tools with no workflow.",
-    "pulse-social": "Inconsistent posting, generic content that got no engagement, and a founder spending 8+ hours a week on social with nothing to show for it.",
-  };
-  return map[slug] ?? "Complex constraints, ambitious goals, and a need for a team that could own the outcome — not just the deliverable.";
-}
+// function getProjectChallenge(slug: string): string {
+//   const map: Record<string, string> = {
+//     "northwind-saas": "Legacy BI tooling with no real-time capability, a team of 40 relying on stale CSV exports, and a codebase that couldn't be extended without breaking something.",
+//     "lumen-shopify": "Mobile LCP above 4.2s, conversion rate stuck at 1.4%, and a merchandising team blocked from shipping landing pages without a developer.",
+//     "atlas-ai": "12,000 monthly tickets, 60% repetitive, an offshore team scaling linearly with growth, and no way to measure answer quality before shipping to users.",
+//     "orbit-ads": "Creative fatigue after 18 months on one platform, attribution completely broken post-iOS 17, and no clear path to 10x spend without destroying ROAS.",
+//     "vector-seo": "Brand-only organic traffic, zero rankings on money keywords, and a fragmented content stack spread across three tools with no workflow.",
+//     "pulse-social": "Inconsistent posting, generic content that got no engagement, and a founder spending 8+ hours a week on social with nothing to show for it.",
+//   };
+//   return map[slug] ?? "Complex constraints, ambitious goals, and a need for a team that could own the outcome — not just the deliverable.";
+// }
 
 function getProjectFeatures(slug: string): string[] {
   const map: Record<string, string[]> = {
@@ -530,12 +530,12 @@ function ProjectModal({ project, onClose }: ProjectModalProps) {
               <p className="text-sm leading-relaxed text-muted-foreground">
                 {getProjectOverview(project.slug)}
               </p>
-              <div className="mt-4 rounded-xl border border-border bg-card/60 p-4">
+              {/* <div className="mt-4 rounded-xl border border-border bg-card/60 p-4">
                 <h4 className="mb-1.5 text-sm font-semibold">The challenge</h4>
                 <p className="text-sm leading-relaxed text-muted-foreground">
                   {getProjectChallenge(project.slug)}
                 </p>
-              </div>
+              </div> */}
             </div>
 
             {/* ── Features Built ── */}
@@ -767,7 +767,7 @@ function ProjectPage() {
       <Section eyebrow="Overview" title="About this project.">
         <div className="mx-auto grid max-w-5xl gap-10 md:grid-cols-3">
           {/* Long copy */}
-          <div className="space-y-5 text-pretty leading-relaxed text-muted-foreground md:col-span-2">
+          {/* <div className="space-y-5 text-pretty leading-relaxed text-muted-foreground md:col-span-2">
             <p>{getProjectOverview(project.slug)}</p>
             <div>
               <h4 className="mb-2 font-display text-base font-semibold text-foreground">
@@ -775,7 +775,7 @@ function ProjectPage() {
               </h4>
               <p>{getProjectChallenge(project.slug)}</p>
             </div>
-          </div>
+          </div> */}
 
           {/* Meta sidebar */}
           <div className="rounded-2xl border border-border bg-card p-6 text-sm">

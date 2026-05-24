@@ -9,11 +9,11 @@ const PARTNERS = [
   { title: "Meta Business", detail: "Performance media partner." },
 ];
 
-const CERT_IMAGE = "https://images.unsplash.com/photo-1606326608606-aa0b62935f2b?w=600&q=80";
+const CERT_IMAGE = "/media/cac.png";
 
 export function PartnershipsSection() {
   return (
-    <section className="border-b border-border bg-muted/30 text-foreground py-20 px-4 transition-colors duration-300">
+    <section className="border-b border-border bg-muted/70 text-foreground py-20 px-4 transition-colors duration-300">
       <div className="mx-auto max-w-7xl">
         {/* Two-col split layout configuration */}
         <div className="grid gap-16 md:grid-cols-2 md:items-center">
@@ -94,14 +94,14 @@ export function PartnershipsSection() {
             className="flex justify-center"
           >
             <div className="w-full max-w-md overflow-hidden rounded-2xl border border-border bg-card p-4 shadow-sm">
-              <div className="overflow-hidden rounded-xl border border-border/60 bg-muted">
-                <img
-                  src={CERT_IMAGE}
-                  alt="Certificate of Incorporation"
-                  className="w-full object-cover mix-blend-normal dark:opacity-90 dark:contrast-125"
-                  loading="lazy"
-                />
-              </div>
+<div className="h-[500px] overflow-hidden rounded-xl border border-border/60 bg-muted">
+  <img
+    src={CERT_IMAGE}
+    alt="Certificate of Incorporation"
+    className="h-full w-full object-cover mix-blend-normal dark:opacity-90 dark:contrast-125"
+    loading="lazy"
+  />
+</div>
               <p className="mt-3 text-center text-xs text-muted-foreground/60 font-mono">
                 Certificate of Incorporation — Globe Stack Limited
               </p>

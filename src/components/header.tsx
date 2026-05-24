@@ -107,9 +107,11 @@ export function Header() {
       <header className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${scrolled ? "py-2" : "py-4"}`}>
         <div className="mx-auto max-w-7xl px-4">
           <div
-            className={`flex items-center justify-between px-4 md:px-6 py-3 transition-all duration-300 ${
-              scrolled ? "glass rounded-2xl shadow-lg" : "rounded-2xl"
-            }`}
+            className={`flex items-center justify-between px-4 md:px-6 py-3 transition-all duration-300 rounded-2xl ${
+  scrolled
+    ? "glass shadow-lg"
+    : "bg-background/80 backdrop-blur-sm shadow-sm border border-border/50"
+}`}
           >
             {/* Logo */}
             <Link
@@ -128,7 +130,7 @@ export function Header() {
                 <Link
                   key={n.to}
                   to={n.to}
-                  className="relative rounded-full px-3 py-1.5 text-sm text-muted-foreground transition hover:text-foreground hover:bg-muted"
+                  className="relative rounded-full px-3 py-1.5 text-sm text-foreground/70 transition hover:text-foreground hover:bg-muted"
                   activeProps={{ className: "relative rounded-full px-3 py-1.5 text-sm text-foreground font-medium bg-muted" }}
                   activeOptions={{ exact: true }}
                 >
@@ -144,7 +146,7 @@ export function Header() {
               >
                 <Link
                   to="/services"
-                  className="flex items-center gap-1 rounded-full px-3 py-1.5 text-sm text-muted-foreground transition hover:text-foreground hover:bg-muted"
+                  className="flex items-center gap-1 rounded-full px-3 py-1.5 text-sm text-foreground/70 transition hover:text-foreground hover:bg-muted"
                 >
                   Services
                   <ChevronDown

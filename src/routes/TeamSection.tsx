@@ -4,37 +4,38 @@ import { ArrowUpRight } from "lucide-react";
 
 const TEAM = [
   {
-    name: "Maya Okafor",
-    role: "Engineering Lead",
+    name: "Kehinde Bakare",
+    role: "Full Stack Engineer",
     img: "/media/kenny.png",
-    bio: "12+ years shipping React, TypeScript, and distributed systems.",
+    bio: "12+ years shipping React, Node, and distributed systems at production scale.",
   },
   {
-    name: "Daniel Park",
-    role: "AI & Backend",
+    name: "Daniel Amalunweze",
+    role: "Frontend Developer & UI/UX Designer",
     img: "/media/daniel.jfif",
-    bio: "Production RAG, LLM evals, and cloud infra for fintech & SaaS.",
+    bio: "Pixel-perfect interfaces and custom design systems that convert and hold.",
   },
   {
-    name: "Priya Sharma",
-    role: "Design & UX",
-    img: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=600&q=80",
-    bio: "Brand systems, product UX, and motion. Ex-agency creative director.",
+    name: "Taiwo Ayomide",
+    role: "AI & Backend Engineer",
+    img: "/media/taiwo.jpeg",
+    bio: "Production RAG pipelines, LLM fine-tunes, and cloud infra for fintech and SaaS.",
   },
   {
-    name: "Marcus Webb",
+    name: "Oreoluwa Samuel",
     role: "Growth & Performance",
     img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80",
-    bio: "$10M+ in managed media. SEO, paid, and lifecycle in one head.",
+    bio: "Engineered SEO, paid media, and full-funnel attribution that moves revenue.",
   },
 ];
 
 export function TeamSection() {
   return (
-    <section className="border-b border-border bg-muted/20 text-foreground py-20 px-4 transition-colors duration-300">
+    /* FIX: bg-[var(--section-c)] gives this section a distinct tint in light mode */
+    <section className="border-b border-border bg-[var(--section-c)] text-foreground py-20 px-4 transition-colors duration-300">
       <div className="mx-auto max-w-7xl">
         {/* Header row */}
-        <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
+        <div className="mb-10 flex flex-wrap items-end justify-center gap-4 text-center">
           <div>
             <p className="mb-2 font-mono text-xs uppercase tracking-widest text-[oklch(0.78_0.18_195)] font-semibold">
               Team
@@ -43,9 +44,6 @@ export function TeamSection() {
               Meet the senior squad.
             </h2>
           </div>
-          {/* <button className="rounded-full border border-border bg-card px-4 py-1.5 text-xs text-muted-foreground hover:border-foreground hover:text-foreground transition-all shadow-sm">
-            View all →
-          </button> */}
         </div>
 
         {/* 4-col card grid */}
@@ -67,7 +65,7 @@ export function TeamSection() {
                   className="h-full w-full object-cover transition duration-700 group-hover:scale-110"
                   loading="lazy"
                 />
-                {/* Dark overlay for text readability across light/dark themes */}
+                {/* Dark overlay for text readability */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
 
                 {/* Arrow icon top-right */}

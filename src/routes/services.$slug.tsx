@@ -72,72 +72,103 @@ function ServicePage() {
         </div>
       </PageHero>
 
-      {/* Overview — Text on left, framed image stack with absolute badge on right */}
-      <Section eyebrow="Overview" title={<>What we do as your <span className="text-gradient">{service.title.toLowerCase()}</span> team.</>}>
-        <div className="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-2">
-          
-          {/* Left Side: Content & Checkmarks */}
-          <div className="space-y-6">
-            <p className="text-pretty text-lg leading-relaxed text-muted-foreground">
-              {service.overview}
-            </p>
-            
-            <div className="space-y-3 pt-2">
-              <div className="flex items-center gap-3 text-sm">
-                <div className="grid h-5 w-5 shrink-0 place-items-center rounded-full bg-primary/10 text-primary">
-                  <Check className="h-3.5 w-3.5" />
-                </div>
-                <span className="text-muted-foreground font-medium">Ranked among the region's top-tier specialized teams</span>
-              </div>
-              <div className="flex items-center gap-3 text-sm">
-                <div className="grid h-5 w-5 shrink-0 place-items-center rounded-full bg-primary/10 text-primary">
-                  <Check className="h-3.5 w-3.5" />
-                </div>
-                <span className="text-muted-foreground font-medium">Multi-disciplinary execution spanning technical ecosystems</span>
-              </div>
-              <div className="flex items-center gap-3 text-sm">
-                <div className="grid h-5 w-5 shrink-0 place-items-center rounded-full bg-primary/10 text-primary">
-                  <Check className="h-3.5 w-3.5" />
-                </div>
-                <span className="text-muted-foreground font-medium">Trusted by leading enterprises and fast-growing institutions</span>
-              </div>
-            </div>
+{/* Overview — Text on left, framed image stack with badge on right */}
+<Section
+  eyebrow="Overview"
+  title={
+    <>
+      What we do as your{" "}
+      <span className="text-gradient">
+        {service.title.toLowerCase()}
+      </span>{" "}
+      team.
+    </>
+  }
+>
+  <div className="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-[1.2fr_1fr]">
+    
+    {/* LEFT SIDE — Content */}
+    <div className="space-y-6 lg:pr-10">
+      <p className="text-pretty text-lg leading-relaxed text-muted-foreground max-w-xl">
+        {service.overview}
+      </p>
 
-            <div className="pt-4">
-              <Link to="/contact" className="inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-3 text-sm font-semibold text-background transition hover:opacity-90">
-                Read More <ArrowUpRight className="h-4 w-4" />
-              </Link>
-            </div>
+      <div className="space-y-3 pt-2">
+        <div className="flex items-center gap-3 text-sm">
+          <div className="grid h-5 w-5 shrink-0 place-items-center rounded-full bg-primary/10 text-primary">
+            <Check className="h-3.5 w-3.5" />
           </div>
-
-          {/* Right Side: Floating Frame Stack & Experience Badge */}
-          <div className="relative mx-auto w-full max-w-md lg:max-w-none">
-            {/* Soft geometric background offset card frame */}
-            <div className="absolute inset-0 translate-x-4 translate-y-4 rounded-3xl bg-muted/40 dark:bg-zinc-900/40 -z-10 border border-border/40" />
-            
-            {/* Main Picture Frame */}
-            <div className="relative aspect-[4/3.8] overflow-hidden rounded-3xl border border-border bg-card p-2 shadow-xl">
-              <img 
-                src={SERVICE_IMAGES[service.slug] || "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80"} 
-                alt={`${service.title} team preview`} 
-                className="h-full w-full rounded-2xl object-cover"
-              />
-              
-              {/* Absolute Corner Accent Badge (Adapts seamlessly across light/dark modes) */}
-              <div className="absolute bottom-6 right-6 flex items-center gap-3 rounded-2xl border border-border/80 bg-background/95 p-3.5 shadow-xl backdrop-blur-md">
-                <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-gray-700 text-white shadow-md shadow-gray-500/20">
-                  <Icon className="h-5 w-5" />
-                </div>
-                <div className="flex flex-col pr-2">
-                  <span className="font-display text-sm font-bold text-foreground">Top-Tier</span>
-                  <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">Digital Excellence</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
+          <span className="text-muted-foreground font-medium">
+            Ranked among the region's top-tier specialized teams
+          </span>
         </div>
-      </Section>
+
+        <div className="flex items-center gap-3 text-sm">
+          <div className="grid h-5 w-5 shrink-0 place-items-center rounded-full bg-primary/10 text-primary">
+            <Check className="h-3.5 w-3.5" />
+          </div>
+          <span className="text-muted-foreground font-medium">
+            Multi-disciplinary execution spanning technical ecosystems
+          </span>
+        </div>
+
+        <div className="flex items-center gap-3 text-sm">
+          <div className="grid h-5 w-5 shrink-0 place-items-center rounded-full bg-primary/10 text-primary">
+            <Check className="h-3.5 w-3.5" />
+          </div>
+          <span className="text-muted-foreground font-medium">
+            Trusted by leading enterprises and fast-growing institutions
+          </span>
+        </div>
+      </div>
+
+      <div className="pt-4">
+        <Link
+          to="/contact"
+          className="inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-3 text-sm font-semibold text-background transition hover:opacity-90"
+        >
+          Read More <ArrowUpRight className="h-4 w-4" />
+        </Link>
+      </div>
+    </div>
+
+    {/* RIGHT SIDE — Visual Frame */}
+    <div className="relative mx-auto w-full max-w-md lg:max-w-lg lg:ml-auto">
+      
+      {/* Background offset frame */}
+      <div className="absolute inset-0 translate-x-4 translate-y-4 rounded-3xl bg-muted/40 dark:bg-zinc-900/40 -z-10 border border-border/40" />
+
+      {/* Main image card */}
+      <div className="relative aspect-[4/3.8] overflow-hidden rounded-3xl border border-border bg-card p-2 shadow-xl">
+        <img
+          src={
+            SERVICE_IMAGES[service.slug] ||
+            "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80"
+          }
+          alt={`${service.title} team preview`}
+          className="h-full w-full rounded-2xl object-cover"
+        />
+
+        {/* Badge */}
+        <div className="absolute bottom-6 right-6 flex items-center gap-3 rounded-2xl border border-border/80 bg-background/95 p-3.5 shadow-xl backdrop-blur-md">
+          <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-gray-700 text-white shadow-md shadow-gray-500/20">
+            <Icon className="h-5 w-5" />
+          </div>
+
+          <div className="flex flex-col pr-2">
+            <span className="font-display text-sm font-bold text-foreground">
+              Top-Tier
+            </span>
+            <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">
+              Digital Excellence
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</Section>
       {/* Who it's for — Image Category style with 4 columns layout */}
       <Section eyebrow="Who it's for" title="Built for teams like yours.">
         <div className="mx-auto grid max-w-6xl gap-5 sm:grid-cols-2 lg:grid-cols-4">

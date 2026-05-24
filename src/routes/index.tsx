@@ -3,14 +3,14 @@ import {
   ArrowRight, ArrowUpRight, ArrowLeft, Sparkles, Code2, Search, Target,
   MessageCircle, ShoppingBag, Star, Plus, Minus, ExternalLink, Eye, X,
   ShieldCheck, Rocket, Users, Zap, Award, TrendingUp, Play, ChevronLeft, ChevronRight,
+  CheckCircle, Cpu, BarChart2, Quote,
 } from "lucide-react";
-import { useState, useEffect, useRef, useCallback } from "react";
-import { motion } from "framer-motion";
+import { useState, useEffect, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { CTA } from "@/components/section";
 import { SERVICES } from "@/lib/site";
 import { PROJECTS, CASE_STUDIES, POSTS, TESTIMONIALS, FAQ, PROCESS, PROJECT_IMAGES, CASE_IMAGES, SERVICE_IMAGES, POST_IMAGES } from "@/lib/content";
 import { seo } from "@/lib/seo";
-import Lottie from "lottie-react";
 
 
 export const Route = createFileRoute("/")({
@@ -24,6 +24,19 @@ export const Route = createFileRoute("/")({
 
 const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   Code2, Search, Sparkles, Target, MessageCircle, ShoppingBag,
+};
+
+// Short descriptions for service grid cards
+const SERVICE_BLURBS: Record<string, string> = {
+  "web-development": "High-performance sites & web apps built on modern stacks.",
+  "ui-ux-design": "Interfaces that convert — from wireframes to pixel-perfect Figma.",
+  "saas-development": "End-to-end SaaS builds with auth, billing & multi-tenancy.",
+  "seo": "Technical SEO, content strategy & link building backed by data.",
+  "ai-solutions": "Custom AI agents, RAG systems & automations that move metrics.",
+  "social-and-ads": "Full-funnel paid media + organic content under one senior team.",
+  "shopify-store-design": "Custom Shopify themes & CRO — we design stores that sell.",
+  "website-maintenance": "Ongoing support, security patches & performance tuning.",
+  "backend-api-development": "REST & GraphQL APIs, integrations, and scalable infrastructure.",
 };
 
 function Home() {
@@ -46,238 +59,65 @@ function Home() {
 }
 
 
-
-
-
-
-// function Orb() {
-//   const [animation, setAnimation] = useState<any>(null);
-
-//   useEffect(() => {
-//     fetch("/media/orb.json")
-//       .then((res) => res.json())
-//       .then(setAnimation);
-//   }, []);
-
-//   if (!animation) return null;
-
-//   return (
-//     <Lottie
-//       animationData={animation}
-//       muted
-//       loop
-//       autoplay
-//       preload="metadata"
-//       className="h-full w-full object-contain"
-//     />
-//   );
-// }
-
-// /* ============================== HERO ============================== */
-// function Hero() {
-//   return (
-//     <section className="relative overflow-hidden border-b border-border bg-[#0a0710] text-white">
-//       <div className="absolute inset-0">
-//         <video
-//           className="h-full w-full object-cover opacity-50"
-//           src="/media/bg.mp4"
-//           autoPlay loop muted playsInline preload="metadata"
-//         />
-//         <div className="absolute inset-0 bg-black/70" />
-//         <div className="absolute inset-x-0 top-0 h-1/2 bg-[radial-gradient(ellipse_at_top,rgba(168,85,247,0.35),transparent_60%)]" />
-//         <div className="absolute inset-x-0 bottom-0 h-1/2 bg-[radial-gradient(ellipse_at_bottom,rgba(120,40,200,0.4),transparent_60%)]" />
-//       </div>
-
-//       <div className="relative mx-auto max-w-7xl px-4 pt-16 pb-10 md:px-6 md:pt-20 md:pb-12">
-//         <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
-//           <motion.div
-//             initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
-//             className="inline-flex w-max items-center rounded-full border border-violet-400/40 bg-violet-500/10 px-4 py-2 text-xs font-medium text-violet-200 backdrop-blur"
-//           >
-//             Next-Level Business
-//           </motion.div>
-
-//           <motion.div
-//             initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }}
-//             className="flex flex-col gap-3"
-//           >
-//             {[
-//               { t: "Future-Ready", s: "Strategies", icon: <ArrowUpRight className="h-4 w-4" /> },
-//               { t: "24/7 Customer", s: "Support", icon: <ArrowRight className="h-4 w-4" /> },
-//             ].map((c) => (
-//               <div key={c.t} className="flex items-center gap-6 border-b border-violet-300/20 pb-2 text-sm text-violet-100">
-//                 <div className="leading-tight">
-//                   <div>{c.t}</div>
-//                   <div>{c.s}</div>
-//                 </div>
-//                 <div className="ml-auto flex h-6 w-12 items-center justify-end text-violet-200">
-//                   <div className="mr-2 h-px flex-1 bg-violet-300/40" />
-//                   {c.icon}
-//                 </div>
-//               </div>
-//             ))}
-//           </motion.div>
-//         </div>
-
-//         <div className="relative mt-10 md:mt-14">
-//           <div className="pointer-events-none absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2">
-//             <motion.div
-//               initial={{ scale: 0.6, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 1, ease: "easeOut" }}
-//               className="relative aspect-square w-[260px] sm:w-[340px] md:w-[440px] lg:w-[520px]"
-//             >
-//               <div className="absolute inset-0 -z-10 rounded-full bg-violet-500/40 blur-3xl animate-pulse-glow" />
-//               <Orb />
-//             </motion.div>
-//           </div>
-
-//           <motion.h1
-//             initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.2 }}
-//             className="select-none text-center font-display font-extrabold tracking-tight"
-//             style={{ fontSize: "clamp(3.5rem, 18vw, 16rem)", lineHeight: 0.9 }}
-//           >
-//             <span className="bg-gradient-to-b from-white/30 to-white/5 bg-clip-text text-transparent">
-//               GLOBE&nbsp;STACK
-//             </span>
-//           </motion.h1>
-
-//           <motion.div
-//             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.5 }}
-//             className="relative z-20 mt-6 max-w-md md:absolute md:left-0 md:bottom-2 md:mt-0"
-//           >
-//             <h2 className="font-display text-3xl font-bold leading-tight md:text-5xl">
-//               Boost Efficiency,<br />
-//               Maximize <span className="text-violet-400">Impact.</span>
-//             </h2>
-//             <p className="text-sm text-violet-100/80 md:text-base">
-//               We design, build, and grow digital products — web, AI, SEO, ads, social, and Shopify, all under one senior team.
-//             </p>
-//           </motion.div>
-
-//           <motion.div
-//             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.6 }}
-//             className="relative z-20 mt-6 md:absolute md:right-0 md:bottom-2 md:mt-0 md:max-w-xs md:text-right"
-//           >
-//             <p className="text-sm text-violet-100/80 md:text-base">
-//               We design, build, and grow digital products — web, AI, SEO, ads, social, and Shopify, all under one senior team.
-//             </p>
-//             <div className="mt-5 flex items-center gap-3 md:justify-end">
-//               <Link to="/contact" className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-violet-500 to-fuchsia-500 px-6 py-3 text-sm font-semibold text-white shadow-[0_0_30px_-5px_rgba(168,85,247,0.7)] hover:opacity-95">
-//                 Get Started
-//               </Link>
-//               <button aria-label="Play intro" className="grid h-12 w-12 place-items-center rounded-full border border-violet-400/50 bg-violet-500/20 text-white backdrop-blur hover:bg-violet-500/30">
-//                 <Play className="h-4 w-4 fill-current" />
-//               </button>
-//             </div>
-//           </motion.div>
-//         </div>
-
-//         <motion.div
-//           initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.8 }}
-//           className="relative z-20 mt-10 grid gap-3 rounded-2xl border border-violet-300/20 bg-white/5 p-3 backdrop-blur md:mt-16 md:grid-cols-2"
-//         >
-//           <div className="flex items-center gap-4 rounded-xl px-2">
-//             <div className="flex flex-col">
-//               <div className="font-display text-2xl font-bold">125<sup className="text-sm">k+</sup></div>
-//               <div className="text-xs text-violet-200/70">Happy Client</div>
-//             </div>
-//             <Link to="/contact" className="grid h-16 w-16 place-items-center rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-500 text-center text-xs font-bold leading-tight text-white shadow-[0_0_24px_-4px_rgba(168,85,247,0.7)]">
-//               Join<br />Now
-//             </Link>
-//             <div className="flex flex-col">
-//               <div className="font-display text-2xl font-bold">95<sup className="text-sm">%</sup></div>
-//               <div className="text-xs text-violet-200/70">Growth</div>
-//             </div>
-//             <div className="flex flex-col">
-//               <div className="font-display text-2xl font-bold">25</div>
-//               <div className="text-xs text-violet-200/70">Years</div>
-//             </div>
-//           </div>
-//           <div className="flex items-center gap-6 overflow-hidden rounded-xl px-3 py-2">
-//             <span className="whitespace-nowrap text-xs underline underline-offset-4 text-violet-100/80">Trusted by.</span>
-//             <div className="flex flex-1 items-center justify-around gap-6 text-sm font-semibold text-violet-100/80">
-//               {["Niscala.io", "SAMTIV", "✺ IEA.", "‖ BOKING"].map((b) => (
-//                 <span key={b} className="whitespace-nowrap">{b}</span>
-//               ))}
-//             </div>
-//           </div>
-//         </motion.div>
-//       </div>
-//     </section>
-//   );
-// }
-
+/* ============================== HERO ============================== */
 function HeroVisual() {
   return (
-    <div className="relative flex justify-center">
-
-      {/* glow */}
-      <div className="absolute inset-0 mx-auto h-[500px] w-[500px] rounded-full bg-fuchsia-500/20 blur-3xl" />
-
-      {/* laptop */}
+    <div className="relative flex justify-center items-center">
+      <div className="absolute inset-0 mx-auto h-[500px] w-[500px] rounded-full bg-sky-500/20 blur-3xl" />
       <img
-        src="/media/reall.png"
-        className="relative z-10 w-[340px] md:w-[520px]"
+        src="/media/downl.png"
+        className="relative z-10 w-[340px] md:w-[420px]"
         alt="Laptop UI"
       />
     </div>
   );
 }
 
-/* ============================== HERO ============================== */
 function Hero() {
   return (
-    <section className="relative overflow-hidden border-b border-border bg-[#0a0710] text-white">
-      <div className="absolute inset-0">
+    <section
+      className="relative overflow-hidden border-b border-border text-white"
+      style={{ background: "linear-gradient(160deg,#020d1a 0%,#041e38 50%,#061428 100%)", minHeight: "100vh" }}
+    >
+      <div className="absolute inset-0 pointer-events-none">
         <video
-          className="h-full w-full object-cover opacity-50"
+          className="h-full w-full object-cover opacity-15"
           src="/media/bg.mp4"
           autoPlay loop muted playsInline preload="metadata"
         />
-        <div className="absolute inset-0 bg-black/70" />
-        <div className="absolute inset-x-0 top-0 h-1/2 bg-[radial-gradient(ellipse_at_top,rgba(168,85,247,0.35),transparent_60%)]" />
-        <div className="absolute inset-x-0 bottom-0 h-1/2 bg-[radial-gradient(ellipse_at_bottom,rgba(120,40,200,0.4),transparent_60%)]" />
+        <div className="absolute inset-0 bg-black/40" />
+        <div className="absolute inset-x-0 top-0 h-1/2 bg-[radial-gradient(ellipse_at_top,rgba(14,165,233,0.3),transparent_60%)]" />
+        <div className="absolute inset-x-0 bottom-0 h-1/2 bg-[radial-gradient(ellipse_at_bottom,rgba(6,182,212,0.2),transparent_60%)]" />
       </div>
 
-{/* 
-      <div className="absolute inset-0">
-  <img
-    className="h-full w-full object-cover opacity-60"
-    src="/media/yoy.jfif"
-    alt="Hero background"
-    loading="lazy"
-    decoding="async"
-  />
-
-  <div className="absolute inset-0 bg-black/60" />
-
-  <div className="absolute inset-x-0 top-0 h-1/2 bg-[radial-gradient(ellipse_at_top,rgba(168,85,247,0.35),transparent_60%)]" />
-  <div className="absolute inset-x-0 bottom-0 h-1/2 bg-[radial-gradient(ellipse_at_bottom,rgba(120,40,200,0.4),transparent_60%)]" />
-</div> */}
-
-      <div className="relative mx-auto max-w-7xl px-4 pt-16 pb-10 md:px-6 md:pt-20 md:pb-12">
-        <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
+      <div
+        className="relative mx-auto max-w-7xl px-4 md:px-6 flex flex-col"
+        style={{ minHeight: "100vh", paddingTop: "10rem", paddingBottom: "2rem" }}
+      >
+        {/* Desktop-only top row badges */}
+        <div className="hidden md:flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <motion.div
             initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
-            className="inline-flex w-max items-center rounded-full border border-violet-400/40 bg-violet-500/10 px-4 py-2 text-xs font-medium text-violet-200 backdrop-blur"
+            className="inline-flex w-max items-center rounded-full border border-sky-400/40 bg-sky-500/10 px-4 py-2 text-xs font-medium text-sky-200 backdrop-blur"
           >
-            Next-Level Business
+            ✦ Next-Level Business
           </motion.div>
 
           <motion.div
             initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }}
-            className="flex flex-col gap-3"
+            className="flex flex-row sm:flex-col gap-6 sm:gap-3"
           >
             {[
               { t: "Future-Ready", s: "Strategies", icon: <ArrowUpRight className="h-4 w-4" /> },
               { t: "24/7 Customer", s: "Support", icon: <ArrowRight className="h-4 w-4" /> },
             ].map((c) => (
-              <div key={c.t} className="flex items-center gap-6 border-b border-violet-300/20 pb-2 text-sm text-violet-100">
+              <div key={c.t} className="flex items-center gap-4 border-b border-sky-300/20 pb-2 text-sm text-sky-100">
                 <div className="leading-tight">
                   <div>{c.t}</div>
                   <div>{c.s}</div>
                 </div>
-                <div className="ml-auto flex h-6 w-12 items-center justify-end text-violet-200">
-                  <div className="mr-2 h-px flex-1 bg-violet-300/40" />
+                <div className="ml-auto flex h-6 w-10 items-center justify-end text-sky-300">
+                  <div className="mr-2 h-px flex-1 bg-sky-300/40" />
                   {c.icon}
                 </div>
               </div>
@@ -285,88 +125,184 @@ function Hero() {
           </motion.div>
         </div>
 
-        <div className="relative mt-10 md:mt-14">
-          <div className="pointer-events-none absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2">
-            <motion.div
-              initial={{ scale: 0.6, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 1, ease: "easeOut" }}
-              className="relative aspect-square w-[260px] sm:w-[340px] md:w-[440px] lg:w-[520px]"
-            >
-              <div className="absolute inset-0 -z-10 rounded-full bg-violet-500/40 blur-3xl animate-pulse-glow" />
-              <HeroVisual />
-            </motion.div>
-          </div>
+        
+{/* Mobile: hero text layered OVER the image */}
+<div className="relative mt-0 flex flex-col gap-7 md:hidden">
 
+  {/* Orb — no dark overlay, just soft radial edge fade */}
+  <motion.div
+    initial={{ scale: 0.85, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.9, ease: "easeOut", delay: 0.2 }}
+    className="absolute inset-0 -mx-4 pointer-events-none"
+    style={{ top: "-2rem", bottom: "-2rem" }}
+  >
+    <img
+      src="/media/downl.png"
+      alt=""
+      aria-hidden="true"
+      className="absolute inset-0 h-full w-full object-contain object-center opacity-60"
+    />
+    {/* Only fade the very outer edges — no centre darkening */}
+    <div
+      className="absolute inset-0"
+      style={{ background: "radial-gradient(ellipse 80% 80% at 50% 50%, transparent 45%, #020d1a 90%)" }}
+    />
+  </motion.div>
+
+  {/* Badge */}
+  <motion.div
+    initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
+    className="relative z-10 inline-flex w-max items-center rounded-full border border-sky-400/40 bg-sky-500/10 px-4 py-2 text-xs font-medium text-sky-200 backdrop-blur"
+  >
+    ✦ Next-Level Business
+  </motion.div>
+
+  {/* Heading + body */}
+  <motion.div
+    initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.3 }}
+    className="relative z-10 space-y-4"
+  >
+    <h2 className="font-display text-[2.75rem] font-bold leading-[1.08] tracking-tight">
+      Boost Efficiency,<br />
+      Maximize <span className="text-sky-400">Impact.</span>
+    </h2>
+    <p className="text-sm text-sky-100/75 leading-relaxed max-w-[17rem]">
+      We design, build, and grow digital products — websites, AI solutions, SEO, ads, social, and Shopify, all under one senior team.
+    </p>
+  </motion.div>
+
+  {/* CTAs */}
+  <motion.div
+    initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.45 }}
+    className="relative z-10 flex items-center gap-3"
+  >
+    <Link
+      to="/contact"
+      className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-white transition hover:opacity-90"
+      style={{ background: "linear-gradient(135deg,#0ea5e9,#06b6d4)", boxShadow: "0 0 28px -5px rgba(14,165,233,0.7)" }}
+    >
+      Get Started
+    </Link>
+    <button
+      aria-label="Play intro"
+      className="grid h-12 w-12 place-items-center rounded-full border border-sky-400/50 bg-sky-500/15 text-white backdrop-blur hover:bg-sky-500/25 transition"
+    >
+      <Play className="h-4 w-4 fill-current" />
+    </button>
+  </motion.div>
+</div>
+
+        <div className="relative flex-1 mt-8 md:mt-10">
           <motion.h1
             initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.2 }}
-            className="select-none text-center font-display font-extrabold tracking-tight"
-            style={{ fontSize: "clamp(3.5rem, 16vw, 16rem)", lineHeight: 0.9 }}
+className="hidden md:block select-none text-center font-display font-extrabold tracking-tight relative z-20"
+            style={{ fontSize: "clamp(3rem, 15vw, 18rem)", lineHeight: 0.88 }}
           >
-            <span className="bg-gradient-to-b from-white/30 to-white/5 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-b from-white/30 via-sky-100/7 to-sky-400/20 bg-clip-text text-transparent">
               GLOBE&nbsp;STACK
             </span>
           </motion.h1>
 
+          {/* Desktop floating image */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.5 }}
-            className="relative z-20 mt-6 max-w-md md:absolute md:left-0 md:bottom-2 md:mt-0"
+            initial={{ scale: 0.7, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 1, ease: "easeOut", delay: 0.3 }}
+            className="hidden md:flex absolute inset-0 mt-0 items-center justify-center pointer-events-none"
           >
-            <h2 className="font-display text-3xl font-bold leading-tight md:text-5xl">
-              Boost Efficiency,<br />
-              Maximize <span className="text-violet-400">Impact.</span>
-            </h2>
-            <p className="text-sm text-violet-100/80 md:text-base">
-              We design, build, and grow digital products — web, AI, SEO, ads, social, and Shopify, all under one senior team.
-            </p>
+            <div className="w-[460px] lg:w-[540px]">
+              <HeroVisual />
+            </div>
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.6 }}
-            className="relative z-20 mt-6 md:absolute md:right-0 md:bottom-2 md:mt-0 md:max-w-xs md:text-right"
+            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.5 }}
+            className="hidden md:block absolute left-0 bottom-0 max-w-sm z-30"
           >
-            <p className="text-sm text-violet-100/80 md:text-base">
-              We design, build, and grow digital products — web, AI, SEO, ads, social, and Shopify, all under one senior team.
+            <h2 className="font-display text-3xl font-bold leading-tight lg:text-4xl">
+              Boost Efficiency,<br />
+              Maximize <span className="text-sky-400">Impact.</span>
+            </h2>
+            <p className="mt-3 text-sm text-white-400/70 leading-relaxed md:text-base">
+              We design, build, and grow digital products — websites, AI solutions, SEO, ads, social, and Shopify, all under one senior team.
             </p>
-            <div className="mt-5 flex items-center gap-3 md:justify-end">
-              <Link to="/contact" className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-violet-500 to-fuchsia-500 px-6 py-3 text-sm font-semibold text-white shadow-[0_0_30px_-5px_rgba(168,85,247,0.7)] hover:opacity-95">
+            <div className="mt-5 flex items-center gap-8">
+              <Link
+                to="/contact"
+                className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-white transition hover:opacity-90"
+                style={{ background: "linear-gradient(135deg,#0ea5e9,#06b6d4)", boxShadow: "0 0 30px -5px rgba(14,165,233,0.7)" }}
+              >
                 Get Started
               </Link>
-              <button aria-label="Play intro" className="grid h-12 w-12 place-items-center rounded-full border border-violet-400/50 bg-violet-500/20 text-white backdrop-blur hover:bg-violet-500/30">
+              <button
+                aria-label="Play intro"
+                className="grid h-12 w-12 place-items-center rounded-full border border-sky-400/50 bg-sky-500/15 text-white backdrop-blur hover:bg-sky-500/25 transition"
+              >
                 <Play className="h-4 w-4 fill-current" />
               </button>
             </div>
           </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.6 }}
+            className="hidden md:block absolute right-0 bottom-0 max-w-xs text-right z-30"
+          >
+            <p className="text-sm text-white-100/60 md:text-base leading-relaxed">
+              One senior team. Every digital channel. Outcomes that compound. We love to give you the best digital experience.
+            </p>
+            <div className="mt-5 flex items-center gap-3 justify-end">
+              <Link
+                to="/contact"
+                className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-white transition hover:opacity-90"
+                style={{ background: "linear-gradient(135deg,#0ea5e9,#06b6d4)", boxShadow: "0 0 30px -5px rgba(14,165,233,0.7)" }}
+              >
+                Get Started
+              </Link>
+            </div>
+          </motion.div>
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.8 }}
-          className="relative z-20 mt-10 grid gap-3 rounded-2xl border border-violet-300/20 bg-white/5 p-3 backdrop-blur md:mt-16 md:grid-cols-2"
-        >
-          <div className="flex items-center gap-9 rounded-xl px-2">
-            <div className="flex flex-col">
-              <div className="font-display text-2xl font-bold">125<sup className="text-sm">k+</sup></div>
-              <div className="text-xs text-violet-200/70">Happy Client</div>
-            </div>
-            {/* <Link to="/contact" className="grid h-16 w-16 place-items-center rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-500 text-center text-xs font-bold leading-tight text-white shadow-[0_0_24px_-4px_rgba(168,85,247,0.7)]">
-              Join<br />Now
-            </Link> */}
-            <div className="flex flex-col">
-              <div className="font-display text-2xl font-bold">95<sup className="text-sm">%</sup></div>
-              <div className="text-xs text-violet-200/70">Growth</div>
-            </div>
-            <div className="flex flex-col">
-              <div className="font-display text-2xl font-bold">25</div>
-              <div className="text-xs text-violet-200/70">Years</div>
-            </div>
-          </div>
-          <div className="flex items-center gap-6 overflow-hidden rounded-xl px-3 py-2">
-            <span className="whitespace-nowrap text-xs underline underline-offset-4 text-violet-100/80">Trusted by.</span>
-            <div className="flex flex-1 items-center justify-around gap-6 text-sm font-semibold text-violet-100/80">
-              {["Niscala.io", "SAMTIV", "✺ IEA.", "‖ BOKING"].map((b) => (
-                <span key={b} className="whitespace-nowrap">{b}</span>
-              ))}
-            </div>
-          </div>
-        </motion.div>
+<motion.div
+  initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.8 }}
+  className="mt-10 md:mt-15 flex flex-col gap-3"
+>
+  {/* Stats + desktop trusted-by in one box */}
+  <div className="grid grid-cols-1 gap-3 rounded-2xl border border-sky-400/20 bg-white/5 p-3 backdrop-blur sm:grid-cols-2">
+    <div className="flex items-center justify-around gap-2 rounded-xl px-2 py-2">
+      {[
+        { v: "125k+", l: "Happy Clients" },
+        { v: "95%", l: "Growth" },
+        { v: "25+", l: "Years" },
+      ].map((s) => (
+        <div key={s.l} className="flex flex-col items-center text-center">
+          <div className="font-display text-2xl font-bold">{s.v}</div>
+          <div className="text-xs text-sky-200/60">{s.l}</div>
+        </div>
+      ))}
+    </div>
+    {/* Desktop only — static trusted by inside the box */}
+    <div className="hidden sm:flex flex-wrap items-center justify-center gap-x-4 gap-y-2 rounded-xl border border-sky-400/10 px-3 py-2">
+      <span className="text-xs text-sky-300/50 uppercase tracking-wider whitespace-nowrap">Trusted by</span>
+      {["Niscala.io", "SAMTIV", "✺ IEA.", "‖ BOKING"].map((b) => (
+        <span key={b} className="text-sm font-semibold text-sky-100/50 whitespace-nowrap">{b}</span>
+      ))}
+    </div>
+  </div>
+
+  {/* Mobile-only infinite marquee trusted by — sits BELOW stats box */}
+  <div className="sm:hidden relative overflow-hidden rounded-xl border border-sky-400/10 bg-white/5 py-2.5 backdrop-blur">
+    {/* Left + right fade masks */}
+    <div className="pointer-events-none absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-[#020d1a] to-transparent z-10" />
+    <div className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-[#020d1a] to-transparent z-10" />
+    <div className="flex w-max" style={{ animation: "marquee 16s linear infinite" }}>
+      {[...Array(2)].map((_, rep) => (
+        <div key={rep} className="flex items-center gap-8 px-6">
+          <span className="text-[10px] uppercase tracking-widest text-sky-300/40 font-mono">Trusted by</span>
+          {["Niscala.io", "SAMTIV", "✺ IEA.", "‖ BOKING"].map((b) => (
+            <span key={b} className="text-sm font-semibold text-sky-100/55 whitespace-nowrap">{b}</span>
+          ))}
+        </div>
+      ))}
+    </div>
+  </div>
+</motion.div>
       </div>
     </section>
   );
@@ -375,22 +311,33 @@ function Hero() {
 /* ============================== ABOUT ============================== */
 function About() {
   const cards = [
-    { tag: "Vision-driven", t: "Built for the long game", d: "From brand systems to product foundations, we design for compounding wins, not vanity launches.", img: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80" },
-    { tag: "Next-gen styled", t: "Modern stacks, modern craft", d: "Every project ships on the tech and design language buyers and search engines reward today.", img: "https://images.unsplash.com/photo-1551434678-e076c223a692?w=800&q=80" },
+    {
+      tag: "Vision-driven",
+      t: "Built for the long game",
+      d: "From brand systems to product foundations, we architect digital strategies designed for compounding growth — not vanity launches that fade.",
+      img: "/media/about-vision.jpg",
+    },
+    {
+      tag: "Full-stack craft",
+      t: "Web, AI & Commerce — unified",
+      d: "Every project ships with modern tech: performant web apps, intelligent AI integrations, and conversion-optimised Shopify stores, all from one senior team.",
+      img: "/media/about-craft.jpg",
+    },
   ];
+
   return (
-    <section className="relative border-t border-border py-20 md:py-32">
+    <section className="relative border-t border-border py-20 md:py-32 bg-[var(--section-a)]">
       <div className="mx-auto grid max-w-7xl gap-12 px-4 md:px-6 lg:grid-cols-2 lg:gap-16">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
           <div className="font-mono text-xs uppercase tracking-wider text-muted-foreground">About Us</div>
           <h2 className="mt-3 font-display text-4xl font-bold leading-[1.05] tracking-tight md:text-6xl">
-            Empowering Visionary Founders From Day One
+            Your Growth Partner Across Every Digital Channel
           </h2>
           <p className="mt-6 max-w-md text-muted-foreground">
-            We create intuitive and visually engaging digital experiences that enhance user interaction and move the metrics that matter.
+            Globe Stack is a full-stack tech studio built by senior specialists. We handle web development, AI integration, SEO, paid ads, social media, and Shopify — so you get one accountable team delivering measurable outcomes across every touchpoint.
           </p>
           <Link to="/about" className="mt-8 inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-3 text-sm font-medium text-background hover:opacity-90">
-            Start Today
+            Our Story
             <span className="grid h-7 w-7 place-items-center rounded-full bg-background text-foreground"><Zap className="h-3.5 w-3.5" /></span>
           </Link>
         </motion.div>
@@ -465,10 +412,12 @@ function Services() {
   return (
     <section className="border-t border-border py-20 md:py-28">
       <div className="mx-auto max-w-7xl px-4 md:px-6">
-        {/* CENTERED HEADER */}
         <div className="mb-10 text-center">
           <div className="font-mono text-xs uppercase tracking-wider text-muted-foreground">Services</div>
           <h2 className="mt-3 font-display text-3xl font-bold tracking-tight md:text-5xl">What we do best.</h2>
+          <p className="mt-3 mx-auto max-w-xl text-muted-foreground">
+            From idea to revenue, we power every stage of your digital growth.
+          </p>
         </div>
 
         {/* Desktop slider */}
@@ -478,7 +427,7 @@ function Services() {
               className="flex gap-5 transition-transform duration-700 ease-out"
               style={{ transform: `translateX(calc(-${index} * (100% / ${perView})))` }}
             >
-              {SERVICES.map((s, i) => (
+              {SERVICES.map((s) => (
                 <ServiceCard key={s.slug} s={s} className="w-[calc((100%-2.5rem)/3)] shrink-0" />
               ))}
             </div>
@@ -500,8 +449,8 @@ function Services() {
 
         {/* Mobile scrollable */}
         <div className="mt-10 -mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto scrollbar-hide px-4 md:hidden">
-          {SERVICES.map((s, i) => (
-            <ServiceCard key={s.slug} s={s} className="w-[80%] shrink-0 snap-start" />
+          {SERVICES.map((s) => (
+            <ServiceCard key={s.slug} s={s} className="w-[90%] shrink-0 snap-start" />
           ))}
         </div>
       </div>
@@ -511,10 +460,11 @@ function Services() {
 
 function ServiceCard({ s, className = "" }: { s: typeof SERVICES[number]; className?: string }) {
   const Icon = ICONS[s.icon] ?? Sparkles;
+  const blurb = SERVICE_BLURBS[s.slug] ?? s.blurb;
   return (
     <Link to="/services/$slug" params={{ slug: s.slug }} className={`group relative aspect-[3/4] overflow-hidden rounded-3xl border border-border bg-card ${className}`}>
       <img src={SERVICE_IMAGES[s.slug]} alt={s.title} className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-110" loading="lazy" />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/40" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/60 to-black/40" />
       <div className="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-full glass border border-white/20 opacity-0 transition group-hover:opacity-100">
         <ArrowUpRight className="h-4 w-4 text-white" />
       </div>
@@ -523,7 +473,7 @@ function ServiceCard({ s, className = "" }: { s: typeof SERVICES[number]; classN
           <Icon className="h-5 w-5 text-white" />
         </div>
         <h3 className="mt-4 font-display text-2xl font-bold leading-tight text-white drop-shadow-lg">{s.title}</h3>
-        {/* <p className="mt-2 line-clamp-2 text-sm text-white/85 drop-shadow">{s.short}</p> */}
+        <p className="mt-2 text-sm text-white/70 leading-relaxed line-clamp-2">{blurb}</p>
       </div>
     </Link>
   );
@@ -542,7 +492,7 @@ function ScreenshotModal({ project, onClose }: { project: typeof PROJECTS[number
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-5xl rounded-2xl border border-border bg-card shadow-2xl"
+        className="relative w-full max-w-4xl rounded-2xl border border-border bg-card shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between border-b border-border p-4">
@@ -560,12 +510,13 @@ function ScreenshotModal({ project, onClose }: { project: typeof PROJECTS[number
           </div>
         </div>
 
-        <div className="relative aspect-video overflow-hidden">
-          <img
-            src={images[imgIdx]}
-            alt={`${project.title} screenshot ${imgIdx + 1}`}
-            className="h-full w-full object-cover"
-          />
+        {/* Fixed-height image area — no more off-screen overflow */}
+<div className="relative overflow-hidden bg-zinc-950" style={{ height: "min(65vh, 520px)" }}>
+  <img
+    src={images[imgIdx]}
+    alt={`${project.title} screenshot ${imgIdx + 1}`}
+    className="h-full w-full object-contain"
+  />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
           <div className="absolute bottom-4 left-4 text-white">
             <div className="font-mono text-[10px] uppercase opacity-80">Preview</div>
@@ -590,14 +541,13 @@ function ScreenshotModal({ project, onClose }: { project: typeof PROJECTS[number
           )}
         </div>
 
-        {/* Thumbnail strip */}
         {images.length > 1 && (
           <div className="flex gap-2 overflow-x-auto p-3 scrollbar-hide">
             {images.map((img, i) => (
               <button
                 key={i}
                 onClick={() => setImgIdx(i)}
-                className={`relative h-16 w-24 shrink-0 overflow-hidden rounded-lg border-2 transition ${
+                className={`relative h-14 w-20 shrink-0 overflow-hidden rounded-lg border-2 transition ${
                   i === imgIdx ? "border-violet-500" : "border-border opacity-60 hover:opacity-100"
                 }`}
               >
@@ -625,17 +575,14 @@ function Portfolio() {
   const project = PROJECTS.find((p) => p.slug === shotFor);
 
   return (
-    <section className="border-t border-border bg-card/30 py-20 md:py-28">
+    <section className="border-t border-border py-20 md:py-28 bg-[var(--section-b)]">
       <div className="mx-auto max-w-7xl px-4 md:px-6">
-        {/* CENTERED HEADER */}
         <div className="mb-10 text-center">
           <div className="font-mono text-xs uppercase tracking-wider text-muted-foreground">Portfolio</div>
           <h2 className="mt-3 font-display text-3xl font-bold tracking-tight md:text-5xl">Recent shipped work.</h2>
-          <div className="mt-4 flex justify-center">
-            <Link to="/portfolio" className="inline-flex items-center gap-2 rounded-full border border-border px-5 py-2.5 text-sm font-medium hover:bg-muted">
-              View all <ArrowUpRight className="h-4 w-4" />
-            </Link>
-          </div>
+          <p className="mt-3 mx-auto max-w-xl text-muted-foreground">
+            A curated selection of web apps, AI products, e-commerce stores, and growth campaigns we've built and launched.
+          </p>
         </div>
 
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
@@ -650,11 +597,15 @@ function Portfolio() {
                 transition={{ duration: 0.5, delay: (idx % 3) * 0.07 }}
                 className="group overflow-hidden rounded-2xl border border-border bg-card transition hover:border-glow"
               >
-                <div className="relative h-56 overflow-hidden">
-                  <img src={images[0]} alt={p.title} className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-110" loading="lazy" />
+<div className="relative h-56 overflow-hidden bg-zinc-950 flex items-center justify-center">
+  <img
+    src={images[0]}
+    alt={p.title}
+    className="h-full w-full object-cover object-top transition duration-700 group-hover:scale-105"
+    loading="lazy"
+  />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
                   <div className="absolute bottom-3 left-3 rounded-full border border-white/30 bg-black/40 px-2.5 py-1 font-mono text-[10px] uppercase text-white backdrop-blur">{p.tag}</div>
-                  {/* Image count badge */}
                   {images.length > 1 && (
                     <div className="absolute top-3 right-3 rounded-full bg-black/60 px-2 py-1 font-mono text-[10px] text-white backdrop-blur">
                       {images.length} shots
@@ -677,8 +628,6 @@ function Portfolio() {
                   <div className="text-xs text-muted-foreground">{p.category}</div>
                   <Link to="/portfolio/$slug" params={{ slug: p.slug }} className="mt-1 block font-display text-lg font-semibold hover:text-gradient">{p.title}</Link>
                   <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{p.desc}</p>
-
-                  {/* Tech stack */}
                   <div className="mt-3 flex flex-wrap gap-1.5">
                     {p.tech.slice(0, 4).map((t) => (
                       <span key={t} className="rounded-md bg-muted px-2 py-0.5 font-mono text-[10px] text-muted-foreground">{t}</span>
@@ -687,7 +636,6 @@ function Portfolio() {
                       <span className="rounded-md bg-muted px-2 py-0.5 font-mono text-[10px] text-muted-foreground">+{p.tech.length - 4}</span>
                     )}
                   </div>
-
                   <div className="mt-4 flex items-center justify-between gap-2">
                     <button onClick={() => setShotFor(p.slug)} className="inline-flex items-center gap-1.5 text-xs font-medium hover:text-gradient">
                       <Eye className="h-3.5 w-3.5" /> View screenshots {images.length > 1 && `(${images.length})`}
@@ -703,6 +651,13 @@ function Portfolio() {
             );
           })}
         </div>
+
+        <div className="mt-10 flex justify-center">
+          <Link to="/portfolio" className="inline-flex items-center gap-2 rounded-full bg-foreground px-6 py-3 text-sm font-semibold text-background hover:opacity-90">
+            View all projects
+            <span className="grid h-7 w-7 place-items-center rounded-full bg-background text-foreground"><ArrowRight className="h-3.5 w-3.5" /></span>
+          </Link>
+        </div>
       </div>
 
       {project && <ScreenshotModal project={project} onClose={() => setShotFor(null)} />}
@@ -710,28 +665,247 @@ function Portfolio() {
   );
 }
 
+/* ============================== CASE STUDY MODAL ============================== */
+function CaseStudyModal({ cs, onClose }: { cs: typeof CASE_STUDIES[number]; onClose: () => void }) {
+  const [imgIdx, setImgIdx] = useState(0);
+  const images = cs.images ?? [CASE_IMAGES[cs.slug]];
+  const prevImg = () => setImgIdx((i) => (i <= 0 ? images.length - 1 : i - 1));
+  const nextImg = () => setImgIdx((i) => (i >= images.length - 1 ? 0 : i + 1));
+
+  return (
+    <AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 z-[200] flex items-start justify-center bg-background/95 backdrop-blur-md overflow-y-auto py-6 px-4"
+        onClick={onClose}
+      >
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 40 }}
+          transition={{ duration: 0.35, ease: "easeOut" }}
+          className="relative w-full max-w-4xl rounded-3xl border border-border bg-card shadow-2xl"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* Close */}
+          <button
+            onClick={onClose}
+            className="absolute right-4 top-4 z-10 grid h-9 w-9 place-items-center rounded-full bg-background/80 hover:bg-muted border border-border transition"
+          >
+            <X className="h-4 w-4" />
+          </button>
+
+          {/* ── 1. Hero Banner ── */}
+          <div className="relative h-64 overflow-hidden rounded-t-3xl md:h-80">
+            <img src={images[0]} alt={cs.title} className="h-full w-full object-cover" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/20" />
+            <div className="absolute inset-x-6 bottom-6">
+              <div className="flex flex-wrap gap-2 mb-3">
+                {cs.tags.map((t) => (
+                  <span key={t} className="rounded-full bg-white/15 border border-white/25 px-3 py-1 text-xs text-white backdrop-blur">{t}</span>
+                ))}
+              </div>
+              <h2 className="font-display text-2xl font-bold text-white leading-tight md:text-3xl">{cs.title}</h2>
+              <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-white/70">
+                <span className="font-mono uppercase">{cs.client}</span>
+                <span>·</span>
+                <span>{cs.industry}</span>
+                <span>·</span>
+                <span>{cs.duration}</span>
+                <span className="ml-auto rounded-full bg-white/90 px-3 py-1 font-semibold text-black text-xs">{cs.result}</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="p-6 md:p-8 space-y-8">
+
+            {/* ── 2. Problem Statement ── */}
+            <div>
+              <SectionLabel icon={<Target className="h-4 w-4" />} label="Problem Statement" />
+              <p className="mt-3 text-muted-foreground leading-relaxed">{cs.problem}</p>
+            </div>
+
+            {/* ── 3. Goals & Objectives ── */}
+            <div>
+              <SectionLabel icon={<CheckCircle className="h-4 w-4" />} label="Goals & Objectives" />
+              <ul className="mt-3 space-y-2">
+                {cs.goals.map((g, i) => (
+                  <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
+                    <span className="mt-0.5 h-5 w-5 shrink-0 grid place-items-center rounded-full bg-muted font-mono text-[10px] font-bold">{i + 1}</span>
+                    {g}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* ── 4. Research / Discovery ── */}
+            <div>
+              <SectionLabel icon={<Search className="h-4 w-4" />} label="Research & Discovery" />
+              <p className="mt-3 text-muted-foreground leading-relaxed">{cs.research}</p>
+            </div>
+
+            {/* ── 5. Design Process ── */}
+            <div>
+              <SectionLabel icon={<Sparkles className="h-4 w-4" />} label="Design Process" />
+              <p className="mt-3 text-muted-foreground leading-relaxed">{cs.designProcess}</p>
+            </div>
+
+            {/* ── 6. Development Process ── */}
+            <div>
+              <SectionLabel icon={<Code2 className="h-4 w-4" />} label="Development Process" />
+              <p className="mt-3 text-muted-foreground leading-relaxed">{cs.devProcess}</p>
+            </div>
+
+            {/* ── 7. Challenges & Solutions ── */}
+            <div>
+              <SectionLabel icon={<Zap className="h-4 w-4" />} label="Challenges & Solutions" />
+              <div className="mt-3 space-y-3">
+                {cs.challenges.map((c, i) => (
+                  <div key={i} className="rounded-2xl border border-border bg-muted/40 p-4">
+                    <div className="text-sm font-semibold mb-1">Challenge</div>
+                    <p className="text-sm text-muted-foreground">{c.challenge}</p>
+                    <div className="mt-2 text-sm font-semibold text-sky-500">Solution</div>
+                    <p className="text-sm text-muted-foreground">{c.solution}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* ── 8. Screenshots ── */}
+            <div>
+              <SectionLabel icon={<Eye className="h-4 w-4" />} label="Screenshots" />
+<div className="mt-3 relative overflow-hidden rounded-2xl bg-zinc-950" style={{ height: "min(60vh, 460px)" }}>
+  <img
+    src={images[imgIdx]}
+                  alt={`${cs.client} screenshot ${imgIdx + 1}`}
+                  className="h-full w-full object-contain"
+                />
+                {images.length > 1 && (
+                  <>
+                    <button onClick={prevImg} className="absolute left-3 top-1/2 -translate-y-1/2 grid h-10 w-10 place-items-center rounded-full bg-black/60 text-white hover:bg-black/80 transition">
+                      <ChevronLeft className="h-5 w-5" />
+                    </button>
+                    <button onClick={nextImg} className="absolute right-3 top-1/2 -translate-y-1/2 grid h-10 w-10 place-items-center rounded-full bg-black/60 text-white hover:bg-black/80 transition">
+                      <ChevronRight className="h-5 w-5" />
+                    </button>
+                    <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
+                      {images.map((_, i) => (
+                        <button key={i} onClick={() => setImgIdx(i)} className={`h-1.5 rounded-full transition-all ${i === imgIdx ? "w-6 bg-white" : "w-1.5 bg-white/40"}`} />
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
+              {images.length > 1 && (
+                <div className="mt-2 flex gap-2 overflow-x-auto scrollbar-hide">
+                  {images.map((img, i) => (
+                    <button key={i} onClick={() => setImgIdx(i)} className={`h-14 w-20 shrink-0 overflow-hidden rounded-lg border-2 transition ${i === imgIdx ? "border-sky-500" : "border-border opacity-60 hover:opacity-100"}`}>
+                      <img src={img} alt="" className="h-full w-full object-cover" />
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* ── 9. Results ── */}
+            <div>
+              <SectionLabel icon={<BarChart2 className="h-4 w-4" />} label="Final Results & Outcomes" />
+              <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
+                {cs.results.map((r) => (
+                  <div key={r.label} className="rounded-2xl border border-border bg-muted/40 p-4 text-center">
+                    <div className="font-display text-2xl font-bold">{r.value}</div>
+                    <div className="mt-1 text-xs text-muted-foreground">{r.label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* ── 10. Tech Stack ── */}
+            <div>
+              <SectionLabel icon={<Cpu className="h-4 w-4" />} label="Tech Stack" />
+              <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                {cs.techStack.map((group) => (
+                  <div key={group.category} className="rounded-xl border border-border p-3">
+                    <div className="mb-2 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">{group.category}</div>
+                    <div className="flex flex-wrap gap-1.5">
+                      {group.items.map((item) => (
+                        <span key={item} className="rounded-md bg-muted px-2 py-0.5 font-mono text-xs">{item}</span>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* ── 11. Testimonial ── */}
+            <div className="rounded-2xl border border-border bg-muted/40 p-6">
+              <Quote className="h-6 w-6 text-muted-foreground mb-3" />
+              <p className="font-display text-lg font-medium leading-snug">"{cs.testimonial.quote}"</p>
+              <div className="mt-4 flex items-center gap-3">
+                <div className="grid h-10 w-10 place-items-center rounded-full bg-sky-500 font-mono text-sm font-bold text-white">
+                  {cs.testimonial.name.split(" ").map((n) => n[0]).join("").slice(0, 2)}
+                </div>
+                <div>
+                  <div className="text-sm font-semibold">{cs.testimonial.name}</div>
+                  <div className="text-xs text-muted-foreground">{cs.testimonial.role}</div>
+                </div>
+              </div>
+            </div>
+
+            {/* ── 12. CTA ── */}
+            <div className="rounded-2xl border border-border bg-foreground p-6 text-center text-background">
+              <h3 className="font-display text-xl font-bold">Want similar results for your project?</h3>
+              <p className="mt-2 text-sm text-background/70">Let's build something that moves your metrics.</p>
+              <div className="mt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
+                <Link
+                  to="/contact"
+                  className="inline-flex items-center gap-2 rounded-full bg-background px-6 py-3 text-sm font-semibold text-foreground hover:opacity-90"
+                >
+                  Book a discovery call <ArrowRight className="h-4 w-4" />
+                </Link>
+                <button onClick={onClose} className="text-sm text-background/60 hover:text-background/90">Close case study</button>
+              </div>
+            </div>
+
+          </div>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
+  );
+}
+
+function SectionLabel({ icon, label }: { icon: React.ReactNode; label: string }) {
+  return (
+    <div className="flex items-center gap-2">
+      <span className="grid h-7 w-7 place-items-center rounded-lg bg-muted text-muted-foreground">{icon}</span>
+      <span className="font-display text-base font-semibold">{label}</span>
+    </div>
+  );
+}
+
 /* ============================== CASE STUDIES ============================== */
 function CaseStudies() {
+  const [activeCase, setActiveCase] = useState<string | null>(null);
   const cats = ["All", ...Array.from(new Set(CASE_STUDIES.flatMap((c) => c.tags)))];
   const [active, setActive] = useState("All");
   const list = active === "All" ? CASE_STUDIES : CASE_STUDIES.filter((c) => c.tags.includes(active));
+  const modalCase = CASE_STUDIES.find((c) => c.slug === activeCase);
 
   return (
     <section className="border-t border-border py-20 md:py-32">
       <div className="mx-auto max-w-7xl px-4 md:px-6">
-        {/* CENTERED HEADER */}
-        
-          <h2 className="font-display text-6xl font-bold tracking-tight md:text-8xl lg:text-[5rem] leading-[0.9]">
-            Case Studies
-          </h2>
-        </div>
+        <h2 className="font-display text-6xl font-bold tracking-tight md:text-8xl lg:text-[5rem] leading-[0.9]">
+          Case Studies
+        </h2>
         <div className="mt-10 grid items-end gap-8 md:grid-cols-2">
           <div className="flex items-center gap-4">
-            <div className="grid h-14 w-18 place-items-center rounded-full bg-foreground text-background font-display text-sm font-bold">300+</div>
+            <div className="grid h-14 w-16 place-items-center rounded-full bg-foreground text-background font-display text-sm font-bold">80+</div>
             <div className="text-sm text-muted-foreground">Projects completed across web, AI, commerce & growth.</div>
           </div>
           <p className="text-pretty text-muted-foreground md:text-lg">
-            Explore a selection of crafted work combining unique design and rich technology. We always build from scratch creating memorable brands, engaging websites, and digital products.
+            Explore a selection of crafted work combining unique design and rich technology. We always build from scratch — creating memorable brands, high-performing websites, and digital products that convert.
           </p>
         </div>
 
@@ -760,7 +934,10 @@ function CaseStudies() {
               transition={{ duration: 0.55, delay: (i % 4) * 0.06 }}
               whileHover={{ y: -6 }}
             >
-              <Link to="/case-studies/$slug" params={{ slug: c.slug }} className="group relative block overflow-hidden rounded-3xl border border-border bg-card transition hover:border-glow">
+              <button
+                onClick={() => setActiveCase(c.slug)}
+                className="group relative block w-full overflow-hidden rounded-3xl border border-border bg-card transition hover:border-glow text-left"
+              >
                 <div className="relative h-52 overflow-hidden">
                   <img src={CASE_IMAGES[c.slug]} alt={c.title} className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-110" loading="lazy" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
@@ -782,7 +959,7 @@ function CaseStudies() {
                     {c.tags.map((t) => <span key={t} className="rounded-md bg-muted px-2 py-1 text-xs">{t}</span>)}
                   </div>
                 </div>
-              </Link>
+              </button>
             </motion.div>
           ))}
         </div>
@@ -793,6 +970,9 @@ function CaseStudies() {
             <span className="grid h-7 w-7 place-items-center rounded-full bg-background text-foreground"><ArrowRight className="h-3.5 w-3.5" /></span>
           </Link>
         </div>
+      </div>
+
+      {modalCase && <CaseStudyModal cs={modalCase} onClose={() => setActiveCase(null)} />}
     </section>
   );
 }
@@ -800,55 +980,126 @@ function CaseStudies() {
 /* ============================== WHY US ============================== */
 function WhyUs() {
   const cards = [
-    { t: "Senior-only team", d: "Every contributor has 7+ years. No bait-and-switch, no juniors learning on your dime.", icon: Users, img: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1200&q=80" },
-    { t: "Outcomes, not hours", d: "We're paid to move your metrics — revenue, ranks, retention — not to fill a timesheet.", icon: TrendingUp, img: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&q=80" },
-    { t: "Radical transparency", d: "Live dashboards, weekly demos, shared Slack. You always know exactly where things stand.", icon: ShieldCheck, img: "https://images.unsplash.com/photo-1551434678-e076c223a692?w=1200&q=80" },
-    { t: "Built to last", d: "Code we ship is documented, tested, and maintainable — long after our engagement ends.", icon: Award, img: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1200&q=80" },
+    {
+      t: "Strategy + Execution",
+      d: "We don't just design or code. We help shape the product, plan the roadmap, and build solutions that align with your business goals.",
+      icon: Users,
+      img: "/media/why-team.jpg",
+    },
+    {
+      t: "Built for Growth",
+      d: "From websites to SaaS platforms and AI systems, everything is designed to scale as your users, traffic, and business grow.",
+      icon: TrendingUp,
+      img: "/media/why-outcomes.jpg",
+    },
+    {
+      t: "Transparent Process",
+      d: "Weekly updates, shared workspaces, and live progress tracking mean you're always informed from kickoff to launch.",
+      icon: ShieldCheck,
+      img: "/media/why-transparency.jpg",
+    },
+    {
+      t: "Performance First",
+      d: "Fast loading, SEO-ready, secure, and optimized products built with clean architecture that lasts beyond launch.",
+      icon: Award,
+      img: "/media/why-qualit.jpg",
+    },
   ];
+
   return (
-    <section className="border-t border-border bg-card/30 py-20 md:py-32">
-      <div className="mx-auto grid max-w-7xl gap-12 px-4 md:px-6 lg:grid-cols-2 lg:gap-16">
-        <div className="lg:sticky lg:top-24 lg:self-start">
-          <div className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-gradient">
-            <span className="h-1.5 w-1.5 rounded-full bg-[var(--neon)]" /> Why Globe Stack
+    <section className="border-t border-border py-20 md:py-32 bg-[var(--section-a)]">
+      <div className="mx-auto max-w-7xl px-4 md:px-6">
+
+        {/* Mobile layout */}
+        <div className="lg:hidden">
+          <div className="mb-8">
+            <div className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-gradient">
+              <span className="h-1.5 w-1.5 rounded-full bg-[var(--neon)]" /> Why Globe Stack
+            </div>
+            <h2 className="mt-4 font-display text-4xl font-bold leading-[1.05] tracking-tight md:text-6xl">
+              Why Choose Us
+            </h2>
+            <p className="mt-6 max-w-md text-muted-foreground">
+              This isn't just another agency. It's a transformation for your product, your growth, and your team. Built by senior operators who have actually shipped.
+            </p>
           </div>
-          <h2 className="mt-4 font-display text-4xl font-bold leading-[1.05] tracking-tight md:text-6xl">
-            Why Choose Us
-          </h2>
-          <p className="mt-6 max-w-md text-muted-foreground">
-            This isn't just another agency. It's a transformation — for your product, your growth, and your team. Built by senior operators who have actually shipped.
-          </p>
-          <Link to="/about" className="mt-8 inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-3 text-sm font-medium text-background hover:opacity-90">
-            More about us
-            <span className="grid h-7 w-7 place-items-center rounded-full bg-background text-foreground"><ArrowUpRight className="h-3.5 w-3.5" /></span>
-          </Link>
+          <div className="grid gap-4 sm:grid-cols-2">
+            {cards.map((c, i) => {
+              const I = c.icon;
+              return (
+                <motion.div
+                  key={c.t}
+                  initial={{ opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: i * 0.07 }}
+                  whileHover={{ y: -6 }}
+                  className="group relative aspect-[4/5] overflow-hidden rounded-3xl border border-border bg-card"
+                >
+                  <img src={c.img} alt={c.t} className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-110" loading="lazy" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/55 to-black/20" />
+                  <div className="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-xl border border-white/20 bg-white/10 text-white backdrop-blur">
+                    <I className="h-5 w-5" />
+                  </div>
+                  <div className="absolute inset-0 flex flex-col justify-end p-6 text-white">
+                    <h3 className="font-display text-xl font-semibold">{c.t}</h3>
+                    <p className="mt-2 text-sm text-white/80">{c.d}</p>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+          <div className="mt-8">
+            <Link to="/about" className="inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-3 text-sm font-medium text-background hover:opacity-90">
+              More about us
+              <span className="grid h-7 w-7 place-items-center rounded-full bg-background text-foreground"><ArrowUpRight className="h-3.5 w-3.5" /></span>
+            </Link>
+          </div>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2">
-          {cards.map((c, i) => {
-            const I = c.icon;
-            return (
-              <motion.div
-                key={c.t}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.07 }}
-                whileHover={{ y: -6 }}
-                className="group relative aspect-[4/5] overflow-hidden rounded-3xl border border-border bg-card"
-              >
-                <img src={c.img} alt={c.t} className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-110" loading="lazy" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/55 to-black/20" />
-                <div className="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-xl border border-white/20 bg-white/10 text-white backdrop-blur">
-                  <I className="h-5 w-5" />
-                </div>
-                <div className="absolute inset-0 flex flex-col justify-end p-6 text-white">
-                  <h3 className="font-display text-xl font-semibold">{c.t}</h3>
-                  <p className="mt-2 text-sm text-white/80">{c.d}</p>
-                </div>
-              </motion.div>
-            );
-          })}
+        {/* Desktop layout */}
+        <div className="hidden lg:grid gap-16 lg:grid-cols-2">
+          <div className="lg:sticky lg:top-24 lg:self-start">
+            <div className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-gradient">
+              <span className="h-1.5 w-1.5 rounded-full bg-[var(--neon)]" /> Why Globe Stack
+            </div>
+            <h2 className="mt-4 font-display text-4xl font-bold leading-[1.05] tracking-tight md:text-6xl">
+              Why Choose Us
+            </h2>
+            <p className="mt-6 max-w-md text-muted-foreground">
+              This isn't just another agency. It's a transformation for your product, your growth, and your team. Built by senior operators who have actually shipped.
+            </p>
+            <Link to="/about" className="mt-8 inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-3 text-sm font-medium text-background hover:opacity-90">
+              More about us
+              <span className="grid h-7 w-7 place-items-center rounded-full bg-background text-foreground"><ArrowUpRight className="h-3.5 w-3.5" /></span>
+            </Link>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            {cards.map((c, i) => {
+              const I = c.icon;
+              return (
+                <motion.div
+                  key={c.t}
+                  initial={{ opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: i * 0.07 }}
+                  whileHover={{ y: -6 }}
+                  className="group relative aspect-[4/5] overflow-hidden rounded-3xl border border-border bg-card"
+                >
+                  <img src={c.img} alt={c.t} className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-110" loading="lazy" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/55 to-black/20" />
+                  <div className="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-xl border border-white/20 bg-white/10 text-white backdrop-blur">
+                    <I className="h-5 w-5" />
+                  </div>
+                  <div className="absolute inset-0 flex flex-col justify-end p-6 text-white">
+                    <h3 className="font-display text-xl font-semibold">{c.t}</h3>
+                    <p className="mt-2 text-sm text-white/80">{c.d}</p>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
         </div>
       </div>
     </section>
@@ -860,9 +1111,8 @@ function Process() {
   return (
     <section className="border-t border-border bg-foreground py-20 text-background md:py-28">
       <div className="mx-auto max-w-7xl px-4 md:px-6">
-        {/* CENTERED HEADER */}
         <div className="mb-12 text-center">
-          <div className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider ">
+          <div className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider">
             <span className="h-1.5 w-1.5 rounded-full bg-[var(--neon)]" /> {PROCESS.length} step process
           </div>
           <h2 className="mt-3 font-display text-3xl font-bold leading-tight tracking-tight md:text-5xl">
@@ -900,16 +1150,15 @@ function Process() {
 /* ============================== STACK ============================== */
 function Stack() {
   const groups = [
-    { name: "Web Development", items: ["TypeScript", "React", "Next.js", "TanStack", "Node.js", "Tailwind", "PostgreSQL"] },
+    { name: "Web Development", items: ["TypeScript", "React", "Next.js", "TanStack", "Node.js", "Tailwind", "Express.js", "MongoDB", "PostgreSQL"] },
     { name: "AI & ML", items: ["OpenAI", "Anthropic", "LangChain", "pgvector", "Python", "Hugging Face"] },
-    { name: "Commerce", items: ["Shopify", "Hydrogen", "Stripe", "Klaviyo", "Sanity", "Webflow"] },
+    { name: "Commerce", items: ["Shopify", "Wordpress", "Hydrogen", "Stripe", "Klaviyo", "Sanity", "Webflow"] },
     { name: "Growth & Marketing", items: ["GA4", "Meta Ads", "Google Ads", "Ahrefs", "BigQuery", "Notion"] },
   ];
   return (
-    <section className="relative border-t border-border bg-card/30 py-20 md:py-32">
+    <section className="relative border-t border-border py-20 md:py-32 bg-[var(--section-b)]">
       <div className="absolute inset-0 bg-grid opacity-20" />
       <div className="relative mx-auto max-w-7xl px-4 md:px-6">
-        {/* CENTERED HEADER */}
         <div className="text-center">
           <div className="inline-flex items-center gap-2 rounded-full border border-glow glass px-3 py-1 font-mono text-xs uppercase tracking-wider text-gradient">
             Stack of Technology
@@ -941,9 +1190,49 @@ function Stack() {
 }
 
 /* ============================== TESTIMONIALS ============================== */
+const UPDATED_TESTIMONIALS = [
+  {
+    name: "Adebayo Okafor",
+    role: "CEO, Niscala.io",
+    avatar: "AO",
+    quote: "Globe Stack rebuilt our entire web platform and integrated a custom AI assistant. Traffic doubled in 3 months and our team is more productive than ever.",
+  },
+  {
+    name: "Chioma Eze",
+    role: "Founder, SAMTIV",
+    avatar: "CE",
+    quote: "Their Shopify setup and Meta Ads strategy took us from zero to 6 figures online in under 90 days. The senior team approach is the real deal.",
+  },
+  {
+    name: "Emeka Nwosu",
+    role: "Head of Growth, IEA",
+    avatar: "EN",
+    quote: "The SEO work Globe Stack did transformed our organic channel. We went from page 4 to ranking #1 for our core keywords within 5 months.",
+  },
+  {
+    name: "Fatima Al-Hassan",
+    role: "CTO, BOKING",
+    avatar: "FA",
+    quote: "Clean code, great communication, and they shipped on time. The AI automation they built saved our ops team 20+ hours a week.",
+  },
+  {
+    name: "Tunde Adeleke",
+    role: "Director, Greenfield Ventures",
+    avatar: "TA",
+    quote: "Working with Globe Stack felt like having an in-house team. They understood our business goals and every deliverable reflected that.",
+  },
+  {
+    name: "Ngozi Obi",
+    role: "E-commerce Manager, StyleHouse",
+    avatar: "NO",
+    quote: "Our Shopify conversion rate went from 1.2% to 3.8% after their redesign. The attention to UX and page speed was exceptional.",
+  },
+];
+
 function Testimonials() {
+  const data = UPDATED_TESTIMONIALS;
   const perView = 3;
-  const max = Math.max(0, TESTIMONIALS.length - perView);
+  const max = Math.max(0, data.length - perView);
   const { index, setIndex, setPaused } = useAutoSlider(max + 1, 6000);
   const next = () => setIndex((i) => (i >= max ? 0 : i + 1));
   const prev = () => setIndex((i) => (i <= 0 ? max : i - 1));
@@ -951,16 +1240,16 @@ function Testimonials() {
   return (
     <section className="border-t border-border py-20 md:py-28">
       <div className="mx-auto max-w-7xl px-4 md:px-6">
-        {/* CENTERED HEADER */}
         <div className="mb-10 text-center">
           <div className="font-mono text-xs uppercase tracking-wider text-muted-foreground">Testimonials</div>
           <h2 className="mt-3 font-display text-3xl font-bold tracking-tight md:text-5xl">What clients say.</h2>
+          <p className="mt-3 mx-auto max-w-md text-muted-foreground">Real results from founders and teams who trusted us with their digital growth.</p>
         </div>
 
         <div className="hidden md:block" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
           <div className="overflow-hidden">
             <div className="flex gap-5 transition-transform duration-700 ease-out" style={{ transform: `translateX(calc(-${index} * (100% / ${perView})))` }}>
-              {TESTIMONIALS.map((t) => (
+              {data.map((t) => (
                 <div key={t.name} className="w-[calc((100%-2.5rem)/3)] shrink-0">
                   <TestimonialCard t={t} />
                 </div>
@@ -978,7 +1267,7 @@ function Testimonials() {
         </div>
 
         <div className="mt-10 -mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto scrollbar-hide px-4 md:hidden">
-          {TESTIMONIALS.map((t) => (
+          {data.map((t) => (
             <div key={t.name} className="w-[88%] shrink-0 snap-start"><TestimonialCard t={t} /></div>
           ))}
         </div>
@@ -987,16 +1276,16 @@ function Testimonials() {
   );
 }
 
-function TestimonialCard({ t }: { t: typeof TESTIMONIALS[number] }) {
+function TestimonialCard({ t }: { t: typeof UPDATED_TESTIMONIALS[number] }) {
   return (
     <div className="flex h-full flex-col rounded-3xl border border-border bg-card p-7">
-      <div className="flex gap-0.5 text-[var(--neon)]">{[0,1,2,3,4].map((i) => <Star key={i} className="h-4 w-4 fill-current" />)}</div>
       <p className="mt-5 flex-1 text-pretty font-display text-lg font-medium leading-snug md:text-xl">"{t.quote}"</p>
       <div className="mt-6 flex items-center gap-3">
-        <div className="grid h-11 w-11 place-items-center rounded-full bg-gradient-to-br from-[var(--neon)] to-[var(--neon-violet)] font-mono text-sm font-bold text-background">{t.avatar}</div>
+        <div className="grid h-11 w-11 place-items-center rounded-full bg-[var(--neon)] font-mono text-sm font-bold text-background">{t.avatar}</div>
         <div>
           <div className="text-sm font-medium">{t.name}</div>
           <div className="text-xs text-muted-foreground">{t.role}</div>
+          <div className="flex gap-0.5 text-[var(--neon)]">{[0,1,2,3,4].map((i) => <Star key={i} className="h-4 w-4 fill-current" />)}</div>
         </div>
       </div>
     </div>
@@ -1012,9 +1301,8 @@ function Blog() {
   const prev = () => setIndex((i) => (i <= 0 ? max : i - 1));
 
   return (
-    <section className="border-t border-border bg-card/30 py-20 md:py-28">
+    <section className="border-t border-border py-20 md:py-28 bg-[var(--section-c)]">
       <div className="mx-auto max-w-7xl px-4 md:px-6">
-        {/* CENTERED HEADER */}
         <div className="mb-10 text-center">
           <div className="font-mono text-xs uppercase tracking-wider text-muted-foreground">Blog</div>
           <h2 className="mt-3 font-display text-3xl font-bold tracking-tight md:text-5xl">Article categories.</h2>
@@ -1029,7 +1317,7 @@ function Blog() {
         <div className="hidden md:block" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
           <div className="overflow-hidden">
             <div className="flex gap-5 transition-transform duration-700 ease-out" style={{ transform: `translateX(calc(-${index} * (100% / ${perView})))` }}>
-              {POSTS.map((p, i) => (
+              {POSTS.map((p) => (
                 <BlogCard key={p.slug} p={p} className="w-[calc((100%-2.5rem)/3)] shrink-0" />
               ))}
             </div>
@@ -1045,7 +1333,7 @@ function Blog() {
         </div>
 
         <div className="mt-10 -mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto scrollbar-hide px-4 md:hidden">
-          {POSTS.map((p, i) => (
+          {POSTS.map((p) => (
             <BlogCard key={p.slug} p={p} className="w-[80%] shrink-0 snap-start" />
           ))}
         </div>
@@ -1078,8 +1366,36 @@ function BlogCard({ p, className = "" }: { p: typeof POSTS[number]; className?: 
 }
 
 /* ============================== FAQ ============================== */
+const UPDATED_FAQ = [
+  {
+    q: "What services does Globe Stack offer?",
+    a: "We offer end-to-end digital services: custom web development, AI integration, SEO, paid advertising (Meta & Google Ads), social media management, and Shopify store design and optimisation — all delivered by a senior-only team.",
+  },
+  {
+    q: "Do you work with startups or established businesses?",
+    a: "Both. We've worked with early-stage founders who need their first product shipped, and with established brands scaling into new digital channels. Our process adapts to where you are.",
+  },
+  {
+    q: "How long does a typical project take?",
+    a: "A focused web project typically takes 4–8 weeks. SEO and ads are ongoing engagements with measurable monthly milestones. AI integrations vary — we scope these during discovery to give you an honest timeline.",
+  },
+  {
+    q: "Will I own everything you build?",
+    a: "Absolutely. All code, content, ad accounts, SEO assets, and credentials are yours. We hand over full ownership at the end of every engagement.",
+  },
+  {
+    q: "How do you measure success?",
+    a: "Through the metrics that matter to your business — organic traffic, conversion rate, ROAS, revenue. We set targets together at the start, track them in shared dashboards, and report weekly.",
+  },
+  {
+    q: "Can Globe Stack handle everything my business needs digitally?",
+    a: "Yes. That's exactly why we built Globe Stack. Instead of managing five separate agencies, you get one senior team across web, AI, SEO, ads, social, and commerce — with unified strategy and accountable delivery.",
+  },
+];
+
 function FAQs() {
   const [open, setOpen] = useState<number | null>(0);
+
   return (
     <section className="border-t border-border py-20 md:py-32">
       <div className="mx-auto grid max-w-7xl gap-12 px-4 md:px-6 lg:grid-cols-2 lg:gap-16">
@@ -1089,10 +1405,10 @@ function FAQs() {
           </div>
           <h2 className="mt-4 font-display text-4xl font-bold leading-[1.05] tracking-tight md:text-6xl">Questions & Answers</h2>
           <p className="mt-6 max-w-md text-muted-foreground">
-            Get clarity on how we work, what we deliver, and how we partner with founders and teams to ship outcomes that matter.
+            Everything you need to know about working with Globe Stack how we engage, what we deliver, and how we're different.
           </p>
           <div className="mt-8 space-y-3">
-            {FAQ.map((f, i) => (
+            {UPDATED_FAQ.map((f, i) => (
               <div key={f.q} className="overflow-hidden rounded-2xl border border-border bg-card transition hover:border-glow">
                 <button onClick={() => setOpen(open === i ? null : i)} className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left">
                   <span className="font-medium">{f.q}</span>
@@ -1108,7 +1424,7 @@ function FAQs() {
 
         <div className="relative lg:sticky lg:top-24 lg:self-start">
           <div className="group relative aspect-[4/5] overflow-hidden rounded-3xl border border-border bg-card">
-            <img src="https://images.unsplash.com/photo-1551434678-e076c223a692?w=1200&q=80" alt="Globe Stack team at work" className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" loading="lazy" />
+            <img src="/media/download.png" alt="Globe Stack team at work" className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" loading="lazy" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/20" />
             <div className="absolute inset-x-6 bottom-6">
               <div className="flex items-center gap-4 rounded-2xl border border-white/15 bg-white/10 p-4 text-white backdrop-blur-md">

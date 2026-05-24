@@ -30,7 +30,7 @@ const infoCards = [
     bg: "bg-cyan-50/60 dark:bg-cyan-950/30",
     border: "border-cyan-200/60 dark:border-cyan-800/40",
     title: "Remote-First HQ",
-    lines: ["North America", "Europe & UK", "Asia-Pacific"],
+    lines: ["Nigeria", "North America", "UK"],
     action: null,
   },
   {
@@ -39,7 +39,7 @@ const infoCards = [
     bg: "bg-cyan-50/60 dark:bg-cyan-950/30",
     border: "border-violet-200/60 dark:border-violet-800/40",
     title: "Schedule a Call",
-    lines: ["Book via Calendly", "Mon–Fri, 9am – 6pm EST", "Async-friendly team"],
+    lines: ["Book via Calendly", "Mon–Fri, 9am – 6pm EST",],
     action: { label: "Book a call", href: "#" },
   },
   {
@@ -48,8 +48,8 @@ const infoCards = [
     bg: "bg-cyan-50/60 dark:bg-cyan-950/30",
     border: "border-fuchsia-200/60 dark:border-fuchsia-800/40",
     title: "Email Us",
-    lines: ["hello@globestack.io", "We reply within 24 hours"],
-    action: { label: "Send Email", href: "mailto:hello@globestack.io" },
+    lines: ["info@globestack.com", "We reply within 24 hours"],
+    action: { label: "Send Email", href: "mailto:info@globestack.com" },
   },
   {
     icon: Clock,
@@ -57,7 +57,7 @@ const infoCards = [
     bg: "bg-cyan-50/60 dark:bg-cyan-950/30",
     border: "border-sky-200/60 dark:border-sky-800/40",
     title: "Response Time",
-    lines: ["< 24h for enquiries", "< 48h for proposals", "Urgent? Call directly"],
+    lines: ["Less than 24h for enquiries", "Less than 48h for proposals", "Urgent? Call directly"],
     action: null,
   },
 ];

@@ -65,12 +65,10 @@ export function StorySection() {
   const next = () => setActive((i) => Math.min(i + 1, TIMELINE.length - 1));
 
   return (
-    <section className="border-b border-border bg-background text-foreground py-16 sm:py-24 transition-colors duration-300">
-      {/*
-        FIX 1: Added `overflow-hidden` to the section so any child that accidentally
-                bleeds past the section boundary is clipped before it reaches the viewport.
-      */}
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 overflow-hidden">
+    /* FIX: bg-[var(--section-a)] gives this section a distinct lavender tint in light mode */
+    <section className="border-b border-border bg-[var(--section-a)] text-foreground py-16 sm:py-24 transition-colors duration-300">
+      {/* overflow-hidden clips any bleed; w-full + max-w prevent horizontal overflow */}
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 overflow-hidden w-full">
 
         <AnimatePresence mode="wait">
           <motion.div
@@ -79,15 +77,11 @@ export function StorySection() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -15 }}
             transition={{ duration: 0.4 }}
-       
+            /* min-w-0 prevents grid blowout */
             className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start relative min-w-0"
           >
 
             {/* Left Image Column */}
-            {/*
-              FIX 3: Added `min-w-0` here too — grid children also need it to allow
-                      the column to compress below its intrinsic image width.
-            */}
             <div className="md:col-span-3 order-2 md:order-1 flex flex-col gap-6 min-w-0">
               <div className="relative aspect-[3/4] w-full overflow-hidden rounded-md border border-border bg-muted shadow-sm">
                 <img
@@ -96,15 +90,6 @@ export function StorySection() {
                   className="h-full w-full object-cover object-center"
                 />
               </div>
-
-              {/*
-                FIX 4: The asymmetric bottom image was `w-[85%] self-end` — a percentage
-                        width on a grid child that already has no min-w-0 anchor. This
-                        caused the element to compute its width relative to an unconstrained
-                        parent, pushing past the column boundary. Fixed by keeping w-[85%]
-                        but ensuring `min-w-0` on the parent column (above) so the percentage
-                        resolves correctly. Also added `overflow-hidden` defensively.
-              */}
               <div className="relative aspect-[16/10] w-[85%] hidden md:block overflow-hidden rounded-md border border-border bg-muted self-end min-w-0">
                 <img
                   src={current.imgBottomLeft}
@@ -145,8 +130,6 @@ export function StorySection() {
                   className="h-full w-full object-cover object-center"
                 />
               </div>
-
-              {/* Same fix as bottom-left image */}
               <div className="relative aspect-[16/10] w-[85%] hidden md:block overflow-hidden rounded-md border border-border bg-muted self-start min-w-0">
                 <img
                   src={current.imgBottomRight}

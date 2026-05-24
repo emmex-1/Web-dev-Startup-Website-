@@ -2,8 +2,8 @@ export const SITE = {
   name: "Globe Stack",
   tagline: "Engineering the digital edge.",
   description: "Globe Stack is a global tech studio building web apps, SaaS, UI/UX, AI solutions, SEO, social & ads, and Shopify experiences for ambitious brands in Nigeria, the USA, UK, Canada, India, France, Germany, and worldwide.",
-  email: "hello@globestack.io",
-  phone: "+1 (415) 555-0144",
+  email: "info@globestack.com",
+  phone: "+234 7048595478",
   social: {
     twitter: "https://twitter.com",
     github: "https://github.com",
@@ -45,8 +45,8 @@ export const SERVICES: Service[] = [
     title: "Web Development",
     // short: "High-performance web apps & marketing sites.",
     icon: "Code2",
-    blurb: "From marketing sites to complex SaaS dashboards — built on modern stacks for speed, scale, and SEO.",
-    overview: "We design and ship production-grade web experiences — fast, accessible, SEO-friendly, and built to last. Whether you need a marketing site that converts or a multi-tenant SaaS, we own it end-to-end.",
+    blurb: "From marketing sites to complex SaaS dashboards  built on modern stacks for speed, scale, and SEO.",
+    overview: "We design and ship production-grade web experiences fast, accessible, SEO-friendly, and built to last. Whether you need a marketing site that converts or a multi-tenant SaaS, we own it end-to-end.",
     whoFor: [
       "Funded startups launching a new product",
       "Scale-ups replatforming away from legacy stacks",
@@ -82,7 +82,7 @@ export const SERVICES: Service[] = [
       "CI/CD & cloud deployment",
     ],
     pricing: [
-      { name: "Launch", price: "$2,499", desc: "Marketing site up to 6 pages.", items: ["Custom design", "CMS-ready", "SEO baseline", "2 weeks delivery"] },
+      { name: "CORPORATE", price: "$300", desc: "Marketing site up to 6 pages.", items: ["Custom design", "CMS-ready", "SEO baseline", "2 weeks delivery"] },
       { name: "Scale", price: "$7,900", desc: "Web app or e-commerce build.", items: ["Custom backend", "Auth & dashboard", "Integrations", "4–6 weeks"], featured: true },
       { name: "Enterprise", price: "Custom", desc: "Multi-team platforms.", items: ["Architecture audit", "Dedicated squad", "SLA & support", "12+ weeks"] },
     ],

@@ -4,29 +4,30 @@ import { motion } from "framer-motion";
 const VALUES = [
   {
     num: "01.",
-    title: "Craft Over Volume",
-    desc: "We'd rather ship one excellent thing than ten mediocre ones. Quality is not negotiable — it's the baseline.",
+    title: "Senior Hands, Always",
+    desc: "Every website, AI system, and growth campaign is touched exclusively by operators with 10+ years of production experience. No juniors. No exceptions.",
   },
   {
     num: "02.",
-    title: "Default to Action",
-    desc: "Bias toward shipping. Iterate from real-world data. Standing still is the riskiest move of all.",
+    title: "Ship, Then Iterate",
+    desc: "We bias toward working software in production. Tight sprints, weekly demos, and real metrics replace endless planning cycles and revision loops.",
   },
   {
     num: "03.",
-    title: "Outcomes Are the Metric",
-    desc: "We measure success in revenue moved and products shipped — never in hours billed or lines of code written.",
+    title: "Full-Stack Ownership",
+    desc: "Web engineering, production AI, and performance growth under one roof. We own the outcome end-to-end — not just the slice of code we're paid for.",
   },
   {
     num: "04.",
-    title: "Long-Term Thinking",
-    desc: "Code we ship is maintainable, documented, and built to outlast the sprint. We build for the next five years.",
+    title: "Built for the Next Decade",
+    desc: "Clean architecture, documented APIs, and observable AI systems. We engineer for longevity so your stack doesn't need a full rebuild in 18 months.",
   },
 ];
 
 export function ValuesSection() {
   return (
-    <section className="border-b border-border bg-background text-foreground py-20 px-4 transition-colors duration-300">
+    /* bg-background so this section contrasts with the section-b of WhyChooseUs above */
+    <section className="border-b border-border bg-[var(--section-b)] text-foreground py-20 px-4 transition-colors duration-300">
       <div className="mx-auto max-w-7xl">
         {/* Header */}
         <div className="mb-12 text-center">
@@ -47,7 +48,7 @@ export function ValuesSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: i * 0.08 }}
-              className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-6 shadow-sm transition-all duration-300 hover:border-border/80"
+              className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-6 shadow-sm transition-all duration-300 hover:border-[oklch(0.78_0.18_195)]/40 hover:shadow-md"
             >
               {/* Number */}
               <div className="font-mono text-sm font-bold text-orange-500/40 dark:text-[oklch(0.78_0.18_195)]/30">{v.num}</div>

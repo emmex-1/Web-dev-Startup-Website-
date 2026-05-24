@@ -20,7 +20,7 @@ export const Route = createFileRoute("/about")({
     seo({
       title: "About — Globe Stack",
       description:
-        "Globe Stack is a senior-only tech studio building web, AI, and growth for ambitious brands.",
+        "Globe Stack is a senior-only tech studio building websites, AI systems, and growth engines for ambitious brands.",
       path: "/about",
     }),
   component: AboutPage,
@@ -50,37 +50,35 @@ function AboutPage() {
         </Link>
       </PageHero>
 
-
-
-      {/* Story — Interactive timeline engineered with your reference asymmetrical design */}
+      {/* Story — Interactive timeline */}
+      {/* StorySection itself uses bg-[var(--section-a)] */}
       <StorySection />
-{/* Stats strip — Light/Dark Adaptive and Centered */}
-<section className="border-b border-border bg-card/30 py-10 transition-colors duration-300">
-  <div className="mx-auto grid max-w-7xl grid-cols-2 gap-y-8 gap-x-4 px-4 sm:px-6 md:grid-cols-4 lg:px-8">
-    {STATS.map((s) => (
-      <div key={s.l} className="text-center">
-        <div className="font-display text-3xl font-bold text-foreground sm:text-4xl md:text-5xl">
-          {s.v}
+
+      {/* Stats strip */}
+      <section className="border-b border-border bg-[var(--section-b)] py-10 transition-colors duration-300">
+        <div className="mx-auto grid max-w-7xl grid-cols-2 gap-y-8 gap-x-4 px-4 sm:px-6 md:grid-cols-4 lg:px-8">
+          {STATS.map((s) => (
+            <div key={s.l} className="text-center">
+              <div className="font-display text-3xl font-bold text-foreground sm:text-4xl md:text-5xl">
+                {s.v}
+              </div>
+              <div className="mt-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground sm:text-xs">
+                {s.l}
+              </div>
+            </div>
+          ))}
         </div>
-        <div className="mt-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground sm:text-xs">
-          {s.l}
-        </div>
-      </div>
-    ))}
-  </div>
-</section>
+      </section>
 
       {/* ══════════════════════════ MISSION & VISION SECTION ════════════════════════════ */}
       {/*
-        FIX 1: Replaced `overflow-x-hidden` with `overflow-hidden` so the section itself
-                clips any overflow in both axes — stopping it from contributing to page-level
-                horizontal scroll while still masking the decorative watermark letters.
+        FIX: overflow-hidden clips decorative watermark letters that caused horizontal scroll.
+             bg-background keeps this section white/dark so it contrasts with adjacent sections.
       */}
       <section className="py-16 sm:py-24 bg-background text-foreground border-b border-border overflow-hidden transition-colors duration-300">
         <div className="container mx-auto px-4 sm:px-6 lg:px-16">
           {/*
-            FIX 2: Added `min-w-0` to the grid wrapper so flex/grid children cannot
-                    blow past the container boundary on narrow viewports.
+            FIX: min-w-0 on grid wrapper prevents children from blowing past container on narrow viewports.
           */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-[72px] max-w-[1200px] mx-auto items-start min-w-0">
 
@@ -109,15 +107,13 @@ function AboutPage() {
                 <img src={solImage} alt="Our Mission" className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.02]" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/60 to-black/10" />
                 {/*
-                  FIX 3: The decorative watermark letter was `text-[120px]` with no overflow
-                          constraint on the card, letting it push card width on mobile.
-                          Changed to `text-[clamp(4rem,15vw,7.5rem)]` so it scales with viewport
-                          and stays well within the card boundaries at all sizes.
-                          Also added `overflow-hidden` is already on the parent card (line above),
-                          so this just needs the font-size fix.
+                  FIX: clamp() on font-size prevents the watermark letter from overflowing
+                       the card and pushing horizontal scroll at any viewport width.
                 */}
-                <span className="absolute top-2 right-4 text-white/5 font-bold leading-none select-none pointer-events-none font-display"
-                  style={{ fontSize: "clamp(4rem, 15vw, 7.5rem)" }}>
+                <span
+                  className="absolute top-2 right-4 text-white/5 font-bold leading-none select-none pointer-events-none font-display"
+                  style={{ fontSize: "clamp(4rem, 15vw, 7.5rem)" }}
+                >
                   M
                 </span>
                 <div className="relative z-10 p-7">
@@ -128,10 +124,10 @@ function AboutPage() {
                   <h3 className="text-white font-bold text-2xl sm:text-3xl mb-3 font-display">Why We Build</h3>
                   <ul className="space-y-2">
                     {[
-                      "Ship scalable code that drives revenue",
-                      "Enforce senior execution across all sprint layers",
-                      "Keep teams lean to bypass unnecessary management overhead",
-                      "Deliver stack-agnostic, enterprise-grade architecture"
+                      "Ship production-grade web and AI systems that scale",
+                      "Enforce senior execution across every sprint and stack layer",
+                      "Keep teams lean to eliminate unnecessary overhead and delay",
+                      "Deliver transparent, stack-agnostic, enterprise-ready architecture"
                     ].map((item) => (
                       <li key={item} className="flex items-center gap-2.5 text-white/80 text-sm">
                         <CheckCircle size={13} className="text-[oklch(0.78_0.18_195)] shrink-0" />{item}
@@ -143,10 +139,8 @@ function AboutPage() {
             </div>
 
             {/* Right Column
-                FIX 4: `lg:pt-28` caused the column to extend beyond the section height on
-                        mid-range viewports (1024–1200 px), pushing overall page height and
-                        contributing to scroll issues. Kept for large screens only via a safer
-                        `xl:pt-28` so it only applies when there's room for it.
+                FIX: Changed lg:pt-28 → xl:pt-28 so the offset only applies when there's
+                     enough viewport width, preventing height blowout on 1024–1200px screens.
             */}
             <div className="flex flex-col gap-7 xl:pt-28 min-w-0">
               <motion.div
@@ -158,9 +152,10 @@ function AboutPage() {
               >
                 <img src={aceImage} alt="Our Vision" className="absolute inset-0 w-full h-full object-cover object-[60%_center] transition-transform duration-500 group-hover:scale-[1.02]" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/60 to-black/10" />
-                {/* Same watermark fix applied here */}
-                <span className="absolute top-2 right-4 text-white/5 font-bold leading-none select-none pointer-events-none font-display"
-                  style={{ fontSize: "clamp(4rem, 15vw, 7.5rem)" }}>
+                <span
+                  className="absolute top-2 right-4 text-white/5 font-bold leading-none select-none pointer-events-none font-display"
+                  style={{ fontSize: "clamp(4rem, 15vw, 7.5rem)" }}
+                >
                   V
                 </span>
                 <div className="relative z-10 p-7">
@@ -171,10 +166,10 @@ function AboutPage() {
                   <h3 className="text-white font-bold text-2xl sm:text-3xl mb-3 font-display">Where We're Going</h3>
                   <ul className="space-y-2">
                     {[
-                      "Prove that dedicated talent out-performs bloated agency setups",
-                      "Provide codebase observability directly to founders",
-                      "Build software loops meant to run for the next decade",
-                      "Remain the absolute go-to collective for ambitious platforms"
+                      "Prove small senior pods consistently out-build enterprise agencies",
+                      "Make codebase and campaign observability a default — not a privilege",
+                      "Engineer AI and web systems built to run for the next decade",
+                      "Become the go-to technical partner for founders building serious platforms"
                     ].map((item) => (
                       <li key={item} className="flex items-center gap-2.5 text-white/80 text-sm">
                         <CheckCircle size={13} className="text-[oklch(0.78_0.18_195)] shrink-0" />{item}
@@ -186,10 +181,10 @@ function AboutPage() {
 
               <motion.div initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}>
                 <p className="text-muted-foreground text-sm sm:text-base leading-relaxed mb-6">
-                  Whether refining an active framework or building complex cloud systems from the ground up, our two pillars prioritize code performance, absolute alignment, and clear metrics.
+                  Whether refining an active web platform, deploying a production AI system, or scaling growth with engineered SEO and paid media — our two pillars guarantee precision execution and clear metrics.
                 </p>
                 <button className="inline-flex items-center gap-3 bg-[oklch(0.78_0.18_195)] hover:opacity-90 active:scale-95 transition-all text-background font-bold text-sm rounded-full pl-6 pr-2 py-2.5 border-none cursor-pointer group shadow-sm">
-                  Explore Our Strategy
+                  Explore Our Services
                   <span className="flex items-center justify-center w-8 h-8 rounded-full bg-background text-foreground shrink-0 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
                     <ArrowUpRight size={14} className="text-[oklch(0.78_0.18_195)]" />
                   </span>
@@ -201,7 +196,7 @@ function AboutPage() {
         </div>
       </section>
 
-      {/* Downstream components */}
+      {/* Downstream components — each has its own bg via section-a/b/c vars */}
       <TeamSection />
       <WhyChooseUsSection />
       <ValuesSection />
