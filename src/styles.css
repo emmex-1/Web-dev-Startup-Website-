@@ -44,6 +44,7 @@
   --section-a: oklch(95.169% 0.019 279.487);    /* soft lavender */
   --section-b: oklch(0.95 0.015 220);   /* cool slate */
   --section-c: oklch(0.96 0.018 160);
+  --section-d: oklch(95.333% 0.00248 167.481);
   --card-foreground: oklch(0.18 0.03 250);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.18 0.03 250);

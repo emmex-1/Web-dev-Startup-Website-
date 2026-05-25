@@ -112,7 +112,7 @@ function SeoAnalyzer() {
 
   return (
     <>
-      <PageHero image="https://images.unsplash.com/photo-1518770660439-4636190af475?w=1600&q=80" eyebrow="Free Tool" title={<>Free <span className="text-gradient">SEO Analyzer.</span></>} desc="Get an instant SEO audit of any public URL — meta tags, headings, images, structured data, and more.">
+      <PageHero image="/media/back.jpg" eyebrow="Free Tool" title={<>Free <span className="text-gradient">SEO Analyzer.</span></>} desc="Get an instant SEO audit of any public URL — meta tags, headings, images, structured data, and more.">
         <form onSubmit={onSubmit} className="mt-2 flex max-w-2xl flex-col gap-2 sm:flex-row">
           <div className="relative flex-1">
             <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />

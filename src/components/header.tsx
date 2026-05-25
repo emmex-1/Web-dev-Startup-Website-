@@ -114,15 +114,20 @@ export function Header() {
 }`}
           >
             {/* Logo */}
-            <Link
-              to="/"
-              className="flex items-center gap-2 font-display text-lg font-bold shrink-0"
-            >
-              <span className="grid h-8 w-8 place-items-center rounded-full bg-gradient-to-br from-[var(--neon)] to-[var(--neon-violet)] text-background glow">
-                <Globe className="h-4 w-4" strokeWidth={2.5} />
-              </span>
-              Globe<span className="text-gradient">Stack</span>
-            </Link>
+<Link
+  to="/"
+  className="flex items-center gap-3 font-display text-lg font-bold shrink-0"
+>
+  <img
+    src="/media/lol.png"
+    alt="Globe Stack logo"
+    className="h-9 w-9 object-contain shrink-0"
+  />
+
+  <span>
+    Globe<span className="text-primary"> Stack</span>
+  </span>
+</Link>
 
             {/* Desktop nav */}
             <nav className="hidden items-center gap-0.5 lg:flex">

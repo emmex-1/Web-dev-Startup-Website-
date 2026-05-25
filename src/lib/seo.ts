@@ -4,7 +4,7 @@ import { SITE } from "./site";
 // Override via VITE_SITE_URL at build time when the real domain is known.
 export const SITE_URL =
   (typeof import.meta !== "undefined" && (import.meta as { env?: { VITE_SITE_URL?: string } }).env?.VITE_SITE_URL) ||
-  "https://globestack.io";
+  "https://globestack.com";
 
 export const DEFAULT_OG_IMAGE = `${SITE_URL}/og-default.svg`;
 
@@ -61,7 +61,7 @@ export function organizationJsonLd() {
     email: SITE.email,
     telephone: SITE.phone,
     sameAs: [SITE.social.twitter, SITE.social.github, SITE.social.linkedin],
-    logo: `${SITE_URL}/og-default.svg`,
+    logo: `${SITE_URL}/lol.svg`,
   };
 }
 

@@ -74,7 +74,7 @@ export function PageHero({
 
           {/* Content */}
           <div className="relative flex min-h-[300px] sm:min-h-[400px] lg:min-h-[500px] items-center">
-            <div className="w-full px-6 py-16 sm:px-10 lg:px-16">
+            <div className="w-full px-6 pt-24 pb-16 sm:py-16 sm:px-10 lg:px-16">
 
               {eyebrow && (
                 <motion.div

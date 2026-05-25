@@ -12,7 +12,7 @@ export const Route = createFileRoute("/blog/")({
   loader: () => fetchAllPosts(),
   head: ({ loaderData }) => {
     const base = seo({
-      title: "Blog — Web, AI, SEO, Shopify | Globe Stack",
+      title: "Blog — Website, AI, SEO, Shopify | Globe Stack",
       description: "Practical writing on web development, AI, SEO, ads, social, and Shopify from Globe Stack — for teams in Nigeria, USA, UK, Canada, India, and worldwide.",
       path: "/blog",
     });

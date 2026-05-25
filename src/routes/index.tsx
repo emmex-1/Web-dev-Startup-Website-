@@ -15,8 +15,8 @@ import { seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/")({
   head: () => seo({
-    title: "Globe Stack — Website, AI, SEO, Ads, Social, Shopify",
-    description: "Globe Stack is a full-stack tech studio. We build web apps, ship AI, run ads, manage social, optimize SEO, and design Shopify stores that convert.",
+    title: "Globe Stack  |  Web development, Web app, AI, SEO, Ads, Social, Shopify",
+    description: "Globe Stack is a full-stack tech studio. We build websites, web apps, ship AI, run ads, manage social, optimize SEO, develop e-commerce stores and  design Shopify stores that convert.",
     path: "/",
   }),
   component: Home,
@@ -144,7 +144,7 @@ function Hero() {
     {/* Only fade the very outer edges — no centre darkening */}
     <div
       className="absolute inset-0"
-      style={{ background: "radial-gradient(ellipse 80% 80% at 50% 50%, transparent 45%, #020d1a 90%)" }}
+      style={{ background: "radial-gradient(ellipse 80% 80% at 50% 50%, transparent 95%, #020d1a 90%)" }}
     />
   </motion.div>
 
@@ -165,9 +165,11 @@ function Hero() {
       Boost Efficiency,<br />
       Maximize <span className="text-sky-400">Impact.</span>
     </h2>
-    <p className="text-sm text-sky-100/75 leading-relaxed max-w-[17rem]">
-      We design, build, and grow digital products — websites, AI solutions, SEO, ads, social, and Shopify, all under one senior team.
-    </p>
+<p className="text-base sm:text-lg text-sky-100/80 leading-relaxed max-w-[20rem]">
+  We design, build, and grow digital products Websites, AI solutions,
+  UI/UX design, e-commerce systems, SEO, ads, social media, and Shopify
+  all under one senior team.
+</p>
   </motion.div>
 
   {/* CTAs */}
@@ -190,6 +192,11 @@ function Hero() {
     </button>
   </motion.div>
 </div>
+
+
+
+
+
 
         <div className="relative flex-1 mt-8 md:mt-10">
           <motion.h1
@@ -221,7 +228,7 @@ className="hidden md:block select-none text-center font-display font-extrabold t
               Maximize <span className="text-sky-400">Impact.</span>
             </h2>
             <p className="mt-3 text-sm text-white-400/70 leading-relaxed md:text-base">
-              We design, build, and grow digital products — websites, AI solutions, SEO, ads, social, and Shopify, all under one senior team.
+              We design, build, and grow digital products websites, AI solutions, SEO, ads, social, and Shopify, all under one senior team.
             </p>
             <div className="mt-5 flex items-center gap-8">
               <Link
@@ -319,7 +326,7 @@ function About() {
     },
     {
       tag: "Full-stack craft",
-      t: "Web, AI & Commerce — unified",
+      t: "Web, AI & Commerce unified",
       d: "Every project ships with modern tech: performant web apps, intelligent AI integrations, and conversion-optimised Shopify stores, all from one senior team.",
       img: "/media/about-craft.jpg",
     },
@@ -329,12 +336,12 @@ function About() {
     <section className="relative border-t border-border py-20 md:py-32 bg-[var(--section-a)]">
       <div className="mx-auto grid max-w-7xl gap-12 px-4 md:px-6 lg:grid-cols-2 lg:gap-16">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
-          <div className="font-mono text-xs uppercase tracking-wider text-muted-foreground">About Us</div>
+          <div className="font-mono text-xs uppercase tracking-wider ">About Us</div>
           <h2 className="mt-3 font-display text-4xl font-bold leading-[1.05] tracking-tight md:text-6xl">
             Your Growth Partner Across Every Digital Channel
           </h2>
           <p className="mt-6 max-w-md text-muted-foreground">
-            Globe Stack is a full-stack tech studio built by senior specialists. We handle web development, AI integration, SEO, paid ads, social media, and Shopify — so you get one accountable team delivering measurable outcomes across every touchpoint.
+            Globe Stack is a full-stack tech studio built by senior specialists. We handle web development, AI integration, SEO, paid ads, social media, and Shopify so you get one accountable team delivering measurable outcomes across every touchpoint.
           </p>
           <Link to="/about" className="mt-8 inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-3 text-sm font-medium text-background hover:opacity-90">
             Our Story
@@ -575,7 +582,7 @@ function Portfolio() {
   const project = PROJECTS.find((p) => p.slug === shotFor);
 
   return (
-    <section className="border-t border-border py-20 md:py-28 bg-[var(--section-b)]">
+    <section className="border-t border-border py-20 md:py-28 bg-[var(--section-a)]">
       <div className="mx-auto max-w-7xl px-4 md:px-6">
         <div className="mb-10 text-center">
           <div className="font-mono text-xs uppercase tracking-wider text-muted-foreground">Portfolio</div>

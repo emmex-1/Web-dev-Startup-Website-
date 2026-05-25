@@ -1,4 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { FaWhatsapp } from "react-icons/fa";
 import {
   Outlet,
   createRootRouteWithContext,
@@ -53,7 +54,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      { rel: "icon", href: "/og-default.svg", type: "image/svg+xml" },
+      { rel: "icon", href: "/lol.svg", type: "image/svg+xml" },
       { rel: "alternate", type: "application/rss+xml", title: "Globe Stack Blog", href: `${SITE_URL}/blog` },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
@@ -87,15 +88,28 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <div className="flex min-h-screen flex-col">
           <Header />
+
           <main className="flex-1">
             <Outlet />
           </main>
+
           <Footer />
+
+          
+          <a
+            href="https://wa.me/2347048595478"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-green-500 text-white shadow-lg transition hover:scale-110"
+          >
+            <FaWhatsapp size={28} />
+          </a>
         </div>
       </ThemeProvider>
     </QueryClientProvider>

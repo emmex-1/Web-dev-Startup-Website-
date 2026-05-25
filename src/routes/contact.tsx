@@ -75,6 +75,7 @@ const serviceTypes = [
 
 const budgets = ["Under $5k", "$5k – $15k", "$15k – $50k", "$50k – $100k", "$100k+"];
 
+
 const timelines = ["ASAP", "1 – 2 months", "3 – 6 months", "6+ months", "Flexible"];
 
 const fadeUp: Variants = {
@@ -105,6 +106,8 @@ function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
 
+    const [currency, setCurrency] = useState<"USD" | "NGN">("USD");
+
   const set = (k: string, v: string) => setForm((f) => ({ ...f, [k]: v }));
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -113,6 +116,32 @@ function ContactPage() {
     setLoading(true);
     setTimeout(() => { setLoading(false); setSubmitted(true); }, 1400);
   };
+
+
+   // ✅ Budget options
+  const budgetsUSD = [
+    "Under $1k",
+    "$2k – $5k",
+    "$5k – $10k",
+    "$10k – $15k",
+    "$15k+",
+  ];
+
+  const budgetsNGN = [
+    "Under ₦400,000",
+    "₦500,000 – ₦700",
+    "₦700,000 – ₦1M",
+    "₦1M – ₦1.5M",
+    "₦2.5M+",
+  ];
+
+  const timelines = [
+    "ASAP",
+    "1 – 2 months",
+    "3 – 6 months",
+    "6+ months",
+    "Flexible",
+  ];
 
   return (
     <>
@@ -317,26 +346,53 @@ function ContactPage() {
                     </div>
                   </div>
 
-                  {/* Budget */}
-                  <div>
-                    <FieldLabel>Estimated Budget</FieldLabel>
-                    <div className="flex flex-wrap gap-2 mt-2">
-                      {budgets.map((b) => {
-                        const active = form.budget === b;
-                        return (
-                          <button key={b} type="button" onClick={() => set("budget", b)}
-                            className={`px-4 py-2 rounded-full text-xs font-semibold border transition-all duration-200 cursor-pointer ${
-                              active
-                                ? "bg-gradient-to-r from-cyan-500 to-violet-500 text-white border-transparent"
-                                : "bg-muted/40 text-muted-foreground border-border hover:border-foreground/40 hover:text-foreground"
-                            }`}
-                          >
-                            {b}
-                          </button>
-                        );
-                      })}
-                    </div>
+              {/* ── BUDGET (FIXED) ── */}
+              <div className="space-y-3">
+
+                <div className="flex items-center justify-between">
+                  <FieldLabel>Estimated Budget</FieldLabel>
+
+                  <div className="flex gap-2">
+                    {["USD", "NGN"].map((c) => (
+                      <button
+                        key={c}
+                        type="button"
+                        onClick={() => setCurrency(c as "USD" | "NGN")}
+                        className={`px-3 py-1 text-xs rounded-full border transition ${
+                          currency === c
+                            ? "bg-foreground text-background border-foreground"
+                            : "bg-muted/40 text-muted-foreground border-border hover:border-foreground/40"
+                        }`}
+                      >
+                        {c}
+                      </button>
+                    ))}
                   </div>
+                </div>
+
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {(currency === "USD" ? budgetsUSD : budgetsNGN).map(
+                    (b) => {
+                      const active = form.budget === b;
+
+                      return (
+                        <button
+                          key={b}
+                          type="button"
+                          onClick={() => set("budget", b)}
+                          className={`px-4 py-2 rounded-full text-xs font-semibold border transition ${
+                            active
+                              ? "bg-gradient-to-r from-cyan-500 to-violet-500 text-white border-transparent"
+                              : "bg-muted/40 text-muted-foreground border-border hover:border-foreground/40 hover:text-foreground"
+                          }`}
+                        >
+                          {b}
+                        </button>
+                      );
+                    }
+                  )}
+                </div>
+              </div>
 
                   {/* Timeline */}
                   <div>

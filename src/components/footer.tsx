@@ -123,9 +123,9 @@ export function Footer() {
             <span className="hidden sm:inline text-border">|</span>
             <span>Free Tool: <Link to="/tools/seo-analyzer" className="hover:text-foreground underline underline-offset-2 transition-colors">SEO Analyzer</Link></span>
           </div>
-          <div className="font-mono text-[10px] opacity-80">
+          {/* <div className="font-mono text-[10px] opacity-80">
             Built with intent
-          </div>
+          </div> */}
         </div>
       </div>
     </footer>

@@ -61,9 +61,9 @@ const PORTFOLIO_FAQ = [
 ];
 
 const STATS = [
-  { value: "300+", label: "Projects shipped" },
-  { value: "4.9/5", label: "Client satisfaction" },
-  { value: "$12M+", label: "Revenue generated" },
+  { value: "50+", label: "Projects shipped" },
+  { value: "98%", label: "Client satisfaction" },
+  { value: "$1M+", label: "Revenue generated" },
   { value: "5 days", label: "Avg. kickoff time" },
 ];
 

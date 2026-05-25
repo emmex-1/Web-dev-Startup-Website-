@@ -154,8 +154,8 @@ export type CaseStudy = {
 export const SITE = {
   name: "Globe Stack",
   url: "https://globestack.com",
-  email: "hello@globestack.io",
-  phone: "+234xxxxxxxxx",
+  email: "info@globestack.com",
+  phone: "+234 7048595478",
   description:
     "Senior-only digital agency building web, AI, SEO and growth systems.",
 };
@@ -166,14 +166,14 @@ export const CASE_STUDIES: CaseStudy[] = [
     title: "Building a Real Estate Education Platform That Converts Renters Into Owners",
     client: "Tim Collins",
     industry: "Real Estate / EdTech",
-    result: "+340% organic reach",
+    result: "+40% organic reach",
     duration: "10 weeks",
     tags: ["Web Dev", "SEO", "Content Strategy"],
     color: "from-sky-500/30 to-cyan-500/30",
     overview:
-      "Tim Collins had a powerful mission — helping everyday families build generational wealth through homeownership — but his digital presence was scattered. We built a unified educational platform, podcast hub, and SEO engine that tripled his organic reach and 3x'd workshop signups.",
+      "Tim Collins had a powerful mission — helping everyday families build generational wealth through homeownership but his digital presence was scattered. We built a unified educational platform, podcast hub, and SEO engine that tripled his organic reach and 3x'd workshop signups.",
     problem:
-      "Tim's brand — Own Your Home — had a basic landing page that wasn't capturing leads, zero SEO foundation, and workshop signups driven entirely by manual outreach. His content lived across Instagram, email blasts, and a disconnected podcast RSS link. The platform didn't reflect the authority of his message.",
+      "Tim's brand — Own Your Home had a basic landing page that wasn't capturing leads, zero SEO foundation, and workshop signups driven entirely by manual outreach. His content lived across Instagram, email blasts, and a disconnected podcast RSS link. The platform didn't reflect the authority of his message.",
     solution:
       "A high-converting educational platform with podcast integration, a structured content hub, lead capture funnels tied to free workshops, and a full SEO content strategy targeting aspiring homeowners across the US.",
     goals: [
@@ -557,11 +557,11 @@ export const POST_IMAGES: Record<string, string> = {
 };
 
 export const HERO_IMAGES: Record<string, string> = {
-  about: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1600&q=80",
-  services: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=1600&q=80",
-  portfolio: "https://images.unsplash.com/photo-1545235617-9465d2a55698?w=1600&q=80",
-  caseStudies: "https://images.unsplash.com/photo-1551434678-e076c223a692?w=1600&q=80",
-  blog: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=1600&q=80",
+  about: "/media/abt.jpg",
+  services: "/media/srv.jpg",
+  portfolio: "/media/pos.jpg",
+  caseStudies: "/media/about-vision.jpg",
+  blog: "/media/cse.jfif",
   contact: "media/contact.jpg",
-  tools: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=1600&q=80",
+  tools: "/media/back.jpg",
 };
