@@ -46,21 +46,18 @@ function ServicesSubScreen({
           <ArrowUpRight className="h-4 w-4" />
         </Link>
         <div className="border-t border-border my-2" />
-        {SERVICES.map((s) => (
-          <Link
-            key={s.slug}
-            to="/services/$slug"
-            params={{ slug: s.slug }}
-            onClick={onClose}
-            className="flex items-center justify-between px-4 py-3 rounded-xl hover:bg-muted transition-colors group"
-          >
-            <div>
-              <div className="text-sm font-medium text-foreground">{s.title}</div>
-              {/* <div className="text-xs text-muted-foreground mt-0.5">{s.short}</div> */}
-            </div>
-            <ChevronRight className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
-          </Link>
-        ))}
+{SERVICES.map((s) => (
+  <Link
+    key={s.slug}
+    to="/services/$slug"
+    params={{ slug: s.slug }}
+    onClick={onClose}
+    className="flex items-center justify-between px-4 py-3 rounded-xl hover:bg-muted transition-colors group"
+  >
+    <div className="text-sm font-semibold text-foreground">{s.title}</div>
+    <ChevronRight className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
+  </Link>
+))}
       </div>
     </div>
   );
@@ -276,47 +273,46 @@ export function Header() {
               {!mobileSubScreen && (
                 <div className="absolute inset-0 flex flex-col overflow-y-auto">
                   <nav className="flex-1 px-4 pt-3 pb-4 space-y-1">
-                    {NAV.map((n) => (
-                      <Link
-                        key={n.to}
-                        to={n.to}
-                        onClick={closeAll}
-                        className="flex items-center justify-between px-4 py-3.5 rounded-2xl text-base font-medium text-foreground hover:bg-muted transition-colors"
-                        activeProps={{ className: "flex items-center justify-between px-4 py-3.5 rounded-2xl text-base font-medium bg-primary text-primary-foreground" }}
-                        activeOptions={{ exact: n.to === "/" }}
-                      >
-                        {n.label}
-                      </Link>
-                    ))}
+  {NAV.map((n) => (
+    <Link
+      key={n.to}
+      to={n.to}
+      onClick={closeAll}
+      className="flex items-center justify-between px-4 py-3.5 rounded-2xl text-base font-semibold text-white hover:bg-white/10 transition-colors"
+      activeProps={{ className: "flex items-center justify-between px-4 py-3.5 rounded-2xl text-base font-semibold bg-primary text-white" }}
+      activeOptions={{ exact: n.to === "/" }}
+    >
+      {n.label}
+    </Link>
+  ))}
 
-                    {/* Services trigger */}
-                    <button
-                      onClick={() => setMobileSubScreen(true)}
-                      className="w-full flex items-center justify-between px-4 py-3.5 rounded-2xl text-base font-medium text-foreground hover:bg-muted transition-colors border-none bg-transparent cursor-pointer"
-                    >
-                      <span>Services</span>
-                      <div className="flex items-center gap-2">
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
-                          {SERVICES.length} services
-                        </span>
-                        <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                      </div>
-                    </button>
+  {/* Services trigger */}
+  <button
+    onClick={() => setMobileSubScreen(true)}
+    className="w-full flex items-center justify-between px-4 py-3.5 rounded-2xl text-base font-semibold text-white hover:bg-white/10 transition-colors border-none bg-transparent cursor-pointer"
+  >
+    <span>Services</span>
+    <div className="flex items-center gap-2">
+      <span className="text-[10px] font-bold uppercase tracking-widest text-white/60 bg-white/10 px-2 py-0.5 rounded-full">
+        {SERVICES.length} services
+      </span>
+      <ChevronRight className="h-4 w-4 text-white/60" />
+    </div>
+  </button>
 
-                    <Link
-                      to="/tools/seo-analyzer"
-                      onClick={closeAll}
-                      className="flex items-center px-4 py-3.5 rounded-2xl text-base font-medium text-gradient hover:bg-muted transition-colors"
-                    >
-                      Free SEO Analyzer
-                    </Link>
-                  </nav>
-
+  <Link
+    to="/tools/seo-analyzer"
+    onClick={closeAll}
+    className="flex items-center px-4 py-3.5 rounded-2xl text-base font-semibold text-gradient hover:bg-white/10 transition-colors"
+  >
+    Free SEO Analyzer
+  </Link>
+</nav>
                   {/* Bottom CTA */}
                   <div className="shrink-0 px-4 pb-8 pt-3 border-t border-border">
-                    <p className="text-muted-foreground text-xs text-center mb-3">
-                      Ready to grow your digital presence?
-                    </p>
+<p className="text-white/60 text-xs text-center mb-3">
+  Ready to grow your digital presence?
+</p>
                     <Link to="/contact" onClick={closeAll}>
                       <button className="w-full flex items-center justify-center gap-3 bg-primary hover:opacity-90 text-primary-foreground font-bold text-sm rounded-2xl px-6 py-4 transition-opacity border-none cursor-pointer">
                         Start a Project

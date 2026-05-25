@@ -260,7 +260,7 @@ className="hidden md:block select-none text-center font-display font-extrabold t
                 className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-white transition hover:opacity-90"
                 style={{ background: "linear-gradient(135deg,#0ea5e9,#06b6d4)", boxShadow: "0 0 30px -5px rgba(14,165,233,0.7)" }}
               >
-                Get Started
+                Learn More
               </Link>
             </div>
           </motion.div>
@@ -469,7 +469,7 @@ function ServiceCard({ s, className = "" }: { s: typeof SERVICES[number]; classN
   const blurb = SERVICE_BLURBS[s.slug] ?? s.blurb;
   return (
     <Link to="/services/$slug" params={{ slug: s.slug }} className={`group relative aspect-[3/4] overflow-hidden rounded-3xl border border-border bg-card ${className}`}>
-      <img src={SERVICE_IMAGES[s.slug]} alt={s.title} className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-110" loading="eager" />
+      <img src={SERVICE_IMAGES[s.slug]} alt={s.title} className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-110" loading="lazy" />
       <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/60 to-black/40" />
       <div className="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-full glass border border-white/20 opacity-0 transition group-hover:opacity-100">
         <ArrowUpRight className="h-4 w-4 text-white" />
