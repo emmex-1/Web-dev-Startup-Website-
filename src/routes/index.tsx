@@ -149,34 +149,34 @@ function Hero() {
   </motion.div>
 
   {/* Badge */}
-  <motion.div
-    initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
-    className="relative z-10 inline-flex w-max items-center rounded-full border border-sky-400/40 bg-sky-500/10 px-4 py-2 text-xs font-medium text-sky-200 backdrop-blur"
-  >
-    ✦ Next-Level Business
-  </motion.div>
+<motion.div
+  initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
+  className="relative z-10 ml-4 inline-flex w-max items-center rounded-full border border-sky-400/40 bg-sky-500/10 px-4 py-2 text-xs font-medium text-sky-200 backdrop-blur"
+>
+  ✦ Next-Level Business
+</motion.div>
 
   {/* Heading + body */}
-  <motion.div
-    initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.3 }}
-    className="relative z-10 space-y-4"
-  >
-    <h2 className="font-display text-[2.75rem] font-bold leading-[1.08] tracking-tight">
-      Boost Efficiency,<br />
-      Maximize <span className="text-sky-400">Impact.</span>
-    </h2>
-<p className="text-base sm:text-lg text-sky-100/80 leading-relaxed max-w-[20rem]">
+<motion.div
+  initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.3 }}
+  className="relative z-10 space-y-4 pl-4"
+>
+  <h2 className="font-display text-[2.75rem] font-bold leading-[1.08] tracking-tight">
+    Build Smarter,<br />
+    Grow <span className="text-sky-400">Faster.</span>
+  </h2>
+  <p className="text-base sm:text-lg text-sky-100/80 leading-relaxed max-w-[20rem]">
   We design, build, and grow digital products Websites, AI solutions,
   UI/UX design, e-commerce systems, SEO, ads, social media, and Shopify
   all under one senior team.
-</p>
-  </motion.div>
+  </p>
+</motion.div>
 
   {/* CTAs */}
-  <motion.div
-    initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.45 }}
-    className="relative z-10 flex items-center gap-3"
-  >
+<motion.div
+  initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.45 }}
+  className="relative z-10 flex items-center gap-3 pl-4"
+>
     <Link
       to="/contact"
       className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-white transition hover:opacity-90"
@@ -357,7 +357,7 @@ function About() {
               whileHover={{ y: -6 }}
               className="group relative aspect-[3/4] overflow-hidden rounded-3xl border border-border"
             >
-              <img src={c.img} alt={c.t} className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-110" loading="lazy" />
+              <img src={c.img} alt={c.t} className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-110" loading="eager" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/60" />
               <div className="absolute inset-0 flex flex-col p-6 text-white">
                 <div className="font-display text-xl font-semibold italic">
@@ -408,7 +408,6 @@ function SliderArrows({ onPrev, onNext }: { onPrev: () => void; onNext: () => vo
   );
 }
 
-/* ============================== SERVICES ============================== */
 function Services() {
   const perView = 3;
   const max = Math.max(0, SERVICES.length - perView);
@@ -470,7 +469,7 @@ function ServiceCard({ s, className = "" }: { s: typeof SERVICES[number]; classN
   const blurb = SERVICE_BLURBS[s.slug] ?? s.blurb;
   return (
     <Link to="/services/$slug" params={{ slug: s.slug }} className={`group relative aspect-[3/4] overflow-hidden rounded-3xl border border-border bg-card ${className}`}>
-      <img src={SERVICE_IMAGES[s.slug]} alt={s.title} className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-110" loading="lazy" />
+      <img src={SERVICE_IMAGES[s.slug]} alt={s.title} className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-110" loading="eager" />
       <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/60 to-black/40" />
       <div className="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-full glass border border-white/20 opacity-0 transition group-hover:opacity-100">
         <ArrowUpRight className="h-4 w-4 text-white" />
@@ -485,7 +484,6 @@ function ServiceCard({ s, className = "" }: { s: typeof SERVICES[number]; classN
     </Link>
   );
 }
-
 /* ============================== PORTFOLIO ============================== */
 function ScreenshotModal({ project, onClose }: { project: typeof PROJECTS[number]; onClose: () => void }) {
   const images = project.images ?? [PROJECT_IMAGES[project.slug]];
