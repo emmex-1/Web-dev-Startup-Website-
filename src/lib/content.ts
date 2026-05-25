@@ -38,7 +38,7 @@ export const PROJECTS: Project[] = [
     title: "Law-Firm Website",
     category: "Shopify / E-Commerce",
     tag: "Law Firm",
-    desc: "Law firm",
+    desc: "Professional law firm website built to enhance online presence, build trust, and convert visitors into consultation requests.",
     color: "from-emerald-500/30 to-cyan-500/30",
     client: "ShopMart",
     year: "2024",

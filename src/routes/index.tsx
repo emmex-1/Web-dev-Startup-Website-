@@ -5,28 +5,30 @@ import {
   ShieldCheck, Rocket, Users, Zap, Award, TrendingUp, Play, ChevronLeft, ChevronRight,
   CheckCircle, Cpu, BarChart2, Quote,
 } from "lucide-react";
-import { useState, useEffect, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect, useCallback, useRef, type JSX } from "react";
+import { motion, AnimatePresence, type Variants } from "framer-motion";
 import { CTA } from "@/components/section";
 import { SERVICES } from "@/lib/site";
-import { PROJECTS, CASE_STUDIES, POSTS, TESTIMONIALS, FAQ, PROCESS, PROJECT_IMAGES, CASE_IMAGES, SERVICE_IMAGES, POST_IMAGES } from "@/lib/content";
+import {
+  PROJECTS, CASE_STUDIES, POSTS, PROJECT_IMAGES,
+  CASE_IMAGES, SERVICE_IMAGES, POST_IMAGES, PROCESS,
+} from "@/lib/content";
 import { seo } from "@/lib/seo";
-
 
 export const Route = createFileRoute("/")({
   head: () => seo({
-    title: "Globe Stack  |  Web development, Web app, AI, SEO, Ads, Social, Shopify",
-    description: "Globe Stack is a full-stack tech studio. We build websites, web apps, ship AI, run ads, manage social, optimize SEO, develop e-commerce stores and  design Shopify stores that convert.",
+    title: "Globe Stack Technologies | Web development, Web app, AI, SEO, Ads, Social, Shopify",
+    description: "Globe Stack is a full-stack tech studio. We build websites, web apps, ship AI, run ads, manage social, optimize SEO, develop e-commerce stores and design Shopify stores that convert.",
     path: "/",
   }),
   component: Home,
 });
 
+/* ─── Types ─── */
 const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   Code2, Search, Sparkles, Target, MessageCircle, ShoppingBag,
 };
 
-// Short descriptions for service grid cards
 const SERVICE_BLURBS: Record<string, string> = {
   "web-development": "High-performance sites & web apps built on modern stacks.",
   "ui-ux-design": "Interfaces that convert — from wireframes to pixel-perfect Figma.",
@@ -39,7 +41,24 @@ const SERVICE_BLURBS: Record<string, string> = {
   "backend-api-development": "REST & GraphQL APIs, integrations, and scalable infrastructure.",
 };
 
-function Home() {
+/* ─── Shared animation variants ─── */
+const fadeUp: Variants = {
+  hidden: { opacity: 0, y: 24 },
+  show: { opacity: 1, y: 0 },
+};
+
+const fadeIn: Variants = {
+  hidden: { opacity: 0 },
+  show: { opacity: 1 },
+};
+
+const staggerContainer = (stagger = 0.08): Variants => ({
+  hidden: {},
+  show: { transition: { staggerChildren: stagger } },
+});
+
+/* ─── Home ─── */
+function Home(): JSX.Element {
   return (
     <>
       <Hero />
@@ -58,9 +77,8 @@ function Home() {
   );
 }
 
-
 /* ============================== HERO ============================== */
-function HeroVisual() {
+function HeroVisual(): JSX.Element {
   return (
     <div className="relative flex justify-center items-center">
       <div className="absolute inset-0 mx-auto h-[500px] w-[500px] rounded-full bg-sky-500/20 blur-3xl" />
@@ -73,7 +91,7 @@ function HeroVisual() {
   );
 }
 
-function Hero() {
+function Hero(): JSX.Element {
   return (
     <section
       className="relative overflow-hidden border-b border-border text-white"
@@ -97,14 +115,18 @@ function Hero() {
         {/* Desktop-only top row badges */}
         <div className="hidden md:flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <motion.div
-            initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
             className="inline-flex w-max items-center rounded-full border border-sky-400/40 bg-sky-500/10 px-4 py-2 text-xs font-medium text-sky-200 backdrop-blur"
           >
             ✦ Next-Level Business
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
             className="flex flex-row sm:flex-col gap-6 sm:gap-3"
           >
             {[
@@ -125,83 +147,81 @@ function Hero() {
           </motion.div>
         </div>
 
-        
-{/* Mobile: hero text layered OVER the image */}
-<div className="relative mt-0 flex flex-col gap-7 md:hidden">
+        {/* Mobile hero */}
+        <div className="relative mt-0 flex flex-col gap-7 md:hidden">
+          <motion.div
+            initial={{ scale: 0.85, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.9, ease: "easeOut", delay: 0.2 }}
+            className="absolute inset-0 -mx-4 pointer-events-none"
+            style={{ top: "-2rem", bottom: "-2rem" }}
+          >
+            <img
+              src="/media/downl.png"
+              alt=""
+              aria-hidden="true"
+              className="absolute inset-0 h-full w-full object-contain object-center opacity-60"
+            />
+            <div
+              className="absolute inset-0"
+              style={{ background: "radial-gradient(ellipse 80% 80% at 50% 50%, transparent 95%, #020d1a 90%)" }}
+            />
+          </motion.div>
 
-  {/* Orb — no dark overlay, just soft radial edge fade */}
-  <motion.div
-    initial={{ scale: 0.85, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.9, ease: "easeOut", delay: 0.2 }}
-    className="absolute inset-0 -mx-4 pointer-events-none"
-    style={{ top: "-2rem", bottom: "-2rem" }}
-  >
-    <img
-      src="/media/downl.png"
-      alt=""
-      aria-hidden="true"
-      className="absolute inset-0 h-full w-full object-contain object-center opacity-60"
-    />
-    {/* Only fade the very outer edges — no centre darkening */}
-    <div
-      className="absolute inset-0"
-      style={{ background: "radial-gradient(ellipse 80% 80% at 50% 50%, transparent 95%, #020d1a 90%)" }}
-    />
-  </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="relative z-10 ml-4 inline-flex w-max items-center rounded-full border border-sky-400/40 bg-sky-500/10 px-4 py-2 text-xs font-medium text-sky-200 backdrop-blur"
+          >
+            ✦ Next-Level Business
+          </motion.div>
 
-  {/* Badge */}
-<motion.div
-  initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
-  className="relative z-10 ml-4 inline-flex w-max items-center rounded-full border border-sky-400/40 bg-sky-500/10 px-4 py-2 text-xs font-medium text-sky-200 backdrop-blur"
->
-  ✦ Next-Level Business
-</motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.3 }}
+            className="relative z-10 space-y-4 pl-4"
+          >
+            <h2 className="font-display text-[2.75rem] font-bold leading-[1.08] tracking-tight">
+              Build Smarter,<br />
+              Grow <span className="text-sky-400">Faster.</span>
+            </h2>
+            <p className="text-base sm:text-lg text-sky-100/80 leading-relaxed max-w-[20rem]">
+              We design, build, and grow digital products Websites, AI solutions,
+              UI/UX design, e-commerce systems, SEO, ads, social media, and Shopify
+              all under one senior team.
+            </p>
+          </motion.div>
 
-  {/* Heading + body */}
-<motion.div
-  initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.3 }}
-  className="relative z-10 space-y-4 pl-4"
->
-  <h2 className="font-display text-[2.75rem] font-bold leading-[1.08] tracking-tight">
-    Build Smarter,<br />
-    Grow <span className="text-sky-400">Faster.</span>
-  </h2>
-  <p className="text-base sm:text-lg text-sky-100/80 leading-relaxed max-w-[20rem]">
-  We design, build, and grow digital products Websites, AI solutions,
-  UI/UX design, e-commerce systems, SEO, ads, social media, and Shopify
-  all under one senior team.
-  </p>
-</motion.div>
-
-  {/* CTAs */}
-<motion.div
-  initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.45 }}
-  className="relative z-10 flex items-center gap-3 pl-4"
->
-    <Link
-      to="/contact"
-      className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-white transition hover:opacity-90"
-      style={{ background: "linear-gradient(135deg,#0ea5e9,#06b6d4)", boxShadow: "0 0 28px -5px rgba(14,165,233,0.7)" }}
-    >
-      Get Started
-    </Link>
-    <button
-      aria-label="Play intro"
-      className="grid h-12 w-12 place-items-center rounded-full border border-sky-400/50 bg-sky-500/15 text-white backdrop-blur hover:bg-sky-500/25 transition"
-    >
-      <Play className="h-4 w-4 fill-current" />
-    </button>
-  </motion.div>
-</div>
-
-
-
-
-
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.45 }}
+            className="relative z-10 flex items-center gap-3 px-4"
+          >
+            <Link
+              to="/contact"
+              className="flex-1 text-center rounded-full px-4 py-3 text-sm font-semibold text-white transition hover:opacity-90"
+              style={{ background: "linear-gradient(135deg,#0ea5e9,#06b6d4)", boxShadow: "0 0 28px -5px rgba(14,165,233,0.7)" }}
+            >
+              Get Started
+            </Link>
+            <Link
+              to="/portfolio"
+              className="flex-1 text-center rounded-full px-4 py-3 text-sm font-semibold text-white/80 border border-sky-400/50 bg-sky-500/15 backdrop-blur hover:bg-sky-500/25 hover:text-white transition"
+            >
+              View our work
+            </Link>
+          </motion.div>
+        </div>
 
         <div className="relative flex-1 mt-8 md:mt-10">
           <motion.h1
-            initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.2 }}
-className="hidden md:block select-none text-center font-display font-extrabold tracking-tight relative z-20"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9, delay: 0.2 }}
+            className="hidden md:block select-none text-center font-display font-extrabold tracking-tight relative z-20"
             style={{ fontSize: "clamp(3rem, 15vw, 18rem)", lineHeight: 0.88 }}
           >
             <span className="bg-gradient-to-b from-white/30 via-sky-100/7 to-sky-400/20 bg-clip-text text-transparent">
@@ -209,9 +229,10 @@ className="hidden md:block select-none text-center font-display font-extrabold t
             </span>
           </motion.h1>
 
-          {/* Desktop floating image */}
           <motion.div
-            initial={{ scale: 0.7, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 1, ease: "easeOut", delay: 0.3 }}
+            initial={{ scale: 0.7, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 1, ease: "easeOut", delay: 0.3 }}
             className="hidden md:flex absolute inset-0 mt-0 items-center justify-center pointer-events-none"
           >
             <div className="w-[460px] lg:w-[540px]">
@@ -220,12 +241,14 @@ className="hidden md:block select-none text-center font-display font-extrabold t
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.5 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.5 }}
             className="hidden md:block absolute left-0 bottom-0 max-w-sm z-30"
           >
             <h2 className="font-display text-3xl font-bold leading-tight lg:text-4xl">
-              Boost Efficiency,<br />
-              Maximize <span className="text-sky-400">Impact.</span>
+              Build Smarter,<br />
+              Grow <span className="text-sky-400">Faster.</span>
             </h2>
             <p className="mt-3 text-sm text-white-400/70 leading-relaxed md:text-base">
               We design, build, and grow digital products websites, AI solutions, SEO, ads, social, and Shopify, all under one senior team.
@@ -236,19 +259,21 @@ className="hidden md:block select-none text-center font-display font-extrabold t
                 className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-white transition hover:opacity-90"
                 style={{ background: "linear-gradient(135deg,#0ea5e9,#06b6d4)", boxShadow: "0 0 30px -5px rgba(14,165,233,0.7)" }}
               >
-                Get Started
+                Start a Project
               </Link>
-              <button
-                aria-label="Play intro"
-                className="grid h-12 w-12 place-items-center rounded-full border border-sky-400/50 bg-sky-500/15 text-white backdrop-blur hover:bg-sky-500/25 transition"
+              <Link
+                to="/portfolio"
+                className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-white/80 border border-sky-400/50 bg-sky-500/15 backdrop-blur hover:bg-sky-500/25 hover:text-white transition"
               >
-                <Play className="h-4 w-4 fill-current" />
-              </button>
+                View our work
+              </Link>
             </div>
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.6 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.6 }}
             className="hidden md:block absolute right-0 bottom-0 max-w-xs text-right z-30"
           >
             <p className="text-sm text-white-100/60 md:text-base leading-relaxed">
@@ -257,66 +282,65 @@ className="hidden md:block select-none text-center font-display font-extrabold t
             <div className="mt-5 flex items-center gap-3 justify-end">
               <Link
                 to="/contact"
-                className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-white transition hover:opacity-90"
-                style={{ background: "linear-gradient(135deg,#0ea5e9,#06b6d4)", boxShadow: "0 0 30px -5px rgba(14,165,233,0.7)" }}
+                aria-label="Get started"
+                className="grid h-12 w-12 place-items-center rounded-full border border-sky-400/50 bg-sky-500/15 text-white backdrop-blur hover:bg-sky-500/25 transition"
               >
-                Learn More
+                <Play className="h-4 w-4 fill-current" />
               </Link>
             </div>
           </motion.div>
         </div>
 
-<motion.div
-  initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.8 }}
-  className="mt-10 md:mt-15 flex flex-col gap-3"
->
-  {/* Stats + desktop trusted-by in one box */}
-  <div className="grid grid-cols-1 gap-3 rounded-2xl border border-sky-400/20 bg-white/5 p-3 backdrop-blur sm:grid-cols-2">
-    <div className="flex items-center justify-around gap-2 rounded-xl px-2 py-2">
-      {[
-        { v: "125k+", l: "Happy Clients" },
-        { v: "95%", l: "Growth" },
-        { v: "25+", l: "Years" },
-      ].map((s) => (
-        <div key={s.l} className="flex flex-col items-center text-center">
-          <div className="font-display text-2xl font-bold">{s.v}</div>
-          <div className="text-xs text-sky-200/60">{s.l}</div>
-        </div>
-      ))}
-    </div>
-    {/* Desktop only — static trusted by inside the box */}
-    <div className="hidden sm:flex flex-wrap items-center justify-center gap-x-4 gap-y-2 rounded-xl border border-sky-400/10 px-3 py-2">
-      <span className="text-xs text-sky-300/50 uppercase tracking-wider whitespace-nowrap">Trusted by</span>
-      {["Niscala.io", "SAMTIV", "✺ IEA.", "‖ BOKING"].map((b) => (
-        <span key={b} className="text-sm font-semibold text-sky-100/50 whitespace-nowrap">{b}</span>
-      ))}
-    </div>
-  </div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.8 }}
+          className="mt-10 md:mt-15 flex flex-col gap-3"
+        >
+          <div className="grid grid-cols-1 gap-3 rounded-2xl border border-sky-400/20 bg-white/5 p-3 backdrop-blur sm:grid-cols-2">
+            <div className="flex items-center justify-around gap-2 rounded-xl px-2 py-2">
+              {[
+                { v: "35+", l: "Happy Clients" },
+                { v: "95%", l: "Growth" },
+                { v: "7+", l: "Years" },
+              ].map((s) => (
+                <div key={s.l} className="flex flex-col items-center text-center">
+                  <div className="font-display text-2xl font-bold">{s.v}</div>
+                  <div className="text-xs text-sky-200/60">{s.l}</div>
+                </div>
+              ))}
+            </div>
+            <div className="hidden sm:flex flex-wrap items-center justify-center gap-x-4 gap-y-2 rounded-xl border border-sky-400/10 px-3 py-2">
+              <span className="text-xs text-sky-300/50 uppercase tracking-wider whitespace-nowrap">Trusted by</span>
+              {["Cowrywise", "Andela", "✺ OAL.", "Carbon"].map((b) => (
+                <span key={b} className="text-sm font-semibold text-sky-100/50 whitespace-nowrap">{b}</span>
+              ))}
+            </div>
+          </div>
 
-  {/* Mobile-only infinite marquee trusted by — sits BELOW stats box */}
-  <div className="sm:hidden relative overflow-hidden rounded-xl border border-sky-400/10 bg-white/5 py-2.5 backdrop-blur">
-    {/* Left + right fade masks */}
-    <div className="pointer-events-none absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-[#020d1a] to-transparent z-10" />
-    <div className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-[#020d1a] to-transparent z-10" />
-    <div className="flex w-max" style={{ animation: "marquee 16s linear infinite" }}>
-      {[...Array(2)].map((_, rep) => (
-        <div key={rep} className="flex items-center gap-8 px-6">
-          <span className="text-[10px] uppercase tracking-widest text-sky-300/40 font-mono">Trusted by</span>
-          {["Niscala.io", "SAMTIV", "✺ IEA.", "‖ BOKING"].map((b) => (
-            <span key={b} className="text-sm font-semibold text-sky-100/55 whitespace-nowrap">{b}</span>
-          ))}
-        </div>
-      ))}
-    </div>
-  </div>
-</motion.div>
+          {/* Mobile marquee */}
+          <div className="sm:hidden relative overflow-hidden rounded-xl border border-sky-400/10 bg-white/5 py-2.5 backdrop-blur">
+            <div className="pointer-events-none absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-[#020d1a] to-transparent z-10" />
+            <div className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-[#020d1a] to-transparent z-10" />
+            <div className="flex w-max" style={{ animation: "marquee 16s linear infinite" }}>
+              {(["a", "b"] as const).map((rep) => (
+                <div key={rep} className="flex items-center gap-8 px-6">
+                  <span className="text-[10px] uppercase tracking-widest text-sky-300/40 font-mono">Trusted by</span>
+                  {["Cowrywise", "Andela", "✺ OAL.", "Carbon"].map((b) => (
+                    <span key={b} className="text-sm font-semibold text-sky-100/55 whitespace-nowrap">{b}</span>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
+        </motion.div>
       </div>
     </section>
   );
 }
 
 /* ============================== ABOUT ============================== */
-function About() {
+function About(): JSX.Element {
   const cards = [
     {
       tag: "Vision-driven",
@@ -335,8 +359,14 @@ function About() {
   return (
     <section className="relative border-t border-border py-20 md:py-32 bg-[var(--section-a)]">
       <div className="mx-auto grid max-w-7xl gap-12 px-4 md:px-6 lg:grid-cols-2 lg:gap-16">
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
-          <div className="font-mono text-xs uppercase tracking-wider ">About Us</div>
+        <motion.div
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          <div className="font-mono text-xs uppercase tracking-wider">About Us</div>
           <h2 className="mt-3 font-display text-4xl font-bold leading-[1.05] tracking-tight md:text-6xl">
             Your Growth Partner Across Every Digital Channel
           </h2>
@@ -349,11 +379,18 @@ function About() {
           </Link>
         </motion.div>
 
-        <div className="grid gap-5 sm:grid-cols-2">
+        <motion.div
+          className="grid gap-5 sm:grid-cols-2"
+          variants={staggerContainer(0.1)}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true }}
+        >
           {cards.map((c, i) => (
             <motion.div
               key={c.t}
-              initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: i * 0.1 }}
+              variants={fadeUp}
+              transition={{ duration: 0.6, delay: i * 0.1 }}
               whileHover={{ y: -6 }}
               className="group relative aspect-[3/4] overflow-hidden rounded-3xl border border-border"
             >
@@ -377,7 +414,7 @@ function About() {
               </div>
             </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
@@ -386,62 +423,95 @@ function About() {
 /* ============================== SLIDER HOOK ============================== */
 function useAutoSlider(count: number, intervalMs = 5000) {
   const [index, setIndex] = useState(0);
-  const [paused, setPaused] = useState(false);
+  const pausedRef = useRef(false);
+
+  const setPaused = useCallback((v: boolean) => {
+    pausedRef.current = v;
+  }, []);
+
   useEffect(() => {
-    if (paused || count <= 1) return;
-    const id = setInterval(() => setIndex((i) => (i + 1) % count), intervalMs);
+    if (count <= 1) return;
+    const id = setInterval(() => {
+      if (!pausedRef.current) setIndex((i) => (i + 1) % count);
+    }, intervalMs);
     return () => clearInterval(id);
-  }, [paused, count, intervalMs]);
+  }, [count, intervalMs]);
+
   return { index, setIndex, setPaused };
 }
 
-function SliderArrows({ onPrev, onNext }: { onPrev: () => void; onNext: () => void }) {
+function SliderArrows({ onPrev, onNext }: { onPrev: () => void; onNext: () => void }): JSX.Element {
   return (
     <div className="flex gap-2">
-      <button onClick={onPrev} aria-label="Previous" className="grid h-11 w-11 place-items-center rounded-full border border-border bg-card transition hover:border-glow hover:bg-muted">
+      <button onClick={onPrev} aria-label="Previous slide" className="grid h-11 w-11 place-items-center rounded-full border border-border bg-card transition hover:border-glow hover:bg-muted">
         <ArrowLeft className="h-4 w-4" />
       </button>
-      <button onClick={onNext} aria-label="Next" className="grid h-11 w-11 place-items-center rounded-full bg-foreground text-background transition hover:opacity-90">
+      <button onClick={onNext} aria-label="Next slide" className="grid h-11 w-11 place-items-center rounded-full bg-foreground text-background transition hover:opacity-90">
         <ArrowRight className="h-4 w-4" />
       </button>
     </div>
   );
 }
 
-function Services() {
+/* ============================== SERVICES ============================== */
+function Services(): JSX.Element {
   const perView = 3;
   const max = Math.max(0, SERVICES.length - perView);
   const { index, setIndex, setPaused } = useAutoSlider(max + 1, 6000);
+
   const next = useCallback(() => setIndex((i) => (i >= max ? 0 : i + 1)), [max, setIndex]);
   const prev = useCallback(() => setIndex((i) => (i <= 0 ? max : i - 1)), [max, setIndex]);
 
   return (
     <section className="border-t border-border py-20 md:py-28">
       <div className="mx-auto max-w-7xl px-4 md:px-6">
-        <div className="mb-10 text-center">
-          <div className="font-mono text-xs uppercase tracking-wider text-muted-foreground">Services</div>
-          <h2 className="mt-3 font-display text-3xl font-bold tracking-tight md:text-5xl">What we do best.</h2>
-          <p className="mt-3 mx-auto max-w-xl text-muted-foreground">
+        {/* Header */}
+        <motion.div
+          className="mb-10 text-center"
+          variants={staggerContainer(0.12)}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true }}
+        >
+          <motion.div variants={fadeUp} transition={{ duration: 0.5 }} className="font-mono text-xs uppercase tracking-wider text-muted-foreground">
+            Services
+          </motion.div>
+          <motion.h2 variants={fadeUp} transition={{ duration: 0.5 }} className="mt-3 font-display text-3xl font-bold tracking-tight md:text-5xl">
+            What we do best.
+          </motion.h2>
+          <motion.p variants={fadeUp} transition={{ duration: 0.5 }} className="mt-3 mx-auto max-w-xl text-muted-foreground">
             From idea to revenue, we power every stage of your digital growth.
-          </p>
-        </div>
+          </motion.p>
+        </motion.div>
 
-        {/* Desktop slider */}
-        <div className="hidden md:block" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
+        {/* Desktop slider — GPU-composited transform only, no layout recalc */}
+        <div
+          className="hidden md:block"
+          onMouseEnter={() => setPaused(true)}
+          onMouseLeave={() => setPaused(false)}
+        >
           <div className="overflow-hidden">
-            <div
-              className="flex gap-5 transition-transform duration-700 ease-out"
-              style={{ transform: `translateX(calc(-${index} * (100% / ${perView})))` }}
+            <motion.div
+              className="flex gap-5"
+              animate={{ x: `calc(-${index} * (100% / ${perView}))` }}
+              transition={{ type: "tween", duration: 0.55, ease: [0.32, 0.72, 0, 1] }}
+              style={{ willChange: "transform" }}
             >
               {SERVICES.map((s) => (
                 <ServiceCard key={s.slug} s={s} className="w-[calc((100%-2.5rem)/3)] shrink-0" />
               ))}
-            </div>
+            </motion.div>
           </div>
+
           <div className="mt-8 flex items-center justify-between">
             <div className="flex gap-1.5">
               {Array.from({ length: max + 1 }).map((_, i) => (
-                <button key={i} onClick={() => setIndex(i)} aria-label={`Slide ${i + 1}`} className={`h-1.5 rounded-full transition-all ${i === index ? "w-8 bg-foreground" : "w-1.5 bg-border"}`} />
+                <button
+                  key={i}
+                  onClick={() => setIndex(i)}
+                  aria-label={`Go to slide ${i + 1}`}
+                  className={`h-1.5 rounded-full transition-all ${i === index ? "w-8 bg-foreground" : "w-1.5 bg-border"}`}
+                />
               ))}
             </div>
             <div className="flex items-center gap-4">
@@ -453,10 +523,10 @@ function Services() {
           </div>
         </div>
 
-        {/* Mobile scrollable */}
-        <div className="mt-10 -mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto scrollbar-hide px-4 md:hidden">
+        {/* Mobile — native scroll, no JS animation = zero lag */}
+        <div className="mt-10 -mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto scrollbar-hide px-4 md:hidden" style={{ WebkitOverflowScrolling: "touch" }}>
           {SERVICES.map((s) => (
-            <ServiceCard key={s.slug} s={s} className="w-[90%] shrink-0 snap-start" />
+            <ServiceCard key={s.slug} s={s} className="w-[85%] shrink-0 snap-start" />
           ))}
         </div>
       </div>
@@ -464,12 +534,22 @@ function Services() {
   );
 }
 
-function ServiceCard({ s, className = "" }: { s: typeof SERVICES[number]; className?: string }) {
+function ServiceCard({ s, className = "" }: { s: typeof SERVICES[number]; className?: string }): JSX.Element {
   const Icon = ICONS[s.icon] ?? Sparkles;
   const blurb = SERVICE_BLURBS[s.slug] ?? s.blurb;
   return (
-    <Link to="/services/$slug" params={{ slug: s.slug }} className={`group relative aspect-[3/4] overflow-hidden rounded-3xl border border-border bg-card ${className}`}>
-      <img src={SERVICE_IMAGES[s.slug]} alt={s.title} className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-110" loading="lazy" />
+    <Link
+      to="/services/$slug"
+      params={{ slug: s.slug }}
+      className={`group relative aspect-[3/4] overflow-hidden rounded-3xl border border-border bg-card ${className}`}
+    >
+      <img
+        src={SERVICE_IMAGES[s.slug]}
+        alt={s.title}
+        className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-110"
+        loading="lazy"
+        decoding="async"
+      />
       <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/60 to-black/40" />
       <div className="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-full glass border border-white/20 opacity-0 transition group-hover:opacity-100">
         <ArrowUpRight className="h-4 w-4 text-white" />
@@ -484,8 +564,9 @@ function ServiceCard({ s, className = "" }: { s: typeof SERVICES[number]; classN
     </Link>
   );
 }
+
 /* ============================== PORTFOLIO ============================== */
-function ScreenshotModal({ project, onClose }: { project: typeof PROJECTS[number]; onClose: () => void }) {
+function ScreenshotModal({ project, onClose }: { project: typeof PROJECTS[number]; onClose: () => void }): JSX.Element {
   const images = project.images ?? [PROJECT_IMAGES[project.slug]];
   const [imgIdx, setImgIdx] = useState(0);
   const prev = () => setImgIdx((i) => (i <= 0 ? images.length - 1 : i - 1));
@@ -493,6 +574,9 @@ function ScreenshotModal({ project, onClose }: { project: typeof PROJECTS[number
 
   return (
     <div
+      role="dialog"
+      aria-modal="true"
+      aria-label={`${project.title} screenshots`}
       className="fixed inset-0 z-[100] grid place-items-center bg-background/90 p-4 backdrop-blur-md"
       onClick={onClose}
     >
@@ -509,19 +593,18 @@ function ScreenshotModal({ project, onClose }: { project: typeof PROJECTS[number
             {images.length > 1 && (
               <span className="text-xs text-muted-foreground">{imgIdx + 1} / {images.length}</span>
             )}
-            <button onClick={onClose} className="grid h-9 w-9 place-items-center rounded-full hover:bg-muted">
+            <button onClick={onClose} aria-label="Close modal" className="grid h-9 w-9 place-items-center rounded-full hover:bg-muted">
               <X className="h-4 w-4" />
             </button>
           </div>
         </div>
 
-        {/* Fixed-height image area — no more off-screen overflow */}
-<div className="relative overflow-hidden bg-zinc-950" style={{ height: "min(65vh, 520px)" }}>
-  <img
-    src={images[imgIdx]}
-    alt={`${project.title} screenshot ${imgIdx + 1}`}
-    className="h-full w-full object-contain"
-  />
+        <div className="relative overflow-hidden bg-zinc-950" style={{ height: "min(65vh, 520px)" }}>
+          <img
+            src={images[imgIdx]}
+            alt={`${project.title} screenshot ${imgIdx + 1}`}
+            className="h-full w-full object-contain"
+          />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
           <div className="absolute bottom-4 left-4 text-white">
             <div className="font-mono text-[10px] uppercase opacity-80">Preview</div>
@@ -530,16 +613,10 @@ function ScreenshotModal({ project, onClose }: { project: typeof PROJECTS[number
 
           {images.length > 1 && (
             <>
-              <button
-                onClick={prev}
-                className="absolute left-3 top-1/2 -translate-y-1/2 grid h-10 w-10 place-items-center rounded-full bg-black/50 text-white backdrop-blur hover:bg-black/70 transition"
-              >
+              <button onClick={prev} aria-label="Previous screenshot" className="absolute left-3 top-1/2 -translate-y-1/2 grid h-10 w-10 place-items-center rounded-full bg-black/50 text-white backdrop-blur hover:bg-black/70 transition">
                 <ChevronLeft className="h-5 w-5" />
               </button>
-              <button
-                onClick={next}
-                className="absolute right-3 top-1/2 -translate-y-1/2 grid h-10 w-10 place-items-center rounded-full bg-black/50 text-white backdrop-blur hover:bg-black/70 transition"
-              >
+              <button onClick={next} aria-label="Next screenshot" className="absolute right-3 top-1/2 -translate-y-1/2 grid h-10 w-10 place-items-center rounded-full bg-black/50 text-white backdrop-blur hover:bg-black/70 transition">
                 <ChevronRight className="h-5 w-5" />
               </button>
             </>
@@ -552,11 +629,12 @@ function ScreenshotModal({ project, onClose }: { project: typeof PROJECTS[number
               <button
                 key={i}
                 onClick={() => setImgIdx(i)}
+                aria-label={`View screenshot ${i + 1}`}
                 className={`relative h-14 w-20 shrink-0 overflow-hidden rounded-lg border-2 transition ${
                   i === imgIdx ? "border-violet-500" : "border-border opacity-60 hover:opacity-100"
                 }`}
               >
-                <img src={img} alt={`Thumb ${i + 1}`} className="h-full w-full object-cover" />
+                <img src={img} alt={`Thumbnail ${i + 1}`} className="h-full w-full object-cover" />
               </button>
             ))}
           </div>
@@ -575,40 +653,51 @@ function ScreenshotModal({ project, onClose }: { project: typeof PROJECTS[number
   );
 }
 
-function Portfolio() {
+function Portfolio(): JSX.Element {
   const [shotFor, setShotFor] = useState<string | null>(null);
-  const project = PROJECTS.find((p) => p.slug === shotFor);
+  const project = PROJECTS.find((p) => p.slug === shotFor) ?? null;
 
   return (
     <section className="border-t border-border py-20 md:py-28 bg-[var(--section-a)]">
       <div className="mx-auto max-w-7xl px-4 md:px-6">
-        <div className="mb-10 text-center">
-          <div className="font-mono text-xs uppercase tracking-wider text-muted-foreground">Portfolio</div>
-          <h2 className="mt-3 font-display text-3xl font-bold tracking-tight md:text-5xl">Recent shipped work.</h2>
-          <p className="mt-3 mx-auto max-w-xl text-muted-foreground">
+        <motion.div
+          className="mb-10 text-center"
+          variants={staggerContainer(0.1)}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true }}
+        >
+          <motion.div variants={fadeUp} transition={{ duration: 0.5 }} className="font-mono text-xs uppercase tracking-wider text-muted-foreground">Portfolio</motion.div>
+          <motion.h2 variants={fadeUp} transition={{ duration: 0.5 }} className="mt-3 font-display text-3xl font-bold tracking-tight md:text-5xl">Recent shipped work.</motion.h2>
+          <motion.p variants={fadeUp} transition={{ duration: 0.5 }} className="mt-3 mx-auto max-w-xl text-muted-foreground">
             A curated selection of web apps, AI products, e-commerce stores, and growth campaigns we've built and launched.
-          </p>
-        </div>
+          </motion.p>
+        </motion.div>
 
-        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {PROJECTS.slice(0, 6).map((p, idx) => {
+        <motion.div
+          className="grid gap-5 md:grid-cols-2 lg:grid-cols-3"
+          variants={staggerContainer(0.07)}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: "-60px" }}
+        >
+          {PROJECTS.slice(0, 6).map((p) => {
             const images = p.images ?? [PROJECT_IMAGES[p.slug]];
             return (
               <motion.div
                 key={p.slug}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: (idx % 3) * 0.07 }}
+                variants={fadeUp}
+                transition={{ duration: 0.5 }}
                 className="group overflow-hidden rounded-2xl border border-border bg-card transition hover:border-glow"
               >
-<div className="relative h-56 overflow-hidden bg-zinc-950 flex items-center justify-center">
-  <img
-    src={images[0]}
-    alt={p.title}
-    className="h-full w-full object-cover object-top transition duration-700 group-hover:scale-105"
-    loading="lazy"
-  />
+                <div className="relative h-56 overflow-hidden bg-zinc-950 flex items-center justify-center">
+                  <img
+                    src={images[0]}
+                    alt={p.title}
+                    className="h-full w-full object-cover object-top transition duration-700 group-hover:scale-105"
+                    loading="lazy"
+                    decoding="async"
+                  />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
                   <div className="absolute bottom-3 left-3 rounded-full border border-white/30 bg-black/40 px-2.5 py-1 font-mono text-[10px] uppercase text-white backdrop-blur">{p.tag}</div>
                   {images.length > 1 && (
@@ -618,7 +707,11 @@ function Portfolio() {
                   )}
                   <div className="absolute inset-0 flex items-center justify-center opacity-0 transition group-hover:opacity-100">
                     <div className="flex gap-2">
-                      <button onClick={() => setShotFor(p.slug)} className="inline-flex items-center gap-1.5 rounded-full bg-white/95 px-4 py-2 text-xs font-medium text-black backdrop-blur hover:bg-white">
+                      <button
+                        onClick={() => setShotFor(p.slug)}
+                        aria-label={`View screenshots for ${p.title}`}
+                        className="inline-flex items-center gap-1.5 rounded-full bg-white/95 px-4 py-2 text-xs font-medium text-black backdrop-blur hover:bg-white"
+                      >
                         <Eye className="h-3.5 w-3.5" /> Screenshots
                       </button>
                       {p.live && (
@@ -642,7 +735,11 @@ function Portfolio() {
                     )}
                   </div>
                   <div className="mt-4 flex items-center justify-between gap-2">
-                    <button onClick={() => setShotFor(p.slug)} className="inline-flex items-center gap-1.5 text-xs font-medium hover:text-gradient">
+                    <button
+                      onClick={() => setShotFor(p.slug)}
+                      aria-label={`View ${images.length} screenshots for ${p.title}`}
+                      className="inline-flex items-center gap-1.5 text-xs font-medium hover:text-gradient"
+                    >
                       <Eye className="h-3.5 w-3.5" /> View screenshots {images.length > 1 && `(${images.length})`}
                     </button>
                     {p.live && (
@@ -655,36 +752,48 @@ function Portfolio() {
               </motion.div>
             );
           })}
-        </div>
+        </motion.div>
 
-        <div className="mt-10 flex justify-center">
+        <motion.div
+          className="mt-10 flex justify-center"
+          variants={fadeIn}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
           <Link to="/portfolio" className="inline-flex items-center gap-2 rounded-full bg-foreground px-6 py-3 text-sm font-semibold text-background hover:opacity-90">
             View all projects
             <span className="grid h-7 w-7 place-items-center rounded-full bg-background text-foreground"><ArrowRight className="h-3.5 w-3.5" /></span>
           </Link>
-        </div>
+        </motion.div>
       </div>
 
-      {project && <ScreenshotModal project={project} onClose={() => setShotFor(null)} />}
+      {project !== null && <ScreenshotModal project={project} onClose={() => setShotFor(null)} />}
     </section>
   );
 }
 
 /* ============================== CASE STUDY MODAL ============================== */
-function CaseStudyModal({ cs, onClose }: { cs: typeof CASE_STUDIES[number]; onClose: () => void }) {
+function CaseStudyModal({ cs, onClose }: { cs: typeof CASE_STUDIES[number]; onClose: () => void }): JSX.Element {
   const [imgIdx, setImgIdx] = useState(0);
-  const images = cs.images ?? [CASE_IMAGES[cs.slug]];
+  const images = cs.images ?? [CASE_IMAGES[cs.slug] ?? ""];
   const prevImg = () => setImgIdx((i) => (i <= 0 ? images.length - 1 : i - 1));
   const nextImg = () => setImgIdx((i) => (i >= images.length - 1 ? 0 : i + 1));
 
   return (
     <AnimatePresence>
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
+        variants={fadeIn}
+        initial="hidden"
+        animate="show"
+        exit="hidden"
+        transition={{ duration: 0.25 }}
         className="fixed inset-0 z-[200] flex items-start justify-center bg-background/95 backdrop-blur-md overflow-y-auto py-6 px-4"
         onClick={onClose}
+        role="dialog"
+        aria-modal="true"
+        aria-label={cs.title}
       >
         <motion.div
           initial={{ opacity: 0, y: 40 }}
@@ -694,15 +803,15 @@ function CaseStudyModal({ cs, onClose }: { cs: typeof CASE_STUDIES[number]; onCl
           className="relative w-full max-w-4xl rounded-3xl border border-border bg-card shadow-2xl"
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Close */}
           <button
             onClick={onClose}
+            aria-label="Close case study"
             className="absolute right-4 top-4 z-10 grid h-9 w-9 place-items-center rounded-full bg-background/80 hover:bg-muted border border-border transition"
           >
             <X className="h-4 w-4" />
           </button>
 
-          {/* ── 1. Hero Banner ── */}
+          {/* Hero Banner */}
           <div className="relative h-64 overflow-hidden rounded-t-3xl md:h-80">
             <img src={images[0]} alt={cs.title} className="h-full w-full object-cover" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/20" />
@@ -725,14 +834,10 @@ function CaseStudyModal({ cs, onClose }: { cs: typeof CASE_STUDIES[number]; onCl
           </div>
 
           <div className="p-6 md:p-8 space-y-8">
-
-            {/* ── 2. Problem Statement ── */}
             <div>
               <SectionLabel icon={<Target className="h-4 w-4" />} label="Problem Statement" />
               <p className="mt-3 text-muted-foreground leading-relaxed">{cs.problem}</p>
             </div>
-
-            {/* ── 3. Goals & Objectives ── */}
             <div>
               <SectionLabel icon={<CheckCircle className="h-4 w-4" />} label="Goals & Objectives" />
               <ul className="mt-3 space-y-2">
@@ -744,26 +849,18 @@ function CaseStudyModal({ cs, onClose }: { cs: typeof CASE_STUDIES[number]; onCl
                 ))}
               </ul>
             </div>
-
-            {/* ── 4. Research / Discovery ── */}
             <div>
               <SectionLabel icon={<Search className="h-4 w-4" />} label="Research & Discovery" />
               <p className="mt-3 text-muted-foreground leading-relaxed">{cs.research}</p>
             </div>
-
-            {/* ── 5. Design Process ── */}
             <div>
               <SectionLabel icon={<Sparkles className="h-4 w-4" />} label="Design Process" />
               <p className="mt-3 text-muted-foreground leading-relaxed">{cs.designProcess}</p>
             </div>
-
-            {/* ── 6. Development Process ── */}
             <div>
               <SectionLabel icon={<Code2 className="h-4 w-4" />} label="Development Process" />
               <p className="mt-3 text-muted-foreground leading-relaxed">{cs.devProcess}</p>
             </div>
-
-            {/* ── 7. Challenges & Solutions ── */}
             <div>
               <SectionLabel icon={<Zap className="h-4 w-4" />} label="Challenges & Solutions" />
               <div className="mt-3 space-y-3">
@@ -777,27 +874,25 @@ function CaseStudyModal({ cs, onClose }: { cs: typeof CASE_STUDIES[number]; onCl
                 ))}
               </div>
             </div>
-
-            {/* ── 8. Screenshots ── */}
             <div>
               <SectionLabel icon={<Eye className="h-4 w-4" />} label="Screenshots" />
-<div className="mt-3 relative overflow-hidden rounded-2xl bg-zinc-950" style={{ height: "min(60vh, 460px)" }}>
-  <img
-    src={images[imgIdx]}
+              <div className="mt-3 relative overflow-hidden rounded-2xl bg-zinc-950" style={{ height: "min(60vh, 460px)" }}>
+                <img
+                  src={images[imgIdx]}
                   alt={`${cs.client} screenshot ${imgIdx + 1}`}
                   className="h-full w-full object-contain"
                 />
                 {images.length > 1 && (
                   <>
-                    <button onClick={prevImg} className="absolute left-3 top-1/2 -translate-y-1/2 grid h-10 w-10 place-items-center rounded-full bg-black/60 text-white hover:bg-black/80 transition">
+                    <button onClick={prevImg} aria-label="Previous screenshot" className="absolute left-3 top-1/2 -translate-y-1/2 grid h-10 w-10 place-items-center rounded-full bg-black/60 text-white hover:bg-black/80 transition">
                       <ChevronLeft className="h-5 w-5" />
                     </button>
-                    <button onClick={nextImg} className="absolute right-3 top-1/2 -translate-y-1/2 grid h-10 w-10 place-items-center rounded-full bg-black/60 text-white hover:bg-black/80 transition">
+                    <button onClick={nextImg} aria-label="Next screenshot" className="absolute right-3 top-1/2 -translate-y-1/2 grid h-10 w-10 place-items-center rounded-full bg-black/60 text-white hover:bg-black/80 transition">
                       <ChevronRight className="h-5 w-5" />
                     </button>
                     <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
                       {images.map((_, i) => (
-                        <button key={i} onClick={() => setImgIdx(i)} className={`h-1.5 rounded-full transition-all ${i === imgIdx ? "w-6 bg-white" : "w-1.5 bg-white/40"}`} />
+                        <button key={i} onClick={() => setImgIdx(i)} aria-label={`Screenshot ${i + 1}`} className={`h-1.5 rounded-full transition-all ${i === imgIdx ? "w-6 bg-white" : "w-1.5 bg-white/40"}`} />
                       ))}
                     </div>
                   </>
@@ -806,15 +901,13 @@ function CaseStudyModal({ cs, onClose }: { cs: typeof CASE_STUDIES[number]; onCl
               {images.length > 1 && (
                 <div className="mt-2 flex gap-2 overflow-x-auto scrollbar-hide">
                   {images.map((img, i) => (
-                    <button key={i} onClick={() => setImgIdx(i)} className={`h-14 w-20 shrink-0 overflow-hidden rounded-lg border-2 transition ${i === imgIdx ? "border-sky-500" : "border-border opacity-60 hover:opacity-100"}`}>
+                    <button key={i} onClick={() => setImgIdx(i)} aria-label={`View screenshot ${i + 1}`} className={`h-14 w-20 shrink-0 overflow-hidden rounded-lg border-2 transition ${i === imgIdx ? "border-sky-500" : "border-border opacity-60 hover:opacity-100"}`}>
                       <img src={img} alt="" className="h-full w-full object-cover" />
                     </button>
                   ))}
                 </div>
               )}
             </div>
-
-            {/* ── 9. Results ── */}
             <div>
               <SectionLabel icon={<BarChart2 className="h-4 w-4" />} label="Final Results & Outcomes" />
               <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
@@ -826,8 +919,6 @@ function CaseStudyModal({ cs, onClose }: { cs: typeof CASE_STUDIES[number]; onCl
                 ))}
               </div>
             </div>
-
-            {/* ── 10. Tech Stack ── */}
             <div>
               <SectionLabel icon={<Cpu className="h-4 w-4" />} label="Tech Stack" />
               <div className="mt-3 grid gap-3 sm:grid-cols-2">
@@ -843,8 +934,6 @@ function CaseStudyModal({ cs, onClose }: { cs: typeof CASE_STUDIES[number]; onCl
                 ))}
               </div>
             </div>
-
-            {/* ── 11. Testimonial ── */}
             <div className="rounded-2xl border border-border bg-muted/40 p-6">
               <Quote className="h-6 w-6 text-muted-foreground mb-3" />
               <p className="font-display text-lg font-medium leading-snug">"{cs.testimonial.quote}"</p>
@@ -858,22 +947,16 @@ function CaseStudyModal({ cs, onClose }: { cs: typeof CASE_STUDIES[number]; onCl
                 </div>
               </div>
             </div>
-
-            {/* ── 12. CTA ── */}
             <div className="rounded-2xl border border-border bg-foreground p-6 text-center text-background">
               <h3 className="font-display text-xl font-bold">Want similar results for your project?</h3>
               <p className="mt-2 text-sm text-background/70">Let's build something that moves your metrics.</p>
               <div className="mt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
-                <Link
-                  to="/contact"
-                  className="inline-flex items-center gap-2 rounded-full bg-background px-6 py-3 text-sm font-semibold text-foreground hover:opacity-90"
-                >
+                <Link to="/contact" className="inline-flex items-center gap-2 rounded-full bg-background px-6 py-3 text-sm font-semibold text-foreground hover:opacity-90">
                   Book a discovery call <ArrowRight className="h-4 w-4" />
                 </Link>
                 <button onClick={onClose} className="text-sm text-background/60 hover:text-background/90">Close case study</button>
               </div>
             </div>
-
           </div>
         </motion.div>
       </motion.div>
@@ -881,7 +964,7 @@ function CaseStudyModal({ cs, onClose }: { cs: typeof CASE_STUDIES[number]; onCl
   );
 }
 
-function SectionLabel({ icon, label }: { icon: React.ReactNode; label: string }) {
+function SectionLabel({ icon, label }: { icon: React.ReactNode; label: string }): JSX.Element {
   return (
     <div className="flex items-center gap-2">
       <span className="grid h-7 w-7 place-items-center rounded-lg bg-muted text-muted-foreground">{icon}</span>
@@ -891,28 +974,41 @@ function SectionLabel({ icon, label }: { icon: React.ReactNode; label: string })
 }
 
 /* ============================== CASE STUDIES ============================== */
-function CaseStudies() {
+function CaseStudies(): JSX.Element {
   const [activeCase, setActiveCase] = useState<string | null>(null);
   const cats = ["All", ...Array.from(new Set(CASE_STUDIES.flatMap((c) => c.tags)))];
   const [active, setActive] = useState("All");
   const list = active === "All" ? CASE_STUDIES : CASE_STUDIES.filter((c) => c.tags.includes(active));
-  const modalCase = CASE_STUDIES.find((c) => c.slug === activeCase);
+  const modalCase = CASE_STUDIES.find((c) => c.slug === activeCase) ?? null;
 
   return (
     <section className="border-t border-border py-20 md:py-32">
       <div className="mx-auto max-w-7xl px-4 md:px-6">
-        <h2 className="font-display text-6xl font-bold tracking-tight md:text-8xl lg:text-[5rem] leading-[0.9]">
+        <motion.h2
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="font-display text-6xl font-bold tracking-tight md:text-8xl lg:text-[5rem] leading-[0.9]"
+        >
           Case Studies
-        </h2>
-        <div className="mt-10 grid items-end gap-8 md:grid-cols-2">
-          <div className="flex items-center gap-4">
+        </motion.h2>
+        <motion.div
+          className="mt-10 grid items-end gap-8 md:grid-cols-2"
+          variants={staggerContainer(0.1)}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true }}
+        >
+          <motion.div variants={fadeUp} transition={{ duration: 0.5 }} className="flex items-center gap-4">
             <div className="grid h-14 w-16 place-items-center rounded-full bg-foreground text-background font-display text-sm font-bold">80+</div>
             <div className="text-sm text-muted-foreground">Projects completed across web, AI, commerce & growth.</div>
-          </div>
-          <p className="text-pretty text-muted-foreground md:text-lg">
+          </motion.div>
+          <motion.p variants={fadeUp} transition={{ duration: 0.5 }} className="text-pretty text-muted-foreground md:text-lg">
             Explore a selection of crafted work combining unique design and rich technology. We always build from scratch — creating memorable brands, high-performing websites, and digital products that convert.
-          </p>
-        </div>
+          </motion.p>
+        </motion.div>
 
         <div className="mt-10 flex flex-wrap gap-2">
           {cats.map((c) => (
@@ -929,22 +1025,22 @@ function CaseStudies() {
           ))}
         </div>
 
-        <div className="mt-8 grid gap-5 md:grid-cols-2">
-          {list.map((c, i) => (
-            <motion.div
-              key={c.slug}
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.55, delay: (i % 4) * 0.06 }}
-              whileHover={{ y: -6 }}
-            >
+        <motion.div
+          className="mt-8 grid gap-5 md:grid-cols-2"
+          variants={staggerContainer(0.06)}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: "-60px" }}
+        >
+          {list.map((c) => (
+            <motion.div key={c.slug} variants={fadeUp} transition={{ duration: 0.55 }} whileHover={{ y: -6 }}>
               <button
                 onClick={() => setActiveCase(c.slug)}
+                aria-label={`View case study: ${c.title}`}
                 className="group relative block w-full overflow-hidden rounded-3xl border border-border bg-card transition hover:border-glow text-left"
               >
                 <div className="relative h-52 overflow-hidden">
-                  <img src={CASE_IMAGES[c.slug]} alt={c.title} className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-110" loading="lazy" />
+                  <img src={CASE_IMAGES[c.slug]} alt={c.title} className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-110" loading="lazy" decoding="async" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
                   <div className="absolute right-3 top-3 rounded-full bg-white/95 px-3 py-1 font-mono text-[10px] uppercase text-black">{c.result}</div>
                   <div className="absolute right-3 bottom-3 grid h-10 w-10 place-items-center rounded-full bg-foreground text-background opacity-0 transition group-hover:opacity-100">
@@ -967,144 +1063,117 @@ function CaseStudies() {
               </button>
             </motion.div>
           ))}
-        </div>
+        </motion.div>
 
-        <div className="mt-12 flex justify-center">
+        <motion.div
+          className="mt-12 flex justify-center"
+          variants={fadeIn}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
           <Link to="/case-studies" className="inline-flex items-center gap-2 rounded-full bg-foreground px-6 py-3 text-sm font-semibold text-background hover:opacity-90">
             View all case studies
             <span className="grid h-7 w-7 place-items-center rounded-full bg-background text-foreground"><ArrowRight className="h-3.5 w-3.5" /></span>
           </Link>
-        </div>
+        </motion.div>
       </div>
 
-      {modalCase && <CaseStudyModal cs={modalCase} onClose={() => setActiveCase(null)} />}
+      {modalCase !== null && <CaseStudyModal cs={modalCase} onClose={() => setActiveCase(null)} />}
     </section>
   );
 }
 
 /* ============================== WHY US ============================== */
-function WhyUs() {
+function WhyUs(): JSX.Element {
   const cards = [
-    {
-      t: "Strategy + Execution",
-      d: "We don't just design or code. We help shape the product, plan the roadmap, and build solutions that align with your business goals.",
-      icon: Users,
-      img: "/media/why-team.jpg",
-    },
-    {
-      t: "Built for Growth",
-      d: "From websites to SaaS platforms and AI systems, everything is designed to scale as your users, traffic, and business grow.",
-      icon: TrendingUp,
-      img: "/media/why-outcomes.jpg",
-    },
-    {
-      t: "Transparent Process",
-      d: "Weekly updates, shared workspaces, and live progress tracking mean you're always informed from kickoff to launch.",
-      icon: ShieldCheck,
-      img: "/media/why-transparency.jpg",
-    },
-    {
-      t: "Performance First",
-      d: "Fast loading, SEO-ready, secure, and optimized products built with clean architecture that lasts beyond launch.",
-      icon: Award,
-      img: "/media/why-qualit.jpg",
-    },
+    { t: "Strategy + Execution", d: "We don't just design or code. We help shape the product, plan the roadmap, and build solutions that align with your business goals.", icon: Users, img: "/media/why-team.jpg" },
+    { t: "Built for Growth", d: "From websites to SaaS platforms and AI systems, everything is designed to scale as your users, traffic, and business grow.", icon: TrendingUp, img: "/media/why-outcomes.jpg" },
+    { t: "Transparent Process", d: "Weekly updates, shared workspaces, and live progress tracking mean you're always informed from kickoff to launch.", icon: ShieldCheck, img: "/media/why-transparency.jpg" },
+    { t: "Performance First", d: "Fast loading, SEO-ready, secure, and optimized products built with clean architecture that lasts beyond launch.", icon: Award, img: "/media/why-qualit.jpg" },
   ];
+
+  const cardGrid = (
+    <motion.div
+      className="grid gap-4 sm:grid-cols-2"
+      variants={staggerContainer(0.07)}
+      initial="hidden"
+      whileInView="show"
+      viewport={{ once: true, margin: "-60px" }}
+    >
+      {cards.map((c) => {
+        const I = c.icon;
+        return (
+          <motion.div
+            key={c.t}
+            variants={fadeUp}
+            transition={{ duration: 0.5 }}
+            whileHover={{ y: -6 }}
+            className="group relative aspect-[4/5] overflow-hidden rounded-3xl border border-border bg-card"
+          >
+            <img src={c.img} alt={c.t} className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-110" loading="lazy" decoding="async" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/55 to-black/20" />
+            <div className="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-xl border border-white/20 bg-white/10 text-white backdrop-blur">
+              <I className="h-5 w-5" />
+            </div>
+            <div className="absolute inset-0 flex flex-col justify-end p-6 text-white">
+              <h3 className="font-display text-xl font-semibold">{c.t}</h3>
+              <p className="mt-2 text-sm text-white/80">{c.d}</p>
+            </div>
+          </motion.div>
+        );
+      })}
+    </motion.div>
+  );
 
   return (
     <section className="border-t border-border py-20 md:py-32 bg-[var(--section-a)]">
       <div className="mx-auto max-w-7xl px-4 md:px-6">
-
-        {/* Mobile layout */}
+        {/* Mobile */}
         <div className="lg:hidden">
-          <div className="mb-8">
-            <div className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-gradient">
+          <motion.div variants={staggerContainer(0.1)} initial="hidden" whileInView="show" viewport={{ once: true }} className="mb-8">
+            <motion.div variants={fadeUp} transition={{ duration: 0.5 }} className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-gradient">
               <span className="h-1.5 w-1.5 rounded-full bg-[var(--neon)]" /> Why Globe Stack
-            </div>
-            <h2 className="mt-4 font-display text-4xl font-bold leading-[1.05] tracking-tight md:text-6xl">
-              Why Choose Us
-            </h2>
-            <p className="mt-6 max-w-md text-muted-foreground">
+            </motion.div>
+            <motion.h2 variants={fadeUp} transition={{ duration: 0.5 }} className="mt-4 font-display text-4xl font-bold leading-[1.05] tracking-tight md:text-6xl">Why Choose Us</motion.h2>
+            <motion.p variants={fadeUp} transition={{ duration: 0.5 }} className="mt-6 max-w-md text-muted-foreground">
               This isn't just another agency. It's a transformation for your product, your growth, and your team. Built by senior operators who have actually shipped.
-            </p>
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2">
-            {cards.map((c, i) => {
-              const I = c.icon;
-              return (
-                <motion.div
-                  key={c.t}
-                  initial={{ opacity: 0, y: 24 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: i * 0.07 }}
-                  whileHover={{ y: -6 }}
-                  className="group relative aspect-[4/5] overflow-hidden rounded-3xl border border-border bg-card"
-                >
-                  <img src={c.img} alt={c.t} className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-110" loading="lazy" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/55 to-black/20" />
-                  <div className="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-xl border border-white/20 bg-white/10 text-white backdrop-blur">
-                    <I className="h-5 w-5" />
-                  </div>
-                  <div className="absolute inset-0 flex flex-col justify-end p-6 text-white">
-                    <h3 className="font-display text-xl font-semibold">{c.t}</h3>
-                    <p className="mt-2 text-sm text-white/80">{c.d}</p>
-                  </div>
-                </motion.div>
-              );
-            })}
-          </div>
-          <div className="mt-8">
+            </motion.p>
+          </motion.div>
+          {cardGrid}
+          <motion.div variants={fadeIn} initial="hidden" whileInView="show" viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.3 }} className="mt-8">
             <Link to="/about" className="inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-3 text-sm font-medium text-background hover:opacity-90">
               More about us
               <span className="grid h-7 w-7 place-items-center rounded-full bg-background text-foreground"><ArrowUpRight className="h-3.5 w-3.5" /></span>
             </Link>
-          </div>
+          </motion.div>
         </div>
 
-        {/* Desktop layout */}
+        {/* Desktop */}
         <div className="hidden lg:grid gap-16 lg:grid-cols-2">
-          <div className="lg:sticky lg:top-24 lg:self-start">
-            <div className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-gradient">
+          <motion.div
+            variants={staggerContainer(0.1)}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true }}
+            className="lg:sticky lg:top-24 lg:self-start"
+          >
+            <motion.div variants={fadeUp} transition={{ duration: 0.5 }} className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-gradient">
               <span className="h-1.5 w-1.5 rounded-full bg-[var(--neon)]" /> Why Globe Stack
-            </div>
-            <h2 className="mt-4 font-display text-4xl font-bold leading-[1.05] tracking-tight md:text-6xl">
-              Why Choose Us
-            </h2>
-            <p className="mt-6 max-w-md text-muted-foreground">
+            </motion.div>
+            <motion.h2 variants={fadeUp} transition={{ duration: 0.5 }} className="mt-4 font-display text-4xl font-bold leading-[1.05] tracking-tight md:text-6xl">Why Choose Us</motion.h2>
+            <motion.p variants={fadeUp} transition={{ duration: 0.5 }} className="mt-6 max-w-md text-muted-foreground">
               This isn't just another agency. It's a transformation for your product, your growth, and your team. Built by senior operators who have actually shipped.
-            </p>
-            <Link to="/about" className="mt-8 inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-3 text-sm font-medium text-background hover:opacity-90">
-              More about us
-              <span className="grid h-7 w-7 place-items-center rounded-full bg-background text-foreground"><ArrowUpRight className="h-3.5 w-3.5" /></span>
-            </Link>
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2">
-            {cards.map((c, i) => {
-              const I = c.icon;
-              return (
-                <motion.div
-                  key={c.t}
-                  initial={{ opacity: 0, y: 24 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: i * 0.07 }}
-                  whileHover={{ y: -6 }}
-                  className="group relative aspect-[4/5] overflow-hidden rounded-3xl border border-border bg-card"
-                >
-                  <img src={c.img} alt={c.t} className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-110" loading="lazy" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/55 to-black/20" />
-                  <div className="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-xl border border-white/20 bg-white/10 text-white backdrop-blur">
-                    <I className="h-5 w-5" />
-                  </div>
-                  <div className="absolute inset-0 flex flex-col justify-end p-6 text-white">
-                    <h3 className="font-display text-xl font-semibold">{c.t}</h3>
-                    <p className="mt-2 text-sm text-white/80">{c.d}</p>
-                  </div>
-                </motion.div>
-              );
-            })}
-          </div>
+            </motion.p>
+            <motion.div variants={fadeIn} transition={{ duration: 0.5, delay: 0.3 }}>
+              <Link to="/about" className="mt-8 inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-3 text-sm font-medium text-background hover:opacity-90">
+                More about us
+                <span className="grid h-7 w-7 place-items-center rounded-full bg-background text-foreground"><ArrowUpRight className="h-3.5 w-3.5" /></span>
+              </Link>
+            </motion.div>
+          </motion.div>
+          {cardGrid}
         </div>
       </div>
     </section>
@@ -1112,28 +1181,54 @@ function WhyUs() {
 }
 
 /* ============================== PROCESS ============================== */
-function Process() {
+function Process(): JSX.Element {
   return (
     <section className="border-t border-border bg-foreground py-20 text-background md:py-28">
       <div className="mx-auto max-w-7xl px-4 md:px-6">
-        <div className="mb-12 text-center">
-          <div className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider">
+        <motion.div
+          className="mb-12 text-center"
+          variants={staggerContainer(0.1)}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true }}
+        >
+          <motion.div variants={fadeUp} transition={{ duration: 0.5 }} className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider">
             <span className="h-1.5 w-1.5 rounded-full bg-[var(--neon)]" /> {PROCESS.length} step process
-          </div>
-          <h2 className="mt-3 font-display text-3xl font-bold leading-tight tracking-tight md:text-5xl">
+          </motion.div>
+          <motion.h2 variants={fadeUp} transition={{ duration: 0.5 }} className="mt-3 font-display text-3xl font-bold leading-tight tracking-tight md:text-5xl">
             Effortless Process,<br />Continuous Delivery.
-          </h2>
-        </div>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+          </motion.h2>
+        </motion.div>
+
+        <motion.div
+          className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5"
+          variants={staggerContainer(0.06)}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: "-40px" }}
+        >
           {PROCESS.map((p) => (
-            <div key={p.step} className="rounded-2xl border border-background/10 bg-background/5 p-6">
+            <motion.div
+              key={p.step}
+              variants={fadeUp}
+              transition={{ duration: 0.5 }}
+              className="rounded-2xl border border-background/10 bg-background/5 p-6"
+            >
               <div className="font-display text-2xl font-bold">{p.step}.</div>
               <h3 className="mt-3 font-display text-lg font-semibold leading-tight">{p.title}</h3>
               <p className="mt-3 text-sm text-background/70">{p.desc}</p>
-            </div>
+            </motion.div>
           ))}
-        </div>
-        <div className="mt-10 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-background/10 bg-background/5 p-4">
+        </motion.div>
+
+        <motion.div
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+          className="mt-10 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-background/10 bg-background/5 p-4"
+        >
           <div className="flex items-center gap-3">
             <div className="flex -space-x-2">
               {["MC", "DP", "PS"].map((a) => (
@@ -1146,31 +1241,38 @@ function Process() {
             Start now
             <span className="grid h-6 w-6 place-items-center rounded-full bg-foreground text-background"><ArrowRight className="h-3.5 w-3.5" /></span>
           </Link>
-        </div>
+        </motion.div>
       </div>
     </section>
   );
 }
 
 /* ============================== STACK ============================== */
-function Stack() {
+function Stack(): JSX.Element {
   const groups = [
     { name: "Web Development", items: ["TypeScript", "React", "Next.js", "TanStack", "Node.js", "Tailwind", "Express.js", "MongoDB", "PostgreSQL"] },
     { name: "AI & ML", items: ["OpenAI", "Anthropic", "LangChain", "pgvector", "Python", "Hugging Face"] },
     { name: "Commerce", items: ["Shopify", "Wordpress", "Hydrogen", "Stripe", "Klaviyo", "Sanity", "Webflow"] },
     { name: "Growth & Marketing", items: ["GA4", "Meta Ads", "Google Ads", "Ahrefs", "BigQuery", "Notion"] },
   ];
+
   return (
     <section className="relative border-t border-border py-20 md:py-32 bg-[var(--section-b)]">
       <div className="absolute inset-0 bg-grid opacity-20" />
       <div className="relative mx-auto max-w-7xl px-4 md:px-6">
-        <div className="text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-glow glass px-3 py-1 font-mono text-xs uppercase tracking-wider text-gradient">
+        <motion.div
+          className="text-center"
+          variants={staggerContainer(0.1)}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true }}
+        >
+          <motion.div variants={fadeUp} transition={{ duration: 0.5 }} className="inline-flex items-center gap-2 rounded-full border border-glow glass px-3 py-1 font-mono text-xs uppercase tracking-wider text-gradient">
             Stack of Technology
-          </div>
-          <h2 className="mt-4 font-display text-3xl font-bold tracking-tight md:text-5xl">Tools we reach for.</h2>
-          <p className="mx-auto mt-3 max-w-xl text-muted-foreground">Stack-agnostic, but here's what powers most of our work — modern, fast, and battle-tested.</p>
-        </div>
+          </motion.div>
+          <motion.h2 variants={fadeUp} transition={{ duration: 0.5 }} className="mt-4 font-display text-3xl font-bold tracking-tight md:text-5xl">Tools we reach for.</motion.h2>
+          <motion.p variants={fadeUp} transition={{ duration: 0.5 }} className="mx-auto mt-3 max-w-xl text-muted-foreground">Stack-agnostic, but here's what powers most of our work — modern, fast, and battle-tested.</motion.p>
+        </motion.div>
 
         <div className="relative mt-16 grid gap-5 md:grid-cols-2">
           <div className="pointer-events-none absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 md:block">
@@ -1178,15 +1280,23 @@ function Stack() {
               <div className="font-display text-sm font-bold leading-tight">Stack of<br />Technology</div>
             </div>
           </div>
-          {groups.map((g) => (
-            <div key={g.name} className="rounded-3xl border border-border bg-card p-6 md:p-8">
+          {groups.map((g, i) => (
+            <motion.div
+              key={g.name}
+              variants={fadeUp}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: i * 0.08 }}
+              className="rounded-3xl border border-border bg-card p-6 md:p-8"
+            >
               <div className="inline-flex items-center gap-2 rounded-full border border-glow px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-gradient">{g.name}</div>
               <div className="mt-5 flex flex-wrap gap-2">
                 {g.items.map((it) => (
                   <span key={it} className="rounded-xl border border-border bg-background/60 px-3 py-2 font-mono text-xs">{it}</span>
                 ))}
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>
@@ -1196,45 +1306,15 @@ function Stack() {
 
 /* ============================== TESTIMONIALS ============================== */
 const UPDATED_TESTIMONIALS = [
-  {
-    name: "Adebayo Okafor",
-    role: "CEO, Niscala.io",
-    avatar: "AO",
-    quote: "Globe Stack rebuilt our entire web platform and integrated a custom AI assistant. Traffic doubled in 3 months and our team is more productive than ever.",
-  },
-  {
-    name: "Chioma Eze",
-    role: "Founder, SAMTIV",
-    avatar: "CE",
-    quote: "Their Shopify setup and Meta Ads strategy took us from zero to 6 figures online in under 90 days. The senior team approach is the real deal.",
-  },
-  {
-    name: "Emeka Nwosu",
-    role: "Head of Growth, IEA",
-    avatar: "EN",
-    quote: "The SEO work Globe Stack did transformed our organic channel. We went from page 4 to ranking #1 for our core keywords within 5 months.",
-  },
-  {
-    name: "Fatima Al-Hassan",
-    role: "CTO, BOKING",
-    avatar: "FA",
-    quote: "Clean code, great communication, and they shipped on time. The AI automation they built saved our ops team 20+ hours a week.",
-  },
-  {
-    name: "Tunde Adeleke",
-    role: "Director, Greenfield Ventures",
-    avatar: "TA",
-    quote: "Working with Globe Stack felt like having an in-house team. They understood our business goals and every deliverable reflected that.",
-  },
-  {
-    name: "Ngozi Obi",
-    role: "E-commerce Manager, StyleHouse",
-    avatar: "NO",
-    quote: "Our Shopify conversion rate went from 1.2% to 3.8% after their redesign. The attention to UX and page speed was exceptional.",
-  },
+  { name: "Adebayo David", role: "CEO, Niscala.io", avatar: "AO", quote: "Globe Stack rebuilt our entire web platform and integrated a custom AI assistant. Traffic doubled in 3 months and our team is more productive than ever." },
+  { name: "Chioma Eze", role: "Founder, SAMTIV", avatar: "CE", quote: "Their Shopify setup and Meta Ads strategy took us from zero to 6 figures online in under 90 days. The senior team approach is the real deal." },
+  { name: "Emeka Nwosu", role: "Head of Growth, IEA", avatar: "EN", quote: "The SEO work Globe Stack did transformed our organic channel. We went from page 4 to ranking #1 for our core keywords within 5 months." },
+  { name: "Fatima Al-Hassan", role: "CTO, BOKING", avatar: "FA", quote: "Clean code, great communication, and they shipped on time. The AI automation they built saved our ops team 20+ hours a week." },
+  { name: "Tunde Adeleke", role: "Director, Greenfield Ventures", avatar: "TA", quote: "Working with Globe Stack felt like having an in-house team. They understood our business goals and every deliverable reflected that." },
+  { name: "Olusegun Daniel", role: "E-commerce Manager, StyleHouse", avatar: "NO", quote: "Our Shopify conversion rate went from 1.2% to 3.8% after their redesign. The attention to UX and page speed was exceptional." },
 ];
 
-function Testimonials() {
+function Testimonials(): JSX.Element {
   const data = UPDATED_TESTIMONIALS;
   const perView = 3;
   const max = Math.max(0, data.length - perView);
@@ -1245,33 +1325,44 @@ function Testimonials() {
   return (
     <section className="border-t border-border py-20 md:py-28">
       <div className="mx-auto max-w-7xl px-4 md:px-6">
-        <div className="mb-10 text-center">
-          <div className="font-mono text-xs uppercase tracking-wider text-muted-foreground">Testimonials</div>
-          <h2 className="mt-3 font-display text-3xl font-bold tracking-tight md:text-5xl">What clients say.</h2>
-          <p className="mt-3 mx-auto max-w-md text-muted-foreground">Real results from founders and teams who trusted us with their digital growth.</p>
-        </div>
+        <motion.div
+          className="mb-10 text-center"
+          variants={staggerContainer(0.1)}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true }}
+        >
+          <motion.div variants={fadeUp} transition={{ duration: 0.5 }} className="font-mono text-xs uppercase tracking-wider text-muted-foreground">Testimonials</motion.div>
+          <motion.h2 variants={fadeUp} transition={{ duration: 0.5 }} className="mt-3 font-display text-3xl font-bold tracking-tight md:text-5xl">What clients say.</motion.h2>
+          <motion.p variants={fadeUp} transition={{ duration: 0.5 }} className="mt-3 mx-auto max-w-md text-muted-foreground">Real results from founders and teams who trusted us with their digital growth.</motion.p>
+        </motion.div>
 
         <div className="hidden md:block" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
           <div className="overflow-hidden">
-            <div className="flex gap-5 transition-transform duration-700 ease-out" style={{ transform: `translateX(calc(-${index} * (100% / ${perView})))` }}>
+            <motion.div
+              className="flex gap-5"
+              animate={{ x: `calc(-${index} * (100% / ${perView}))` }}
+              transition={{ type: "tween", duration: 0.55, ease: [0.32, 0.72, 0, 1] }}
+              style={{ willChange: "transform" }}
+            >
               {data.map((t) => (
                 <div key={t.name} className="w-[calc((100%-2.5rem)/3)] shrink-0">
                   <TestimonialCard t={t} />
                 </div>
               ))}
-            </div>
+            </motion.div>
           </div>
           <div className="mt-6 flex items-center justify-between">
             <div className="flex gap-1.5">
               {Array.from({ length: max + 1 }).map((_, i) => (
-                <button key={i} onClick={() => setIndex(i)} aria-label={`Slide ${i + 1}`} className={`h-1.5 rounded-full transition-all ${i === index ? "w-8 bg-foreground" : "w-1.5 bg-border"}`} />
+                <button key={i} onClick={() => setIndex(i)} aria-label={`Go to slide ${i + 1}`} className={`h-1.5 rounded-full transition-all ${i === index ? "w-8 bg-foreground" : "w-1.5 bg-border"}`} />
               ))}
             </div>
             <SliderArrows onPrev={prev} onNext={next} />
           </div>
         </div>
 
-        <div className="mt-10 -mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto scrollbar-hide px-4 md:hidden">
+        <div className="mt-10 -mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto scrollbar-hide px-4 md:hidden" style={{ WebkitOverflowScrolling: "touch" }}>
           {data.map((t) => (
             <div key={t.name} className="w-[88%] shrink-0 snap-start"><TestimonialCard t={t} /></div>
           ))}
@@ -1281,7 +1372,7 @@ function Testimonials() {
   );
 }
 
-function TestimonialCard({ t }: { t: typeof UPDATED_TESTIMONIALS[number] }) {
+function TestimonialCard({ t }: { t: typeof UPDATED_TESTIMONIALS[number] }): JSX.Element {
   return (
     <div className="flex h-full flex-col rounded-3xl border border-border bg-card p-7">
       <p className="mt-5 flex-1 text-pretty font-display text-lg font-medium leading-snug md:text-xl">"{t.quote}"</p>
@@ -1290,7 +1381,7 @@ function TestimonialCard({ t }: { t: typeof UPDATED_TESTIMONIALS[number] }) {
         <div>
           <div className="text-sm font-medium">{t.name}</div>
           <div className="text-xs text-muted-foreground">{t.role}</div>
-          <div className="flex gap-0.5 text-[var(--neon)]">{[0,1,2,3,4].map((i) => <Star key={i} className="h-4 w-4 fill-current" />)}</div>
+          <div className="flex gap-0.5 text-[var(--neon)]">{[0, 1, 2, 3, 4].map((i) => <Star key={i} className="h-4 w-4 fill-current" />)}</div>
         </div>
       </div>
     </div>
@@ -1298,7 +1389,7 @@ function TestimonialCard({ t }: { t: typeof UPDATED_TESTIMONIALS[number] }) {
 }
 
 /* ============================== BLOG ============================== */
-function Blog() {
+function Blog(): JSX.Element {
   const perView = 3;
   const max = Math.max(0, POSTS.length - perView);
   const { index, setIndex, setPaused } = useAutoSlider(max + 1, 6000);
@@ -1308,36 +1399,47 @@ function Blog() {
   return (
     <section className="border-t border-border py-20 md:py-28 bg-[var(--section-c)]">
       <div className="mx-auto max-w-7xl px-4 md:px-6">
-        <div className="mb-10 text-center">
-          <div className="font-mono text-xs uppercase tracking-wider text-muted-foreground">Blog</div>
-          <h2 className="mt-3 font-display text-3xl font-bold tracking-tight md:text-5xl">Article categories.</h2>
-          <p className="mt-3 max-w-md mx-auto text-muted-foreground">Field notes, deep-dives, and frameworks from our work.</p>
-          <div className="mt-4 flex justify-center">
+        <motion.div
+          className="mb-10 text-center"
+          variants={staggerContainer(0.1)}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true }}
+        >
+          <motion.div variants={fadeUp} transition={{ duration: 0.5 }} className="font-mono text-xs uppercase tracking-wider text-muted-foreground">Blog</motion.div>
+          <motion.h2 variants={fadeUp} transition={{ duration: 0.5 }} className="mt-3 font-display text-3xl font-bold tracking-tight md:text-5xl">Article categories.</motion.h2>
+          <motion.p variants={fadeUp} transition={{ duration: 0.5 }} className="mt-3 max-w-md mx-auto text-muted-foreground">Field notes, deep-dives, and frameworks from our work.</motion.p>
+          <motion.div variants={fadeIn} transition={{ duration: 0.5 }} className="mt-4 flex justify-center">
             <Link to="/blog" className="inline-flex items-center gap-2 rounded-full border border-border px-5 py-2.5 text-sm font-medium hover:bg-muted">
               Browse all articles <ArrowUpRight className="h-4 w-4" />
             </Link>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
 
         <div className="hidden md:block" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
           <div className="overflow-hidden">
-            <div className="flex gap-5 transition-transform duration-700 ease-out" style={{ transform: `translateX(calc(-${index} * (100% / ${perView})))` }}>
+            <motion.div
+              className="flex gap-5"
+              animate={{ x: `calc(-${index} * (100% / ${perView}))` }}
+              transition={{ type: "tween", duration: 0.55, ease: [0.32, 0.72, 0, 1] }}
+              style={{ willChange: "transform" }}
+            >
               {POSTS.map((p) => (
                 <BlogCard key={p.slug} p={p} className="w-[calc((100%-2.5rem)/3)] shrink-0" />
               ))}
-            </div>
+            </motion.div>
           </div>
           <div className="mt-8 flex items-center justify-between">
             <div className="flex gap-1.5">
               {Array.from({ length: max + 1 }).map((_, i) => (
-                <button key={i} onClick={() => setIndex(i)} aria-label={`Slide ${i + 1}`} className={`h-1.5 rounded-full transition-all ${i === index ? "w-8 bg-foreground" : "w-1.5 bg-border"}`} />
+                <button key={i} onClick={() => setIndex(i)} aria-label={`Go to slide ${i + 1}`} className={`h-1.5 rounded-full transition-all ${i === index ? "w-8 bg-foreground" : "w-1.5 bg-border"}`} />
               ))}
             </div>
             <SliderArrows onPrev={prev} onNext={next} />
           </div>
         </div>
 
-        <div className="mt-10 -mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto scrollbar-hide px-4 md:hidden">
+        <div className="mt-10 -mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto scrollbar-hide px-4 md:hidden" style={{ WebkitOverflowScrolling: "touch" }}>
           {POSTS.map((p) => (
             <BlogCard key={p.slug} p={p} className="w-[80%] shrink-0 snap-start" />
           ))}
@@ -1347,18 +1449,16 @@ function Blog() {
   );
 }
 
-function BlogCard({ p, className = "" }: { p: typeof POSTS[number]; className?: string }) {
+function BlogCard({ p, className = "" }: { p: typeof POSTS[number]; className?: string }): JSX.Element {
   return (
     <Link to="/blog" className={`group relative aspect-[3/4] overflow-hidden rounded-3xl border border-border bg-card ${className}`}>
-      <img src={POST_IMAGES[p.slug]} alt={p.title} className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-110" loading="lazy" />
+      <img src={POST_IMAGES[p.slug]} alt={p.title} className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-110" loading="lazy" decoding="async" />
       <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/55 to-black/15" />
       <div className="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-full border border-white/20 bg-white/10 text-white backdrop-blur opacity-0 transition group-hover:opacity-100">
         <ArrowUpRight className="h-4 w-4" />
       </div>
       <div className="absolute inset-0 flex flex-col justify-end p-6 text-white">
-        <div className="inline-flex w-fit items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3 py-1 text-[10px] font-mono uppercase backdrop-blur">
-          {p.tag}
-        </div>
+        <div className="inline-flex w-fit items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3 py-1 text-[10px] font-mono uppercase backdrop-blur">{p.tag}</div>
         <h3 className="mt-4 font-display text-xl font-bold leading-tight">{p.title}</h3>
         <p className="mt-2 line-clamp-2 text-sm text-white/80">{p.excerpt}</p>
         <div className="mt-4 flex items-center justify-between text-xs text-white/70">
@@ -1372,64 +1472,74 @@ function BlogCard({ p, className = "" }: { p: typeof POSTS[number]; className?: 
 
 /* ============================== FAQ ============================== */
 const UPDATED_FAQ = [
-  {
-    q: "What services does Globe Stack offer?",
-    a: "We offer end-to-end digital services: custom web development, AI integration, SEO, paid advertising (Meta & Google Ads), social media management, and Shopify store design and optimisation — all delivered by a senior-only team.",
-  },
-  {
-    q: "Do you work with startups or established businesses?",
-    a: "Both. We've worked with early-stage founders who need their first product shipped, and with established brands scaling into new digital channels. Our process adapts to where you are.",
-  },
-  {
-    q: "How long does a typical project take?",
-    a: "A focused web project typically takes 4–8 weeks. SEO and ads are ongoing engagements with measurable monthly milestones. AI integrations vary — we scope these during discovery to give you an honest timeline.",
-  },
-  {
-    q: "Will I own everything you build?",
-    a: "Absolutely. All code, content, ad accounts, SEO assets, and credentials are yours. We hand over full ownership at the end of every engagement.",
-  },
-  {
-    q: "How do you measure success?",
-    a: "Through the metrics that matter to your business — organic traffic, conversion rate, ROAS, revenue. We set targets together at the start, track them in shared dashboards, and report weekly.",
-  },
-  {
-    q: "Can Globe Stack handle everything my business needs digitally?",
-    a: "Yes. That's exactly why we built Globe Stack. Instead of managing five separate agencies, you get one senior team across web, AI, SEO, ads, social, and commerce — with unified strategy and accountable delivery.",
-  },
+  { q: "What services does Globe Stack offer?", a: "We offer end-to-end digital services: custom web development, AI integration, SEO, paid advertising (Meta & Google Ads), social media management, and Shopify store design and optimisation — all delivered by a senior-only team." },
+  { q: "Do you work with startups or established businesses?", a: "Both. We've worked with early-stage founders who need their first product shipped, and with established brands scaling into new digital channels. Our process adapts to where you are." },
+  { q: "How long does a typical project take?", a: "A focused web project typically takes 4–8 weeks. SEO and ads are ongoing engagements with measurable monthly milestones. AI integrations vary — we scope these during discovery to give you an honest timeline." },
+  { q: "Will I own everything you build?", a: "Absolutely. All code, content, ad accounts, SEO assets, and credentials are yours. We hand over full ownership at the end of every engagement." },
+  { q: "How do you measure success?", a: "Through the metrics that matter to your business — organic traffic, conversion rate, ROAS, revenue. We set targets together at the start, track them in shared dashboards, and report weekly." },
+  { q: "Can Globe Stack handle everything my business needs digitally?", a: "Yes. That's exactly why we built Globe Stack. Instead of managing five separate agencies, you get one senior team across web, AI, SEO, ads, social, and commerce — with unified strategy and accountable delivery." },
 ];
 
-function FAQs() {
+function FAQs(): JSX.Element {
   const [open, setOpen] = useState<number | null>(0);
 
   return (
     <section className="border-t border-border py-20 md:py-32">
       <div className="mx-auto grid max-w-7xl gap-12 px-4 md:px-6 lg:grid-cols-2 lg:gap-16">
-        <div>
-          <div className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-gradient">
+        <motion.div
+          variants={staggerContainer(0.08)}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true }}
+        >
+          <motion.div variants={fadeUp} transition={{ duration: 0.5 }} className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-gradient">
             <span className="h-1.5 w-1.5 rounded-full bg-[var(--neon)]" /> FAQ
-          </div>
-          <h2 className="mt-4 font-display text-4xl font-bold leading-[1.05] tracking-tight md:text-6xl">Questions & Answers</h2>
-          <p className="mt-6 max-w-md text-muted-foreground">
-            Everything you need to know about working with Globe Stack how we engage, what we deliver, and how we're different.
-          </p>
-          <div className="mt-8 space-y-3">
+          </motion.div>
+          <motion.h2 variants={fadeUp} transition={{ duration: 0.5 }} className="mt-4 font-display text-4xl font-bold leading-[1.05] tracking-tight md:text-6xl">Questions & Answers</motion.h2>
+          <motion.p variants={fadeUp} transition={{ duration: 0.5 }} className="mt-6 max-w-md text-muted-foreground">
+            Everything you need to know about working with Globe Stack — how we engage, what we deliver, and how we're different.
+          </motion.p>
+          <motion.div variants={fadeUp} transition={{ duration: 0.5 }} className="mt-8 space-y-3">
             {UPDATED_FAQ.map((f, i) => (
               <div key={f.q} className="overflow-hidden rounded-2xl border border-border bg-card transition hover:border-glow">
-                <button onClick={() => setOpen(open === i ? null : i)} className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left">
+                <button
+                  onClick={() => setOpen(open === i ? null : i)}
+                  aria-expanded={open === i}
+                  className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left"
+                >
                   <span className="font-medium">{f.q}</span>
                   <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-muted">
                     {open === i ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                   </span>
                 </button>
-                {open === i && <div className="px-6 pb-6 text-sm text-muted-foreground">{f.a}</div>}
+                <AnimatePresence initial={false}>
+                  {open === i && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3, ease: "easeInOut" }}
+                      className="overflow-hidden"
+                    >
+                      <div className="px-6 pb-6 text-sm text-muted-foreground">{f.a}</div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             ))}
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
 
-        <div className="relative lg:sticky lg:top-24 lg:self-start">
+        <motion.div
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="relative lg:sticky lg:top-24 lg:self-start"
+        >
           <div className="group relative aspect-[4/5] overflow-hidden rounded-3xl border border-border bg-card">
-            <img src="/media/download.png" alt="Globe Stack team at work" className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" loading="lazy" />
+            <img src="/media/download.png" alt="Globe Stack team at work" className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" loading="lazy" decoding="async" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/20" />
             <div className="absolute inset-x-6 bottom-6">
               <div className="flex items-center gap-4 rounded-2xl border border-white/15 bg-white/10 p-4 text-white backdrop-blur-md">
@@ -1443,7 +1553,7 @@ function FAQs() {
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

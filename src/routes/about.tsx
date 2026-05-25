@@ -28,10 +28,10 @@ export const Route = createFileRoute("/about")({
 });
 
 const STATS = [
-  { v: "300+", l: "Projects shipped" },
-  { v: "120+", l: "Happy clients" },
-  { v: "12y", l: "Avg. senior experience" },
-  { v: "4.9/5", l: "Client satisfaction" },
+  { v: "30+", l: "Projects shipped" },
+  { v: "35+", l: "Happy clients" },
+  { v: "7y", l: "Avg. senior experience" },
+  { v: "95%", l: "Client growth" },
 ];
 
 function AboutPage() {

@@ -11,9 +11,9 @@ const TIMELINE = [
     subtitle: "Where it all began",
     desc: "Two senior engineers left big tech, fed up with bloated agencies that over-promised and under-delivered. Globe Stack was founded with one strict rule: senior only. We shipped our first three projects—a Shopify rebuild, a React SaaS dashboard, and a custom web app—in 90 days. Every client referred another.",
     imgLeft: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&q=80",
-    imgRight: "https://images.unsplash.com/photo-1551434678-e076c223a692?w=600&q=80",
+    imgRight: "/media/web.jpg",
     imgBottomLeft: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=400&q=80",
-    imgBottomRight: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&q=80"
+    imgBottomRight: "/media/saas.jpg"
   },
   {
     year: "2023",
@@ -122,7 +122,7 @@ export function StorySection() {
             </div>
 
             {/* Right Image Column */}
-            <div className="md:col-span-3 order-3 flex flex-col gap-6 min-w-0">
+            <div className=" hidden md:flex md:col-span-3 order-3 flex flex-col gap-6 min-w-0">
               <div className="relative aspect-[3/4] w-full overflow-hidden rounded-md border border-border bg-muted shadow-sm">
                 <img
                   src={current.imgRight}

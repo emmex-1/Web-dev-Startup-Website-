@@ -103,13 +103,13 @@ function RootComponent() {
 
           
           <a
-            href="https://wa.me/2347048595478"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-green-500 text-white shadow-lg transition hover:scale-110"
-          >
-            <FaWhatsapp size={28} />
-          </a>
+href="https://wa.me/2347048595478?text=Hi%20Globe%20Stack%20%F0%9F%91%8B%2C%20I%20came%20across%20your%20website%20and%20I%27m%20interested%20in%20working%20with%20you.%20I%27d%20love%20to%20discuss%20my%20project%20%E2%80%94%20can%20we%20talk%3F"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-green-500 text-white shadow-lg transition hover:scale-110"
+>
+  <FaWhatsapp size={28} />
+</a>
         </div>
       </ThemeProvider>
     </QueryClientProvider>

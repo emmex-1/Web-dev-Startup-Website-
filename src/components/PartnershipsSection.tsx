@@ -9,7 +9,7 @@ const PARTNERS = [
   { title: "Meta Business", detail: "Performance media partner." },
 ];
 
-const CERT_IMAGE = "/media/cac.png";
+const CERT_IMAGE = "/media/ccc.png";
 
 export function PartnershipsSection() {
   return (
