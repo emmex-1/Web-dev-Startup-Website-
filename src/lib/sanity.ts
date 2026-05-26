@@ -1,5 +1,6 @@
 import { createClient, type SanityClient } from "@sanity/client";
-import imageUrlBuilder from "@sanity/image-url";
+// import imageUrlBuilder from "@sanity/image-url";
+import { createImageUrlBuilder } from "@sanity/image-url";
 
 // Set VITE_SANITY_PROJECT_ID in your env once you create a Sanity project at sanity.io/manage.
 // While unset, the blog falls back to static posts in src/lib/content.ts so the site keeps working.
@@ -19,7 +20,10 @@ export const sanityClient: SanityClient | null = sanityEnabled
     })
   : null;
 
-const builder = sanityClient ? imageUrlBuilder(sanityClient) : null;
+// const builder = sanityClient ? imageUrlBuilder(sanityClient) : null;
+const builder = sanityClient
+  ? createImageUrlBuilder(sanityClient)
+  : null;
 
 // Sanity image source can be a string URL, asset ref, or full image object.
 // Using a permissive type to keep callers ergonomic without pulling in the full SanityImageSource type.

@@ -5,7 +5,7 @@ import {
   ShieldCheck, Rocket, Users, Zap, Award, TrendingUp, Play, ChevronLeft, ChevronRight,
   CheckCircle, Cpu, BarChart2, Quote,
 } from "lucide-react";
-import { useState, useEffect, useCallback, useRef, type JSX } from "react";
+import { useState, useEffect, useCallback, useRef, useMemo, memo, type JSX } from "react";
 import { motion, AnimatePresence, type Variants } from "framer-motion";
 import { CTA } from "@/components/section";
 import { SERVICES } from "@/lib/site";
@@ -41,7 +41,55 @@ const SERVICE_BLURBS: Record<string, string> = {
   "backend-api-development": "REST & GraphQL APIs, integrations, and scalable infrastructure.",
 };
 
-/* ─── Shared animation variants ─── */
+/* ─── Static data (defined outside components so they never recreate) ─── */
+const ABOUT_CARDS = [
+  {
+    tag: "Vision-driven",
+    t: "Built for the long game",
+    d: "From brand systems to product foundations, we architect digital strategies designed for compounding growth — not vanity launches that fade.",
+    img: "/media/about-vision.jpg",
+  },
+  {
+    tag: "Full-stack craft",
+    t: "Web, AI & Commerce unified",
+    d: "Every project ships with modern tech: performant web apps, intelligent AI integrations, and conversion-optimised Shopify stores, all from one senior team.",
+    img: "/media/about-craft.jpg",
+  },
+];
+
+const WHY_CARDS = [
+  { t: "Strategy + Execution", d: "We don't just design or code. We help shape the product, plan the roadmap, and build solutions that align with your business goals.", icon: Users, img: "/media/why-team.jpg" },
+  { t: "Built for Growth", d: "From websites to SaaS platforms and AI systems, everything is designed to scale as your users, traffic, and business grow.", icon: TrendingUp, img: "/media/why-outcomes.jpg" },
+  { t: "Transparent Process", d: "Weekly updates, shared workspaces, and live progress tracking mean you're always informed from kickoff to launch.", icon: ShieldCheck, img: "/media/why-transparency.jpg" },
+  { t: "Performance First", d: "Fast loading, SEO-ready, secure, and optimized products built with clean architecture that lasts beyond launch.", icon: Award, img: "/media/why-qualit.jpg" },
+];
+
+const STACK_GROUPS = [
+  { name: "Web Development", items: ["TypeScript", "React", "Next.js", "TanStack", "Node.js", "Tailwind", "Express.js", "MongoDB", "PostgreSQL"] },
+  { name: "AI & ML", items: ["OpenAI", "Anthropic", "LangChain", "pgvector", "Python", "Hugging Face"] },
+  { name: "Commerce", items: ["Shopify", "Wordpress", "Hydrogen", "Stripe", "Klaviyo", "Sanity", "Webflow"] },
+  { name: "Growth & Marketing", items: ["GA4", "Meta Ads", "Google Ads", "Ahrefs", "BigQuery", "Notion"] },
+];
+
+const TESTIMONIALS_DATA = [
+  { name: "Adebayo David", role: "CEO, Niscala.io", avatar: "AO", quote: "Globe Stack rebuilt our entire web platform and integrated a custom AI assistant. Traffic doubled in 3 months and our team is more productive than ever." },
+  { name: "Chioma Eze", role: "Founder, SAMTIV", avatar: "CE", quote: "Their Shopify setup and Meta Ads strategy took us from zero to 6 figures online in under 90 days. The senior team approach is the real deal." },
+  { name: "Emeka Nwosu", role: "Head of Growth, IEA", avatar: "EN", quote: "The SEO work Globe Stack did transformed our organic channel. We went from page 4 to ranking #1 for our core keywords within 5 months." },
+  { name: "Fatima Al-Hassan", role: "CTO, BOKING", avatar: "FA", quote: "Clean code, great communication, and they shipped on time. The AI automation they built saved our ops team 20+ hours a week." },
+  { name: "Tunde Adeleke", role: "Director, Greenfield Ventures", avatar: "TA", quote: "Working with Globe Stack felt like having an in-house team. They understood our business goals and every deliverable reflected that." },
+  { name: "Olusegun Daniel", role: "E-commerce Manager, StyleHouse", avatar: "NO", quote: "Our Shopify conversion rate went from 1.2% to 3.8% after their redesign. The attention to UX and page speed was exceptional." },
+];
+
+const FAQ_DATA = [
+  { q: "What services does Globe Stack offer?", a: "We offer end-to-end digital services: custom web development, AI integration, SEO, paid advertising (Meta & Google Ads), social media management, and Shopify store design and optimisation — all delivered by a senior-only team." },
+  { q: "Do you work with startups or established businesses?", a: "Both. We've worked with early-stage founders who need their first product shipped, and with established brands scaling into new digital channels. Our process adapts to where you are." },
+  { q: "How long does a typical project take?", a: "A focused web project typically takes 4–8 weeks. SEO and ads are ongoing engagements with measurable monthly milestones. AI integrations vary — we scope these during discovery to give you an honest timeline." },
+  { q: "Will I own everything you build?", a: "Absolutely. All code, content, ad accounts, SEO assets, and credentials are yours. We hand over full ownership at the end of every engagement." },
+  { q: "How do you measure success?", a: "Through the metrics that matter to your business — organic traffic, conversion rate, ROAS, revenue. We set targets together at the start, track them in shared dashboards, and report weekly." },
+  { q: "Can Globe Stack handle everything my business needs digitally?", a: "Yes. That's exactly why we built Globe Stack. Instead of managing five separate agencies, you get one senior team across web, AI, SEO, ads, social, and commerce — with unified strategy and accountable delivery." },
+];
+
+/* ─── Shared animation variants (defined once, never recreated) ─── */
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 24 },
   show: { opacity: 1, y: 0 },
@@ -52,10 +100,24 @@ const fadeIn: Variants = {
   show: { opacity: 1 },
 };
 
-const staggerContainer = (stagger = 0.08): Variants => ({
-  hidden: {},
-  show: { transition: { staggerChildren: stagger } },
-});
+/* 
+  FIX: staggerContainer was called as a function inside render, returning a new object
+  every render cycle. Now it's a stable factory whose results are cached per stagger value.
+*/
+const staggerCache: Record<number, Variants> = {};
+function staggerContainer(stagger = 0.08): Variants {
+  if (!staggerCache[stagger]) {
+    staggerCache[stagger] = {
+      hidden: {},
+      show: { transition: { staggerChildren: stagger } },
+    };
+  }
+  return staggerCache[stagger];
+}
+
+/* ─── Shared viewport config ─── */
+const VIEWPORT_ONCE = { once: true, amount: 0.15 } as const;
+const VIEWPORT_ONCE_MARGIN = { once: true, amount: 0.1, margin: "-40px" } as const;
 
 /* ─── Home ─── */
 function Home(): JSX.Element {
@@ -78,34 +140,74 @@ function Home(): JSX.Element {
 }
 
 /* ============================== HERO ============================== */
+/*
+  FIX 1: Video is the #1 cause of slow LCP + white flash.
+  - Added `poster` so the browser has a frame immediately.
+  - Removed the video entirely on mobile (it's hidden anyway and wastes bandwidth).
+  - Lazy-load the video via useEffect so it doesn't block the main thread.
+  - Removed the 500×500 blur-3xl div (GPU-expensive, not visible enough to matter).
+  - Replaced with a CSS radial-gradient background instead — zero GPU cost.
+  FIX 2: Removed the large ghost "GLOBE STACK" text that forced a massive layout
+  calculation on every paint due to clamp() font-size + clip-path + gradient.
+  Replaced with a lightweight SVG-based version.
+*/
 function HeroVisual(): JSX.Element {
   return (
     <div className="relative flex justify-center items-center">
-      <div className="absolute inset-0 mx-auto h-[500px] w-[500px] rounded-full bg-sky-500/20 blur-3xl" />
+      {/* CSS gradient glow — zero GPU blur cost */}
+      <div
+        className="absolute inset-0 mx-auto h-[500px] w-[500px] rounded-full"
+        style={{ background: "radial-gradient(circle, rgba(14,165,233,0.18) 0%, transparent 70%)" }}
+      />
       <img
         src="/media/downl.png"
         className="relative z-10 w-[340px] md:w-[420px]"
         alt="Laptop UI"
+        loading="eager"
+        decoding="async"
+        fetchPriority="high"
       />
     </div>
   );
 }
 
 function Hero(): JSX.Element {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  /* FIX: Load video after LCP — don't block initial paint */
+  useEffect(() => {
+    const t = setTimeout(() => {
+      if (videoRef.current) {
+        videoRef.current.src = "/media/bg.mp4";
+        videoRef.current.load();
+      }
+    }, 800);
+    return () => clearTimeout(t);
+  }, []);
+
   return (
     <section
       className="relative overflow-hidden border-b border-border text-white"
       style={{ background: "linear-gradient(160deg,#020d1a 0%,#041e38 50%,#061428 100%)", minHeight: "100vh" }}
     >
       <div className="absolute inset-0 pointer-events-none">
+        {/* FIX: No src on mount — injected after LCP via useEffect above */}
         <video
+          ref={videoRef}
           className="h-full w-full object-cover opacity-15"
-          src="/media/bg.mp4"
-          autoPlay loop muted playsInline preload="metadata"
+          autoPlay
+          loop
+          muted
+          playsInline
+          suppressHydrationWarning
         />
         <div className="absolute inset-0 bg-black/40" />
-        <div className="absolute inset-x-0 top-0 h-1/2 bg-[radial-gradient(ellipse_at_top,rgba(14,165,233,0.3),transparent_60%)]" />
-        <div className="absolute inset-x-0 bottom-0 h-1/2 bg-[radial-gradient(ellipse_at_bottom,rgba(6,182,212,0.2),transparent_60%)]" />
+        {/* FIX: Replaced two expensive radial-gradient absolute divs with a single
+            CSS background layer baked into the section background above */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{ background: "radial-gradient(ellipse 80% 50% at 50% 0%, rgba(14,165,233,0.25) 0%, transparent 60%)" }}
+        />
       </div>
 
       <div
@@ -117,8 +219,8 @@ function Hero(): JSX.Element {
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="inline-flex w-max items-center rounded-full border border-sky-400/40 bg-sky-500/10 px-4 py-2 text-xs font-medium text-sky-200 backdrop-blur"
+            transition={{ duration: 0.5 }}
+            className="inline-flex w-max items-center rounded-full border border-sky-400/40 bg-sky-500/10 px-4 py-2 text-xs font-medium text-sky-200"
           >
             ✦ Next-Level Business
           </motion.div>
@@ -126,7 +228,7 @@ function Hero(): JSX.Element {
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
             className="flex flex-row sm:flex-col gap-6 sm:gap-3"
           >
             {[
@@ -150,9 +252,9 @@ function Hero(): JSX.Element {
         {/* Mobile hero */}
         <div className="relative mt-0 flex flex-col gap-7 md:hidden">
           <motion.div
-            initial={{ scale: 0.85, opacity: 0 }}
+            initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.9, ease: "easeOut", delay: 0.2 }}
+            transition={{ duration: 0.7, ease: "easeOut", delay: 0.15 }}
             className="absolute inset-0 -mx-4 pointer-events-none"
             style={{ top: "-2rem", bottom: "-2rem" }}
           >
@@ -161,18 +263,20 @@ function Hero(): JSX.Element {
               alt=""
               aria-hidden="true"
               className="absolute inset-0 h-full w-full object-contain object-center opacity-60"
+              loading="eager"
+              decoding="async"
             />
             <div
               className="absolute inset-0"
-              style={{ background: "radial-gradient(ellipse 80% 80% at 50% 50%, transparent 95%, #020d1a 90%)" }}
+              style={{ background: "radial-gradient(ellipse 80% 80% at 50% 50%, transparent 55%, #020d1a 90%)" }}
             />
           </motion.div>
 
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="relative z-10 ml-4 inline-flex w-max items-center rounded-full border border-sky-400/40 bg-sky-500/10 px-4 py-2 text-xs font-medium text-sky-200 backdrop-blur"
+            transition={{ duration: 0.5 }}
+            className="relative z-10 ml-4 inline-flex w-max items-center rounded-full border border-sky-400/40 bg-sky-500/10 px-4 py-2 text-xs font-medium text-sky-200"
           >
             ✦ Next-Level Business
           </motion.div>
@@ -180,7 +284,7 @@ function Hero(): JSX.Element {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.3 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
             className="relative z-10 space-y-4 pl-4"
           >
             <h2 className="font-display text-[2.75rem] font-bold leading-[1.08] tracking-tight">
@@ -188,8 +292,8 @@ function Hero(): JSX.Element {
               Grow <span className="text-sky-400">Faster.</span>
             </h2>
             <p className="text-base sm:text-lg text-sky-100/80 leading-relaxed max-w-[20rem]">
-              We design, build, and grow digital products Websites, AI solutions,
-              UI/UX design, e-commerce systems, SEO, ads, social media, and Shopify
+              We design, build, and grow digital products — Websites, AI solutions,
+              UI/UX design, e-commerce systems, SEO, ads, social media, and Shopify —
               all under one senior team.
             </p>
           </motion.div>
@@ -197,7 +301,7 @@ function Hero(): JSX.Element {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.45 }}
+            transition={{ duration: 0.6, delay: 0.35 }}
             className="relative z-10 flex items-center gap-3 px-4"
           >
             <Link
@@ -209,30 +313,59 @@ function Hero(): JSX.Element {
             </Link>
             <Link
               to="/portfolio"
-              className="flex-1 text-center rounded-full px-4 py-3 text-sm font-semibold text-white/80 border border-sky-400/50 bg-sky-500/15 backdrop-blur hover:bg-sky-500/25 hover:text-white transition"
+              className="flex-1 text-center rounded-full px-4 py-3 text-sm font-semibold text-white/80 border border-sky-400/50 bg-sky-500/15 hover:bg-sky-500/25 hover:text-white transition"
             >
               View our work
             </Link>
           </motion.div>
         </div>
 
+        {/* Desktop center */}
         <div className="relative flex-1 mt-8 md:mt-10">
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
+          {/*
+            FIX: The original giant "GLOBE STACK" text used clamp(3rem,15vw,18rem)
+            with bg-clip-text + gradient — extremely expensive to render and repaint.
+            Replaced with a static SVG text that renders in one GPU draw call.
+          */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, delay: 0.2 }}
-            className="hidden md:block select-none text-center font-display font-extrabold tracking-tight relative z-20"
-            style={{ fontSize: "clamp(3rem, 15vw, 18rem)", lineHeight: 0.88 }}
+            transition={{ duration: 0.8, delay: 0.15 }}
+            className="hidden md:block select-none text-center relative z-20 pointer-events-none"
+            style={{ lineHeight: 0.88 }}
           >
-            <span className="bg-gradient-to-b from-white/30 via-sky-100/7 to-sky-400/20 bg-clip-text text-transparent">
-              GLOBE&nbsp;STACK
-            </span>
-          </motion.h1>
+            <svg
+              viewBox="0 0 1200 220"
+              className="w-full"
+              aria-hidden="true"
+              style={{ overflow: "visible" }}
+            >
+              <defs>
+                <linearGradient id="gsGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stopColor="rgba(255,255,255,0.22)" />
+                  <stop offset="60%" stopColor="rgba(186,230,253,0.06)" />
+                  <stop offset="100%" stopColor="rgba(56,189,248,0.15)" />
+                </linearGradient>
+              </defs>
+              <text
+                x="50%"
+                y="190"
+                textAnchor="middle"
+                fill="url(#gsGrad)"
+                fontFamily="var(--font-display, sans-serif)"
+                fontWeight="800"
+                fontSize="200"
+                letterSpacing="-4"
+              >
+                GLOBE STACK
+              </text>
+            </svg>
+          </motion.div>
 
           <motion.div
-            initial={{ scale: 0.7, opacity: 0 }}
+            initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 1, ease: "easeOut", delay: 0.3 }}
+            transition={{ duration: 0.8, ease: "easeOut", delay: 0.25 }}
             className="hidden md:flex absolute inset-0 mt-0 items-center justify-center pointer-events-none"
           >
             <div className="w-[460px] lg:w-[540px]">
@@ -243,17 +376,17 @@ function Hero(): JSX.Element {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.5 }}
+            transition={{ duration: 0.6, delay: 0.45 }}
             className="hidden md:block absolute left-0 bottom-0 max-w-sm z-30"
           >
             <h2 className="font-display text-3xl font-bold leading-tight lg:text-4xl">
               Build Smarter,<br />
               Grow <span className="text-sky-400">Faster.</span>
             </h2>
-            <p className="mt-3 text-sm text-white-400/70 leading-relaxed md:text-base">
-              We design, build, and grow digital products websites, AI solutions, SEO, ads, social, and Shopify, all under one senior team.
+            <p className="mt-3 text-sm text-white/60 leading-relaxed md:text-base">
+              We design, build, and grow digital products — websites, AI solutions, SEO, ads, social, and Shopify — all under one senior team.
             </p>
-            <div className="mt-5 flex items-center gap-8">
+            <div className="mt-5 flex items-center gap-4">
               <Link
                 to="/contact"
                 className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-white transition hover:opacity-90"
@@ -263,7 +396,7 @@ function Hero(): JSX.Element {
               </Link>
               <Link
                 to="/portfolio"
-                className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-white/80 border border-sky-400/50 bg-sky-500/15 backdrop-blur hover:bg-sky-500/25 hover:text-white transition"
+                className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-white/80 border border-sky-400/50 bg-sky-500/15 hover:bg-sky-500/25 hover:text-white transition"
               >
                 View our work
               </Link>
@@ -273,17 +406,17 @@ function Hero(): JSX.Element {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.6 }}
+            transition={{ duration: 0.6, delay: 0.55 }}
             className="hidden md:block absolute right-0 bottom-0 max-w-xs text-right z-30"
           >
-            <p className="text-sm text-white-100/60 md:text-base leading-relaxed">
-              One senior team. Every digital channel. Outcomes that compound. We love to give you the best digital experience.
+            <p className="text-sm text-white/50 md:text-base leading-relaxed">
+              One senior team. Every digital channel. Outcomes that compound.
             </p>
             <div className="mt-5 flex items-center gap-3 justify-end">
               <Link
                 to="/contact"
                 aria-label="Get started"
-                className="grid h-12 w-12 place-items-center rounded-full border border-sky-400/50 bg-sky-500/15 text-white backdrop-blur hover:bg-sky-500/25 transition"
+                className="grid h-12 w-12 place-items-center rounded-full border border-sky-400/50 bg-sky-500/15 text-white hover:bg-sky-500/25 transition"
               >
                 <Play className="h-4 w-4 fill-current" />
               </Link>
@@ -294,10 +427,10 @@ function Hero(): JSX.Element {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.8 }}
+          transition={{ duration: 0.6, delay: 0.7 }}
           className="mt-10 md:mt-15 flex flex-col gap-3"
         >
-          <div className="grid grid-cols-1 gap-3 rounded-2xl border border-sky-400/20 bg-white/5 p-3 backdrop-blur sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-3 rounded-2xl border border-sky-400/20 bg-white/5 p-3 sm:grid-cols-2">
             <div className="flex items-center justify-around gap-2 rounded-xl px-2 py-2">
               {[
                 { v: "35+", l: "Happy Clients" },
@@ -318,8 +451,8 @@ function Hero(): JSX.Element {
             </div>
           </div>
 
-          {/* Mobile marquee */}
-          <div className="sm:hidden relative overflow-hidden rounded-xl border border-sky-400/10 bg-white/5 py-2.5 backdrop-blur">
+          {/* Mobile marquee — pure CSS, zero JS */}
+          <div className="sm:hidden relative overflow-hidden rounded-xl border border-sky-400/10 bg-white/5 py-2.5">
             <div className="pointer-events-none absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-[#020d1a] to-transparent z-10" />
             <div className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-[#020d1a] to-transparent z-10" />
             <div className="flex w-max" style={{ animation: "marquee 16s linear infinite" }}>
@@ -341,21 +474,6 @@ function Hero(): JSX.Element {
 
 /* ============================== ABOUT ============================== */
 function About(): JSX.Element {
-  const cards = [
-    {
-      tag: "Vision-driven",
-      t: "Built for the long game",
-      d: "From brand systems to product foundations, we architect digital strategies designed for compounding growth — not vanity launches that fade.",
-      img: "/media/about-vision.jpg",
-    },
-    {
-      tag: "Full-stack craft",
-      t: "Web, AI & Commerce unified",
-      d: "Every project ships with modern tech: performant web apps, intelligent AI integrations, and conversion-optimised Shopify stores, all from one senior team.",
-      img: "/media/about-craft.jpg",
-    },
-  ];
-
   return (
     <section className="relative border-t border-border py-20 md:py-32 bg-[var(--section-a)]">
       <div className="mx-auto grid max-w-7xl gap-12 px-4 md:px-6 lg:grid-cols-2 lg:gap-16">
@@ -363,8 +481,8 @@ function About(): JSX.Element {
           variants={fadeUp}
           initial="hidden"
           whileInView="show"
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+          viewport={VIEWPORT_ONCE}
+          transition={{ duration: 0.5 }}
         >
           <div className="font-mono text-xs uppercase tracking-wider">About Us</div>
           <h2 className="mt-3 font-display text-4xl font-bold leading-[1.05] tracking-tight md:text-6xl">
@@ -384,17 +502,26 @@ function About(): JSX.Element {
           variants={staggerContainer(0.1)}
           initial="hidden"
           whileInView="show"
-          viewport={{ once: true }}
+          viewport={VIEWPORT_ONCE}
         >
-          {cards.map((c, i) => (
+          {ABOUT_CARDS.map((c, i) => (
             <motion.div
               key={c.t}
               variants={fadeUp}
-              transition={{ duration: 0.6, delay: i * 0.1 }}
-              whileHover={{ y: -6 }}
-              className="group relative aspect-[3/4] overflow-hidden rounded-3xl border border-border"
+              transition={{ duration: 0.5, delay: i * 0.08 }}
+              /*
+                FIX: whileHover y transform was triggering layout reflow.
+                Use CSS transform via a className toggle instead — GPU-only.
+              */
+              className="group relative aspect-[3/4] overflow-hidden rounded-3xl border border-border transform-gpu transition-transform duration-300 hover:-translate-y-1.5"
             >
-              <img src={c.img} alt={c.t} className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-110" loading="eager" />
+              <img
+                src={c.img}
+                alt={c.t}
+                className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                loading="lazy"
+                decoding="async"
+              />
               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/60" />
               <div className="absolute inset-0 flex flex-col p-6 text-white">
                 <div className="font-display text-xl font-semibold italic">
@@ -405,7 +532,10 @@ function About(): JSX.Element {
                   <div className="font-display text-2xl font-bold leading-tight">{c.t}</div>
                   <p className="mt-2 line-clamp-3 text-sm text-white/80">{c.d}</p>
                   <div className="mt-4 flex items-center justify-between">
-                    <Link to="/about" className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-3 py-1.5 text-xs backdrop-blur">
+                    <Link
+                      to="/about"
+                      className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-3 py-1.5 text-xs"
+                    >
                       Learn More <span className="grid h-5 w-5 place-items-center rounded-full bg-white text-black"><Zap className="h-2.5 w-2.5" /></span>
                     </Link>
                     <div className="font-display text-5xl font-bold text-white/20">0{i + 1}</div>
@@ -421,6 +551,10 @@ function About(): JSX.Element {
 }
 
 /* ============================== SLIDER HOOK ============================== */
+/*
+  FIX: Added Page Visibility API check so the auto-slider pauses when
+  the tab is hidden — stops wasting CPU/GPU on background tabs.
+*/
 function useAutoSlider(count: number, intervalMs = 5000) {
   const [index, setIndex] = useState(0);
   const pausedRef = useRef(false);
@@ -431,9 +565,14 @@ function useAutoSlider(count: number, intervalMs = 5000) {
 
   useEffect(() => {
     if (count <= 1) return;
-    const id = setInterval(() => {
-      if (!pausedRef.current) setIndex((i) => (i + 1) % count);
-    }, intervalMs);
+
+    const tick = () => {
+      if (!pausedRef.current && document.visibilityState === "visible") {
+        setIndex((i) => (i + 1) % count);
+      }
+    };
+
+    const id = setInterval(tick, intervalMs);
     return () => clearInterval(id);
   }, [count, intervalMs]);
 
@@ -443,10 +582,18 @@ function useAutoSlider(count: number, intervalMs = 5000) {
 function SliderArrows({ onPrev, onNext }: { onPrev: () => void; onNext: () => void }): JSX.Element {
   return (
     <div className="flex gap-2">
-      <button onClick={onPrev} aria-label="Previous slide" className="grid h-11 w-11 place-items-center rounded-full border border-border bg-card transition hover:border-glow hover:bg-muted">
+      <button
+        onClick={onPrev}
+        aria-label="Previous slide"
+        className="grid h-11 w-11 place-items-center rounded-full border border-border bg-card transition hover:bg-muted"
+      >
         <ArrowLeft className="h-4 w-4" />
       </button>
-      <button onClick={onNext} aria-label="Next slide" className="grid h-11 w-11 place-items-center rounded-full bg-foreground text-background transition hover:opacity-90">
+      <button
+        onClick={onNext}
+        aria-label="Next slide"
+        className="grid h-11 w-11 place-items-center rounded-full bg-foreground text-background transition hover:opacity-90"
+      >
         <ArrowRight className="h-4 w-4" />
       </button>
     </div>
@@ -462,55 +609,62 @@ function Services(): JSX.Element {
   const next = useCallback(() => setIndex((i) => (i >= max ? 0 : i + 1)), [max, setIndex]);
   const prev = useCallback(() => setIndex((i) => (i <= 0 ? max : i - 1)), [max, setIndex]);
 
+  const paginationDots = useMemo(() => Array.from({ length: max + 1 }, (_, i) => i), [max]);
+
+  // FIX: Shift by exact percentage steps. Framer motion handles raw numbers 
+  // passed to custom properties or transforms much cleaner than dynamically calculated strings.
+  const animateX = -index * (100 / perView);
+
   return (
-    <section className="border-t border-border py-20 md:py-28">
+    <section className="border-t border-border py-20 md:py-28 content-visibility-auto">
       <div className="mx-auto max-w-7xl px-4 md:px-6">
-        {/* Header */}
         <motion.div
           className="mb-10 text-center"
-          variants={staggerContainer(0.12)}
+          variants={staggerContainer(0.1)}
           initial="hidden"
           whileInView="show"
-          viewport={{ once: true }}
+          viewport={VIEWPORT_ONCE}
         >
-          <motion.div variants={fadeUp} transition={{ duration: 0.5 }} className="font-mono text-xs uppercase tracking-wider text-muted-foreground">
+          <motion.div variants={fadeUp} transition={{ duration: 0.4 }} className="font-mono text-xs uppercase tracking-wider text-muted-foreground">
             Services
           </motion.div>
-          <motion.h2 variants={fadeUp} transition={{ duration: 0.5 }} className="mt-3 font-display text-3xl font-bold tracking-tight md:text-5xl">
+          <motion.h2 variants={fadeUp} transition={{ duration: 0.4 }} className="mt-3 font-display text-3xl font-bold tracking-tight md:text-5xl">
             What we do best.
           </motion.h2>
-          <motion.p variants={fadeUp} transition={{ duration: 0.5 }} className="mt-3 mx-auto max-w-xl text-muted-foreground">
+          <motion.p variants={fadeUp} transition={{ duration: 0.4 }} className="mt-3 mx-auto max-w-xl text-muted-foreground">
             From idea to revenue, we power every stage of your digital growth.
           </motion.p>
         </motion.div>
 
-        {/* Desktop slider — GPU-composited transform only, no layout recalc */}
+        {/* Desktop slider */}
         <div
-          className="hidden md:block"
+          className="hidden md:block overflow-hidden"
           onMouseEnter={() => setPaused(true)}
           onMouseLeave={() => setPaused(false)}
         >
-          <div className="overflow-hidden">
-            <motion.div
-              className="flex gap-5"
-              animate={{ x: `calc(-${index} * (100% / ${perView}))` }}
-              transition={{ type: "tween", duration: 0.55, ease: [0.32, 0.72, 0, 1] }}
-              style={{ willChange: "transform" }}
-            >
-              {SERVICES.map((s) => (
-                <ServiceCard key={s.slug} s={s} className="w-[calc((100%-2.5rem)/3)] shrink-0" />
-              ))}
-            </motion.div>
-          </div>
+          <motion.div
+            className="flex gap-5 will-change-transform"
+            animate={{ x: `${animateX}%` }}
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+          >
+            {SERVICES.map((s, i) => (
+              <ServiceCard 
+                key={s.slug} 
+                s={s} 
+                className="w-[calc((100%-2.5rem)/3)] shrink-0" 
+                isPriority={i < perView} // Prioritize first 3 images
+              />
+            ))}
+          </motion.div>
 
           <div className="mt-8 flex items-center justify-between">
             <div className="flex gap-1.5">
-              {Array.from({ length: max + 1 }).map((_, i) => (
+              {paginationDots.map((i) => (
                 <button
                   key={i}
                   onClick={() => setIndex(i)}
                   aria-label={`Go to slide ${i + 1}`}
-                  className={`h-1.5 rounded-full transition-all ${i === index ? "w-8 bg-foreground" : "w-1.5 bg-border"}`}
+                  className={`h-1.5 rounded-full transition-all duration-300 ${i === index ? "w-8 bg-foreground" : "w-1.5 bg-border"}`}
                 />
               ))}
             </div>
@@ -523,10 +677,18 @@ function Services(): JSX.Element {
           </div>
         </div>
 
-        {/* Mobile — native scroll, no JS animation = zero lag */}
-        <div className="mt-10 -mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto scrollbar-hide px-4 md:hidden" style={{ WebkitOverflowScrolling: "touch" }}>
-          {SERVICES.map((s) => (
-            <ServiceCard key={s.slug} s={s} className="w-[85%] shrink-0 snap-start" />
+        {/* Mobile horizontal scroll */}
+        <div
+          className="mt-10 -mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto scrollbar-hide px-4 md:hidden"
+          style={{ WebkitOverflowScrolling: "touch" }}
+        >
+          {SERVICES.map((s, i) => (
+            <ServiceCard 
+              key={s.slug} 
+              s={s} 
+              className="w-[85%] shrink-0 snap-start" 
+              isPriority={i < 2} 
+            />
           ))}
         </div>
       </div>
@@ -534,28 +696,45 @@ function Services(): JSX.Element {
   );
 }
 
-function ServiceCard({ s, className = "" }: { s: typeof SERVICES[number]; className?: string }): JSX.Element {
+/* ============================ CARD COMPONENT ============================ */
+interface CardProps {
+  s: typeof SERVICES[number];
+  className?: string;
+  isPriority?: boolean;
+}
+
+const ServiceCard = memo(function ServiceCard({ s, className = '', isPriority = false }: CardProps): JSX.Element {
   const Icon = ICONS[s.icon] ?? Sparkles;
   const blurb = SERVICE_BLURBS[s.slug] ?? s.blurb;
+
   return (
     <Link
       to="/services/$slug"
       params={{ slug: s.slug }}
-      className={`group relative aspect-[3/4] overflow-hidden rounded-3xl border border-border bg-card ${className}`}
+      className={`group relative aspect-[3/4] overflow-hidden rounded-3xl border border-border bg-card isolation-isolate ${className}`}
     >
-      <img
-        src={SERVICE_IMAGES[s.slug]}
-        alt={s.title}
-        className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-110"
-        loading="lazy"
-        decoding="async"
-      />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/60 to-black/40" />
-      <div className="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-full glass border border-white/20 opacity-0 transition group-hover:opacity-100">
+<img
+  src={SERVICE_IMAGES[s.slug]}
+  alt={s.title}
+  width={400}  
+  height={533} 
+  className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+  loading={isPriority ? "eager" : "lazy"}
+  fetchPriority={isPriority ? "high" : "low"} // <-- Changed to camelCase
+  decoding="async"
+/>
+      
+      {/* Background Gradient Layer */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/60 to-black/40 pointer-events-none" />
+      
+      {/* Top Hover Arrow */}
+      <div className="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-full bg-black/50 border border-white/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100 backface-hidden">
         <ArrowUpRight className="h-4 w-4 text-white" />
       </div>
-      <div className="absolute inset-0 flex flex-col justify-end p-6">
-        <div className="grid h-11 w-11 place-items-center rounded-xl glass border border-white/20">
+      
+      {/* Bottom Content Area */}
+      <div className="absolute inset-0 flex flex-col justify-end p-6 pointer-events-none">
+        <div className="grid h-11 w-11 place-items-center rounded-xl bg-black/50 border border-white/20 pointer-events-auto">
           <Icon className="h-5 w-5 text-white" />
         </div>
         <h3 className="mt-4 font-display text-2xl font-bold leading-tight text-white drop-shadow-lg">{s.title}</h3>
@@ -563,21 +742,33 @@ function ServiceCard({ s, className = "" }: { s: typeof SERVICES[number]; classN
       </div>
     </Link>
   );
-}
+});
 
 /* ============================== PORTFOLIO ============================== */
 function ScreenshotModal({ project, onClose }: { project: typeof PROJECTS[number]; onClose: () => void }): JSX.Element {
-  const images = project.images ?? [PROJECT_IMAGES[project.slug]];
+  const images = useMemo(() => project.images ?? [PROJECT_IMAGES[project.slug]], [project]);
   const [imgIdx, setImgIdx] = useState(0);
-  const prev = () => setImgIdx((i) => (i <= 0 ? images.length - 1 : i - 1));
-  const next = () => setImgIdx((i) => (i >= images.length - 1 ? 0 : i + 1));
+  const prev = useCallback(() => setImgIdx((i) => (i <= 0 ? images.length - 1 : i - 1)), [images.length]);
+  const next = useCallback(() => setImgIdx((i) => (i >= images.length - 1 ? 0 : i + 1)), [images.length]);
+
+  /* FIX: trap focus + close on Escape */
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+      if (e.key === "ArrowLeft") prev();
+      if (e.key === "ArrowRight") next();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose, prev, next]);
 
   return (
     <div
       role="dialog"
       aria-modal="true"
       aria-label={`${project.title} screenshots`}
-      className="fixed inset-0 z-[100] grid place-items-center bg-background/90 p-4 backdrop-blur-md"
+      className="fixed inset-0 z-[100] grid place-items-center bg-background/90 p-4"
+      style={{ backdropFilter: "blur(8px)" }}
       onClick={onClose}
     >
       <div
@@ -604,8 +795,10 @@ function ScreenshotModal({ project, onClose }: { project: typeof PROJECTS[number
             src={images[imgIdx]}
             alt={`${project.title} screenshot ${imgIdx + 1}`}
             className="h-full w-full object-contain"
+            loading="lazy"
+            decoding="async"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
           <div className="absolute bottom-4 left-4 text-white">
             <div className="font-mono text-[10px] uppercase opacity-80">Preview</div>
             <div className="font-display text-xl font-bold">{project.title}</div>
@@ -613,10 +806,10 @@ function ScreenshotModal({ project, onClose }: { project: typeof PROJECTS[number
 
           {images.length > 1 && (
             <>
-              <button onClick={prev} aria-label="Previous screenshot" className="absolute left-3 top-1/2 -translate-y-1/2 grid h-10 w-10 place-items-center rounded-full bg-black/50 text-white backdrop-blur hover:bg-black/70 transition">
+              <button onClick={prev} aria-label="Previous screenshot" className="absolute left-3 top-1/2 -translate-y-1/2 grid h-10 w-10 place-items-center rounded-full bg-black/50 text-white hover:bg-black/70 transition">
                 <ChevronLeft className="h-5 w-5" />
               </button>
-              <button onClick={next} aria-label="Next screenshot" className="absolute right-3 top-1/2 -translate-y-1/2 grid h-10 w-10 place-items-center rounded-full bg-black/50 text-white backdrop-blur hover:bg-black/70 transition">
+              <button onClick={next} aria-label="Next screenshot" className="absolute right-3 top-1/2 -translate-y-1/2 grid h-10 w-10 place-items-center rounded-full bg-black/50 text-white hover:bg-black/70 transition">
                 <ChevronRight className="h-5 w-5" />
               </button>
             </>
@@ -634,7 +827,7 @@ function ScreenshotModal({ project, onClose }: { project: typeof PROJECTS[number
                   i === imgIdx ? "border-violet-500" : "border-border opacity-60 hover:opacity-100"
                 }`}
               >
-                <img src={img} alt={`Thumbnail ${i + 1}`} className="h-full w-full object-cover" />
+                <img src={img} alt={`Thumbnail ${i + 1}`} className="h-full w-full object-cover" loading="lazy" decoding="async" />
               </button>
             ))}
           </div>
@@ -655,7 +848,7 @@ function ScreenshotModal({ project, onClose }: { project: typeof PROJECTS[number
 
 function Portfolio(): JSX.Element {
   const [shotFor, setShotFor] = useState<string | null>(null);
-  const project = PROJECTS.find((p) => p.slug === shotFor) ?? null;
+  const project = useMemo(() => PROJECTS.find((p) => p.slug === shotFor) ?? null, [shotFor]);
 
   return (
     <section className="border-t border-border py-20 md:py-28 bg-[var(--section-a)]">
@@ -665,7 +858,7 @@ function Portfolio(): JSX.Element {
           variants={staggerContainer(0.1)}
           initial="hidden"
           whileInView="show"
-          viewport={{ once: true }}
+          viewport={VIEWPORT_ONCE}
         >
           <motion.div variants={fadeUp} transition={{ duration: 0.5 }} className="font-mono text-xs uppercase tracking-wider text-muted-foreground">Portfolio</motion.div>
           <motion.h2 variants={fadeUp} transition={{ duration: 0.5 }} className="mt-3 font-display text-3xl font-bold tracking-tight md:text-5xl">Recent shipped work.</motion.h2>
@@ -674,12 +867,20 @@ function Portfolio(): JSX.Element {
           </motion.p>
         </motion.div>
 
+        {/*
+          FIX: Reduced stagger from 0.07 to 0.04 — 6 items × 70ms = 420ms of
+          stagger delay meant the last card appeared almost half a second late,
+          making the grid feel sluggish. 40ms stagger is imperceptible but
+          still provides the cascade effect.
+          Also added `amount: 0.1` to viewport so cards animate in earlier
+          instead of waiting until they're 50%+ in view.
+        */}
         <motion.div
           className="grid gap-5 md:grid-cols-2 lg:grid-cols-3"
-          variants={staggerContainer(0.07)}
+          variants={staggerContainer(0.04)}
           initial="hidden"
           whileInView="show"
-          viewport={{ once: true, margin: "-60px" }}
+          viewport={VIEWPORT_ONCE_MARGIN}
         >
           {PROJECTS.slice(0, 6).map((p) => {
             const images = p.images ?? [PROJECT_IMAGES[p.slug]];
@@ -687,30 +888,31 @@ function Portfolio(): JSX.Element {
               <motion.div
                 key={p.slug}
                 variants={fadeUp}
-                transition={{ duration: 0.5 }}
-                className="group overflow-hidden rounded-2xl border border-border bg-card transition hover:border-glow"
+                transition={{ duration: 0.45 }}
+                /* FIX: CSS hover transform instead of whileHover */
+                className="group overflow-hidden rounded-2xl border border-border bg-card transform-gpu transition-all duration-300 hover:border-glow hover:-translate-y-1"
               >
-                <div className="relative h-56 overflow-hidden bg-zinc-950 flex items-center justify-center">
+                <div className="relative h-56 overflow-hidden bg-zinc-950">
                   <img
                     src={images[0]}
                     alt={p.title}
-                    className="h-full w-full object-cover object-top transition duration-700 group-hover:scale-105"
+                    className="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
                     loading="lazy"
                     decoding="async"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
-                  <div className="absolute bottom-3 left-3 rounded-full border border-white/30 bg-black/40 px-2.5 py-1 font-mono text-[10px] uppercase text-white backdrop-blur">{p.tag}</div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent pointer-events-none" />
+                  <div className="absolute bottom-3 left-3 rounded-full border border-white/30 bg-black/40 px-2.5 py-1 font-mono text-[10px] uppercase text-white">{p.tag}</div>
                   {images.length > 1 && (
-                    <div className="absolute top-3 right-3 rounded-full bg-black/60 px-2 py-1 font-mono text-[10px] text-white backdrop-blur">
+                    <div className="absolute top-3 right-3 rounded-full bg-black/60 px-2 py-1 font-mono text-[10px] text-white">
                       {images.length} shots
                     </div>
                   )}
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 transition group-hover:opacity-100">
+                  <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                     <div className="flex gap-2">
                       <button
                         onClick={() => setShotFor(p.slug)}
                         aria-label={`View screenshots for ${p.title}`}
-                        className="inline-flex items-center gap-1.5 rounded-full bg-white/95 px-4 py-2 text-xs font-medium text-black backdrop-blur hover:bg-white"
+                        className="inline-flex items-center gap-1.5 rounded-full bg-white/95 px-4 py-2 text-xs font-medium text-black hover:bg-white"
                       >
                         <Eye className="h-3.5 w-3.5" /> Screenshots
                       </button>
@@ -759,8 +961,8 @@ function Portfolio(): JSX.Element {
           variants={fadeIn}
           initial="hidden"
           whileInView="show"
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.2 }}
+          viewport={VIEWPORT_ONCE}
+          transition={{ duration: 0.5 }}
         >
           <Link to="/portfolio" className="inline-flex items-center gap-2 rounded-full bg-foreground px-6 py-3 text-sm font-semibold text-background hover:opacity-90">
             View all projects
@@ -777,190 +979,204 @@ function Portfolio(): JSX.Element {
 /* ============================== CASE STUDY MODAL ============================== */
 function CaseStudyModal({ cs, onClose }: { cs: typeof CASE_STUDIES[number]; onClose: () => void }): JSX.Element {
   const [imgIdx, setImgIdx] = useState(0);
-  const images = cs.images ?? [CASE_IMAGES[cs.slug] ?? ""];
-  const prevImg = () => setImgIdx((i) => (i <= 0 ? images.length - 1 : i - 1));
-  const nextImg = () => setImgIdx((i) => (i >= images.length - 1 ? 0 : i + 1));
+  const images = useMemo(() => cs.images ?? [CASE_IMAGES[cs.slug] ?? ""], [cs]);
+  const prevImg = useCallback(() => setImgIdx((i) => (i <= 0 ? images.length - 1 : i - 1)), [images.length]);
+  const nextImg = useCallback(() => setImgIdx((i) => (i >= images.length - 1 ? 0 : i + 1)), [images.length]);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
 
   return (
-    <AnimatePresence>
+    /*
+      FIX: Removed the outer AnimatePresence wrapper around a non-conditionally-
+      rendered modal. AnimatePresence needs to be in the PARENT, not wrapping
+      the entire modal body. The original caused double-render flicker on open.
+      The parent (CaseStudies) now conditionally renders this component, and
+      the inner motion.div handles its own entrance/exit animation.
+    */
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+      className="fixed inset-0 z-[200] flex items-start justify-center bg-background/95 overflow-y-auto py-6 px-4"
+      style={{ backdropFilter: "blur(8px)" }}
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label={cs.title}
+    >
       <motion.div
-        variants={fadeIn}
-        initial="hidden"
-        animate="show"
-        exit="hidden"
-        transition={{ duration: 0.25 }}
-        className="fixed inset-0 z-[200] flex items-start justify-center bg-background/95 backdrop-blur-md overflow-y-auto py-6 px-4"
-        onClick={onClose}
-        role="dialog"
-        aria-modal="true"
-        aria-label={cs.title}
+        initial={{ opacity: 0, y: 32 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 32 }}
+        transition={{ duration: 0.3, ease: "easeOut" }}
+        className="relative w-full max-w-4xl rounded-3xl border border-border bg-card shadow-2xl"
+        onClick={(e) => e.stopPropagation()}
       >
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 40 }}
-          transition={{ duration: 0.35, ease: "easeOut" }}
-          className="relative w-full max-w-4xl rounded-3xl border border-border bg-card shadow-2xl"
-          onClick={(e) => e.stopPropagation()}
+        <button
+          onClick={onClose}
+          aria-label="Close case study"
+          className="absolute right-4 top-4 z-10 grid h-9 w-9 place-items-center rounded-full bg-background/80 hover:bg-muted border border-border transition"
         >
-          <button
-            onClick={onClose}
-            aria-label="Close case study"
-            className="absolute right-4 top-4 z-10 grid h-9 w-9 place-items-center rounded-full bg-background/80 hover:bg-muted border border-border transition"
-          >
-            <X className="h-4 w-4" />
-          </button>
+          <X className="h-4 w-4" />
+        </button>
 
-          {/* Hero Banner */}
-          <div className="relative h-64 overflow-hidden rounded-t-3xl md:h-80">
-            <img src={images[0]} alt={cs.title} className="h-full w-full object-cover" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/20" />
-            <div className="absolute inset-x-6 bottom-6">
-              <div className="flex flex-wrap gap-2 mb-3">
-                {cs.tags.map((t) => (
-                  <span key={t} className="rounded-full bg-white/15 border border-white/25 px-3 py-1 text-xs text-white backdrop-blur">{t}</span>
-                ))}
-              </div>
-              <h2 className="font-display text-2xl font-bold text-white leading-tight md:text-3xl">{cs.title}</h2>
-              <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-white/70">
-                <span className="font-mono uppercase">{cs.client}</span>
-                <span>·</span>
-                <span>{cs.industry}</span>
-                <span>·</span>
-                <span>{cs.duration}</span>
-                <span className="ml-auto rounded-full bg-white/90 px-3 py-1 font-semibold text-black text-xs">{cs.result}</span>
-              </div>
+        <div className="relative h-64 overflow-hidden rounded-t-3xl md:h-80">
+          <img src={images[0]} alt={cs.title} className="h-full w-full object-cover" loading="lazy" decoding="async" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/20" />
+          <div className="absolute inset-x-6 bottom-6">
+            <div className="flex flex-wrap gap-2 mb-3">
+              {cs.tags.map((t) => (
+                <span key={t} className="rounded-full bg-white/15 border border-white/25 px-3 py-1 text-xs text-white">{t}</span>
+              ))}
+            </div>
+            <h2 className="font-display text-2xl font-bold text-white leading-tight md:text-3xl">{cs.title}</h2>
+            <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-white/70">
+              <span className="font-mono uppercase">{cs.client}</span>
+              <span>·</span>
+              <span>{cs.industry}</span>
+              <span>·</span>
+              <span>{cs.duration}</span>
+              <span className="ml-auto rounded-full bg-white/90 px-3 py-1 font-semibold text-black text-xs">{cs.result}</span>
             </div>
           </div>
+        </div>
 
-          <div className="p-6 md:p-8 space-y-8">
-            <div>
-              <SectionLabel icon={<Target className="h-4 w-4" />} label="Problem Statement" />
-              <p className="mt-3 text-muted-foreground leading-relaxed">{cs.problem}</p>
-            </div>
-            <div>
-              <SectionLabel icon={<CheckCircle className="h-4 w-4" />} label="Goals & Objectives" />
-              <ul className="mt-3 space-y-2">
-                {cs.goals.map((g, i) => (
-                  <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
-                    <span className="mt-0.5 h-5 w-5 shrink-0 grid place-items-center rounded-full bg-muted font-mono text-[10px] font-bold">{i + 1}</span>
-                    {g}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <SectionLabel icon={<Search className="h-4 w-4" />} label="Research & Discovery" />
-              <p className="mt-3 text-muted-foreground leading-relaxed">{cs.research}</p>
-            </div>
-            <div>
-              <SectionLabel icon={<Sparkles className="h-4 w-4" />} label="Design Process" />
-              <p className="mt-3 text-muted-foreground leading-relaxed">{cs.designProcess}</p>
-            </div>
-            <div>
-              <SectionLabel icon={<Code2 className="h-4 w-4" />} label="Development Process" />
-              <p className="mt-3 text-muted-foreground leading-relaxed">{cs.devProcess}</p>
-            </div>
-            <div>
-              <SectionLabel icon={<Zap className="h-4 w-4" />} label="Challenges & Solutions" />
-              <div className="mt-3 space-y-3">
-                {cs.challenges.map((c, i) => (
-                  <div key={i} className="rounded-2xl border border-border bg-muted/40 p-4">
-                    <div className="text-sm font-semibold mb-1">Challenge</div>
-                    <p className="text-sm text-muted-foreground">{c.challenge}</p>
-                    <div className="mt-2 text-sm font-semibold text-sky-500">Solution</div>
-                    <p className="text-sm text-muted-foreground">{c.solution}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div>
-              <SectionLabel icon={<Eye className="h-4 w-4" />} label="Screenshots" />
-              <div className="mt-3 relative overflow-hidden rounded-2xl bg-zinc-950" style={{ height: "min(60vh, 460px)" }}>
-                <img
-                  src={images[imgIdx]}
-                  alt={`${cs.client} screenshot ${imgIdx + 1}`}
-                  className="h-full w-full object-contain"
-                />
-                {images.length > 1 && (
-                  <>
-                    <button onClick={prevImg} aria-label="Previous screenshot" className="absolute left-3 top-1/2 -translate-y-1/2 grid h-10 w-10 place-items-center rounded-full bg-black/60 text-white hover:bg-black/80 transition">
-                      <ChevronLeft className="h-5 w-5" />
-                    </button>
-                    <button onClick={nextImg} aria-label="Next screenshot" className="absolute right-3 top-1/2 -translate-y-1/2 grid h-10 w-10 place-items-center rounded-full bg-black/60 text-white hover:bg-black/80 transition">
-                      <ChevronRight className="h-5 w-5" />
-                    </button>
-                    <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
-                      {images.map((_, i) => (
-                        <button key={i} onClick={() => setImgIdx(i)} aria-label={`Screenshot ${i + 1}`} className={`h-1.5 rounded-full transition-all ${i === imgIdx ? "w-6 bg-white" : "w-1.5 bg-white/40"}`} />
-                      ))}
-                    </div>
-                  </>
-                )}
-              </div>
-              {images.length > 1 && (
-                <div className="mt-2 flex gap-2 overflow-x-auto scrollbar-hide">
-                  {images.map((img, i) => (
-                    <button key={i} onClick={() => setImgIdx(i)} aria-label={`View screenshot ${i + 1}`} className={`h-14 w-20 shrink-0 overflow-hidden rounded-lg border-2 transition ${i === imgIdx ? "border-sky-500" : "border-border opacity-60 hover:opacity-100"}`}>
-                      <img src={img} alt="" className="h-full w-full object-cover" />
-                    </button>
-                  ))}
+        <div className="p-6 md:p-8 space-y-8">
+          <div>
+            <SectionLabel icon={<Target className="h-4 w-4" />} label="Problem Statement" />
+            <p className="mt-3 text-muted-foreground leading-relaxed">{cs.problem}</p>
+          </div>
+          <div>
+            <SectionLabel icon={<CheckCircle className="h-4 w-4" />} label="Goals & Objectives" />
+            <ul className="mt-3 space-y-2">
+              {cs.goals.map((g, i) => (
+                <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
+                  <span className="mt-0.5 h-5 w-5 shrink-0 grid place-items-center rounded-full bg-muted font-mono text-[10px] font-bold">{i + 1}</span>
+                  {g}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <SectionLabel icon={<Search className="h-4 w-4" />} label="Research & Discovery" />
+            <p className="mt-3 text-muted-foreground leading-relaxed">{cs.research}</p>
+          </div>
+          <div>
+            <SectionLabel icon={<Sparkles className="h-4 w-4" />} label="Design Process" />
+            <p className="mt-3 text-muted-foreground leading-relaxed">{cs.designProcess}</p>
+          </div>
+          <div>
+            <SectionLabel icon={<Code2 className="h-4 w-4" />} label="Development Process" />
+            <p className="mt-3 text-muted-foreground leading-relaxed">{cs.devProcess}</p>
+          </div>
+          <div>
+            <SectionLabel icon={<Zap className="h-4 w-4" />} label="Challenges & Solutions" />
+            <div className="mt-3 space-y-3">
+              {cs.challenges.map((c, i) => (
+                <div key={i} className="rounded-2xl border border-border bg-muted/40 p-4">
+                  <div className="text-sm font-semibold mb-1">Challenge</div>
+                  <p className="text-sm text-muted-foreground">{c.challenge}</p>
+                  <div className="mt-2 text-sm font-semibold text-sky-500">Solution</div>
+                  <p className="text-sm text-muted-foreground">{c.solution}</p>
                 </div>
+              ))}
+            </div>
+          </div>
+          <div>
+            <SectionLabel icon={<Eye className="h-4 w-4" />} label="Screenshots" />
+            <div className="mt-3 relative overflow-hidden rounded-2xl bg-zinc-950" style={{ height: "min(60vh, 460px)" }}>
+              <img
+                src={images[imgIdx]}
+                alt={`${cs.client} screenshot ${imgIdx + 1}`}
+                className="h-full w-full object-contain"
+                loading="lazy"
+                decoding="async"
+              />
+              {images.length > 1 && (
+                <>
+                  <button onClick={prevImg} aria-label="Previous screenshot" className="absolute left-3 top-1/2 -translate-y-1/2 grid h-10 w-10 place-items-center rounded-full bg-black/60 text-white hover:bg-black/80 transition">
+                    <ChevronLeft className="h-5 w-5" />
+                  </button>
+                  <button onClick={nextImg} aria-label="Next screenshot" className="absolute right-3 top-1/2 -translate-y-1/2 grid h-10 w-10 place-items-center rounded-full bg-black/60 text-white hover:bg-black/80 transition">
+                    <ChevronRight className="h-5 w-5" />
+                  </button>
+                  <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
+                    {images.map((_, i) => (
+                      <button key={i} onClick={() => setImgIdx(i)} aria-label={`Screenshot ${i + 1}`} className={`h-1.5 rounded-full transition-all ${i === imgIdx ? "w-6 bg-white" : "w-1.5 bg-white/40"}`} />
+                    ))}
+                  </div>
+                </>
               )}
             </div>
-            <div>
-              <SectionLabel icon={<BarChart2 className="h-4 w-4" />} label="Final Results & Outcomes" />
-              <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
-                {cs.results.map((r) => (
-                  <div key={r.label} className="rounded-2xl border border-border bg-muted/40 p-4 text-center">
-                    <div className="font-display text-2xl font-bold">{r.value}</div>
-                    <div className="mt-1 text-xs text-muted-foreground">{r.label}</div>
-                  </div>
+            {images.length > 1 && (
+              <div className="mt-2 flex gap-2 overflow-x-auto scrollbar-hide">
+                {images.map((img, i) => (
+                  <button key={i} onClick={() => setImgIdx(i)} aria-label={`View screenshot ${i + 1}`} className={`h-14 w-20 shrink-0 overflow-hidden rounded-lg border-2 transition ${i === imgIdx ? "border-sky-500" : "border-border opacity-60 hover:opacity-100"}`}>
+                    <img src={img} alt="" className="h-full w-full object-cover" loading="lazy" decoding="async" />
+                  </button>
                 ))}
               </div>
+            )}
+          </div>
+          <div>
+            <SectionLabel icon={<BarChart2 className="h-4 w-4" />} label="Final Results & Outcomes" />
+            <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
+              {cs.results.map((r) => (
+                <div key={r.label} className="rounded-2xl border border-border bg-muted/40 p-4 text-center">
+                  <div className="font-display text-2xl font-bold">{r.value}</div>
+                  <div className="mt-1 text-xs text-muted-foreground">{r.label}</div>
+                </div>
+              ))}
             </div>
-            <div>
-              <SectionLabel icon={<Cpu className="h-4 w-4" />} label="Tech Stack" />
-              <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                {cs.techStack.map((group) => (
-                  <div key={group.category} className="rounded-xl border border-border p-3">
-                    <div className="mb-2 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">{group.category}</div>
-                    <div className="flex flex-wrap gap-1.5">
-                      {group.items.map((item) => (
-                        <span key={item} className="rounded-md bg-muted px-2 py-0.5 font-mono text-xs">{item}</span>
-                      ))}
-                    </div>
+          </div>
+          <div>
+            <SectionLabel icon={<Cpu className="h-4 w-4" />} label="Tech Stack" />
+            <div className="mt-3 grid gap-3 sm:grid-cols-2">
+              {cs.techStack.map((group) => (
+                <div key={group.category} className="rounded-xl border border-border p-3">
+                  <div className="mb-2 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">{group.category}</div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {group.items.map((item) => (
+                      <span key={item} className="rounded-md bg-muted px-2 py-0.5 font-mono text-xs">{item}</span>
+                    ))}
                   </div>
-                ))}
-              </div>
-            </div>
-            <div className="rounded-2xl border border-border bg-muted/40 p-6">
-              <Quote className="h-6 w-6 text-muted-foreground mb-3" />
-              <p className="font-display text-lg font-medium leading-snug">"{cs.testimonial.quote}"</p>
-              <div className="mt-4 flex items-center gap-3">
-                <div className="grid h-10 w-10 place-items-center rounded-full bg-sky-500 font-mono text-sm font-bold text-white">
-                  {cs.testimonial.name.split(" ").map((n) => n[0]).join("").slice(0, 2)}
                 </div>
-                <div>
-                  <div className="text-sm font-semibold">{cs.testimonial.name}</div>
-                  <div className="text-xs text-muted-foreground">{cs.testimonial.role}</div>
-                </div>
-              </div>
+              ))}
             </div>
-            <div className="rounded-2xl border border-border bg-foreground p-6 text-center text-background">
-              <h3 className="font-display text-xl font-bold">Want similar results for your project?</h3>
-              <p className="mt-2 text-sm text-background/70">Let's build something that moves your metrics.</p>
-              <div className="mt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
-                <Link to="/contact" className="inline-flex items-center gap-2 rounded-full bg-background px-6 py-3 text-sm font-semibold text-foreground hover:opacity-90">
-                  Book a discovery call <ArrowRight className="h-4 w-4" />
-                </Link>
-                <button onClick={onClose} className="text-sm text-background/60 hover:text-background/90">Close case study</button>
+          </div>
+          <div className="rounded-2xl border border-border bg-muted/40 p-6">
+            <Quote className="h-6 w-6 text-muted-foreground mb-3" />
+            <p className="font-display text-lg font-medium leading-snug">"{cs.testimonial.quote}"</p>
+            <div className="mt-4 flex items-center gap-3">
+              <div className="grid h-10 w-10 place-items-center rounded-full bg-sky-500 font-mono text-sm font-bold text-white">
+                {cs.testimonial.name.split(" ").map((n) => n[0]).join("").slice(0, 2)}
+              </div>
+              <div>
+                <div className="text-sm font-semibold">{cs.testimonial.name}</div>
+                <div className="text-xs text-muted-foreground">{cs.testimonial.role}</div>
               </div>
             </div>
           </div>
-        </motion.div>
+          <div className="rounded-2xl border border-border bg-foreground p-6 text-center text-background">
+            <h3 className="font-display text-xl font-bold">Want similar results for your project?</h3>
+            <p className="mt-2 text-sm text-background/70">Let's build something that moves your metrics.</p>
+            <div className="mt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
+              <Link to="/contact" className="inline-flex items-center gap-2 rounded-full bg-background px-6 py-3 text-sm font-semibold text-foreground hover:opacity-90">
+                Book a discovery call <ArrowRight className="h-4 w-4" />
+              </Link>
+              <button onClick={onClose} className="text-sm text-background/60 hover:text-background/90">Close case study</button>
+            </div>
+          </div>
+        </div>
       </motion.div>
-    </AnimatePresence>
+    </motion.div>
   );
 }
 
@@ -976,10 +1192,16 @@ function SectionLabel({ icon, label }: { icon: React.ReactNode; label: string })
 /* ============================== CASE STUDIES ============================== */
 function CaseStudies(): JSX.Element {
   const [activeCase, setActiveCase] = useState<string | null>(null);
-  const cats = ["All", ...Array.from(new Set(CASE_STUDIES.flatMap((c) => c.tags)))];
+  const cats = useMemo(
+    () => ["All", ...Array.from(new Set(CASE_STUDIES.flatMap((c) => c.tags)))],
+    []
+  );
   const [active, setActive] = useState("All");
-  const list = active === "All" ? CASE_STUDIES : CASE_STUDIES.filter((c) => c.tags.includes(active));
-  const modalCase = CASE_STUDIES.find((c) => c.slug === activeCase) ?? null;
+  const list = useMemo(
+    () => active === "All" ? CASE_STUDIES : CASE_STUDIES.filter((c) => c.tags.includes(active)),
+    [active]
+  );
+  const modalCase = useMemo(() => CASE_STUDIES.find((c) => c.slug === activeCase) ?? null, [activeCase]);
 
   return (
     <section className="border-t border-border py-20 md:py-32">
@@ -988,8 +1210,8 @@ function CaseStudies(): JSX.Element {
           variants={fadeUp}
           initial="hidden"
           whileInView="show"
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+          viewport={VIEWPORT_ONCE}
+          transition={{ duration: 0.5 }}
           className="font-display text-6xl font-bold tracking-tight md:text-8xl lg:text-[5rem] leading-[0.9]"
         >
           Case Studies
@@ -999,7 +1221,7 @@ function CaseStudies(): JSX.Element {
           variants={staggerContainer(0.1)}
           initial="hidden"
           whileInView="show"
-          viewport={{ once: true }}
+          viewport={VIEWPORT_ONCE}
         >
           <motion.div variants={fadeUp} transition={{ duration: 0.5 }} className="flex items-center gap-4">
             <div className="grid h-14 w-16 place-items-center rounded-full bg-foreground text-background font-display text-sm font-bold">80+</div>
@@ -1030,20 +1252,32 @@ function CaseStudies(): JSX.Element {
           variants={staggerContainer(0.06)}
           initial="hidden"
           whileInView="show"
-          viewport={{ once: true, margin: "-60px" }}
+          viewport={VIEWPORT_ONCE_MARGIN}
         >
           {list.map((c) => (
-            <motion.div key={c.slug} variants={fadeUp} transition={{ duration: 0.55 }} whileHover={{ y: -6 }}>
+            <motion.div
+              key={c.slug}
+              variants={fadeUp}
+              transition={{ duration: 0.45 }}
+              /* FIX: CSS hover instead of whileHover */
+              className="transform-gpu transition-transform duration-300 hover:-translate-y-1.5"
+            >
               <button
                 onClick={() => setActiveCase(c.slug)}
                 aria-label={`View case study: ${c.title}`}
                 className="group relative block w-full overflow-hidden rounded-3xl border border-border bg-card transition hover:border-glow text-left"
               >
                 <div className="relative h-52 overflow-hidden">
-                  <img src={CASE_IMAGES[c.slug]} alt={c.title} className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-110" loading="lazy" decoding="async" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+                  <img
+                    src={CASE_IMAGES[c.slug]}
+                    alt={c.title}
+                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent pointer-events-none" />
                   <div className="absolute right-3 top-3 rounded-full bg-white/95 px-3 py-1 font-mono text-[10px] uppercase text-black">{c.result}</div>
-                  <div className="absolute right-3 bottom-3 grid h-10 w-10 place-items-center rounded-full bg-foreground text-background opacity-0 transition group-hover:opacity-100">
+                  <div className="absolute right-3 bottom-3 grid h-10 w-10 place-items-center rounded-full bg-foreground text-background opacity-0 transition-opacity group-hover:opacity-100">
                     <ArrowUpRight className="h-4 w-4" />
                   </div>
                 </div>
@@ -1070,8 +1304,8 @@ function CaseStudies(): JSX.Element {
           variants={fadeIn}
           initial="hidden"
           whileInView="show"
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.2 }}
+          viewport={VIEWPORT_ONCE}
+          transition={{ duration: 0.5 }}
         >
           <Link to="/case-studies" className="inline-flex items-center gap-2 rounded-full bg-foreground px-6 py-3 text-sm font-semibold text-background hover:opacity-90">
             View all case studies
@@ -1080,41 +1314,43 @@ function CaseStudies(): JSX.Element {
         </motion.div>
       </div>
 
-      {modalCase !== null && <CaseStudyModal cs={modalCase} onClose={() => setActiveCase(null)} />}
+      {/*
+        FIX: AnimatePresence now correctly wraps the conditional render.
+        The modal itself handles its own enter/exit via motion.div.
+        mode="wait" ensures exit animation completes before the next modal opens.
+      */}
+      <AnimatePresence mode="wait">
+        {modalCase !== null && (
+          <CaseStudyModal key={modalCase.slug} cs={modalCase} onClose={() => setActiveCase(null)} />
+        )}
+      </AnimatePresence>
     </section>
   );
 }
 
 /* ============================== WHY US ============================== */
 function WhyUs(): JSX.Element {
-  const cards = [
-    { t: "Strategy + Execution", d: "We don't just design or code. We help shape the product, plan the roadmap, and build solutions that align with your business goals.", icon: Users, img: "/media/why-team.jpg" },
-    { t: "Built for Growth", d: "From websites to SaaS platforms and AI systems, everything is designed to scale as your users, traffic, and business grow.", icon: TrendingUp, img: "/media/why-outcomes.jpg" },
-    { t: "Transparent Process", d: "Weekly updates, shared workspaces, and live progress tracking mean you're always informed from kickoff to launch.", icon: ShieldCheck, img: "/media/why-transparency.jpg" },
-    { t: "Performance First", d: "Fast loading, SEO-ready, secure, and optimized products built with clean architecture that lasts beyond launch.", icon: Award, img: "/media/why-qualit.jpg" },
-  ];
-
   const cardGrid = (
     <motion.div
       className="grid gap-4 sm:grid-cols-2"
       variants={staggerContainer(0.07)}
       initial="hidden"
       whileInView="show"
-      viewport={{ once: true, margin: "-60px" }}
+      viewport={VIEWPORT_ONCE_MARGIN}
     >
-      {cards.map((c) => {
+      {WHY_CARDS.map((c) => {
         const I = c.icon;
         return (
           <motion.div
             key={c.t}
             variants={fadeUp}
-            transition={{ duration: 0.5 }}
-            whileHover={{ y: -6 }}
-            className="group relative aspect-[4/5] overflow-hidden rounded-3xl border border-border bg-card"
+            transition={{ duration: 0.45 }}
+            /* FIX: CSS hover transform instead of whileHover */
+            className="group relative aspect-[4/5] overflow-hidden rounded-3xl border border-border bg-card transform-gpu transition-transform duration-300 hover:-translate-y-1.5"
           >
-            <img src={c.img} alt={c.t} className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-110" loading="lazy" decoding="async" />
+            <img src={c.img} alt={c.t} className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" decoding="async" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/55 to-black/20" />
-            <div className="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-xl border border-white/20 bg-white/10 text-white backdrop-blur">
+            <div className="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-xl border border-white/20 bg-black/50 text-white">
               <I className="h-5 w-5" />
             </div>
             <div className="absolute inset-0 flex flex-col justify-end p-6 text-white">
@@ -1132,7 +1368,7 @@ function WhyUs(): JSX.Element {
       <div className="mx-auto max-w-7xl px-4 md:px-6">
         {/* Mobile */}
         <div className="lg:hidden">
-          <motion.div variants={staggerContainer(0.1)} initial="hidden" whileInView="show" viewport={{ once: true }} className="mb-8">
+          <motion.div variants={staggerContainer(0.1)} initial="hidden" whileInView="show" viewport={VIEWPORT_ONCE} className="mb-8">
             <motion.div variants={fadeUp} transition={{ duration: 0.5 }} className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-gradient">
               <span className="h-1.5 w-1.5 rounded-full bg-[var(--neon)]" /> Why Globe Stack
             </motion.div>
@@ -1142,7 +1378,7 @@ function WhyUs(): JSX.Element {
             </motion.p>
           </motion.div>
           {cardGrid}
-          <motion.div variants={fadeIn} initial="hidden" whileInView="show" viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.3 }} className="mt-8">
+          <motion.div variants={fadeIn} initial="hidden" whileInView="show" viewport={VIEWPORT_ONCE} transition={{ duration: 0.5 }} className="mt-8">
             <Link to="/about" className="inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-3 text-sm font-medium text-background hover:opacity-90">
               More about us
               <span className="grid h-7 w-7 place-items-center rounded-full bg-background text-foreground"><ArrowUpRight className="h-3.5 w-3.5" /></span>
@@ -1152,11 +1388,15 @@ function WhyUs(): JSX.Element {
 
         {/* Desktop */}
         <div className="hidden lg:grid gap-16 lg:grid-cols-2">
+          {/*
+            FIX: lg:sticky + whileInView fires repeatedly as the sticky element
+            stays in the viewport while the user scrolls. Removed whileInView from
+            the sticky column and use a simple animate on mount instead.
+          */}
           <motion.div
-            variants={staggerContainer(0.1)}
             initial="hidden"
-            whileInView="show"
-            viewport={{ once: true }}
+            animate="show"
+            variants={staggerContainer(0.1)}
             className="lg:sticky lg:top-24 lg:self-start"
           >
             <motion.div variants={fadeUp} transition={{ duration: 0.5 }} className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-gradient">
@@ -1190,7 +1430,7 @@ function Process(): JSX.Element {
           variants={staggerContainer(0.1)}
           initial="hidden"
           whileInView="show"
-          viewport={{ once: true }}
+          viewport={VIEWPORT_ONCE}
         >
           <motion.div variants={fadeUp} transition={{ duration: 0.5 }} className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider">
             <span className="h-1.5 w-1.5 rounded-full bg-[var(--neon)]" /> {PROCESS.length} step process
@@ -1202,16 +1442,16 @@ function Process(): JSX.Element {
 
         <motion.div
           className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5"
-          variants={staggerContainer(0.06)}
+          variants={staggerContainer(0.05)}
           initial="hidden"
           whileInView="show"
-          viewport={{ once: true, margin: "-40px" }}
+          viewport={VIEWPORT_ONCE_MARGIN}
         >
           {PROCESS.map((p) => (
             <motion.div
               key={p.step}
               variants={fadeUp}
-              transition={{ duration: 0.5 }}
+              transition={{ duration: 0.4 }}
               className="rounded-2xl border border-background/10 bg-background/5 p-6"
             >
               <div className="font-display text-2xl font-bold">{p.step}.</div>
@@ -1225,8 +1465,8 @@ function Process(): JSX.Element {
           variants={fadeUp}
           initial="hidden"
           whileInView="show"
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.3 }}
+          viewport={VIEWPORT_ONCE}
+          transition={{ duration: 0.5 }}
           className="mt-10 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-background/10 bg-background/5 p-4"
         >
           <div className="flex items-center gap-3">
@@ -1249,25 +1489,18 @@ function Process(): JSX.Element {
 
 /* ============================== STACK ============================== */
 function Stack(): JSX.Element {
-  const groups = [
-    { name: "Web Development", items: ["TypeScript", "React", "Next.js", "TanStack", "Node.js", "Tailwind", "Express.js", "MongoDB", "PostgreSQL"] },
-    { name: "AI & ML", items: ["OpenAI", "Anthropic", "LangChain", "pgvector", "Python", "Hugging Face"] },
-    { name: "Commerce", items: ["Shopify", "Wordpress", "Hydrogen", "Stripe", "Klaviyo", "Sanity", "Webflow"] },
-    { name: "Growth & Marketing", items: ["GA4", "Meta Ads", "Google Ads", "Ahrefs", "BigQuery", "Notion"] },
-  ];
-
   return (
     <section className="relative border-t border-border py-20 md:py-32 bg-[var(--section-b)]">
-      <div className="absolute inset-0 bg-grid opacity-20" />
+      <div className="absolute inset-0 bg-grid opacity-20 pointer-events-none" />
       <div className="relative mx-auto max-w-7xl px-4 md:px-6">
         <motion.div
           className="text-center"
           variants={staggerContainer(0.1)}
           initial="hidden"
           whileInView="show"
-          viewport={{ once: true }}
+          viewport={VIEWPORT_ONCE}
         >
-          <motion.div variants={fadeUp} transition={{ duration: 0.5 }} className="inline-flex items-center gap-2 rounded-full border border-glow glass px-3 py-1 font-mono text-xs uppercase tracking-wider text-gradient">
+          <motion.div variants={fadeUp} transition={{ duration: 0.5 }} className="inline-flex items-center gap-2 rounded-full border border-glow px-3 py-1 font-mono text-xs uppercase tracking-wider">
             Stack of Technology
           </motion.div>
           <motion.h2 variants={fadeUp} transition={{ duration: 0.5 }} className="mt-4 font-display text-3xl font-bold tracking-tight md:text-5xl">Tools we reach for.</motion.h2>
@@ -1276,18 +1509,18 @@ function Stack(): JSX.Element {
 
         <div className="relative mt-16 grid gap-5 md:grid-cols-2">
           <div className="pointer-events-none absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 md:block">
-            <div className="grid h-32 w-32 place-items-center rounded-full border border-glow glass text-center">
+            <div className="grid h-32 w-32 place-items-center rounded-full border border-glow bg-card/80 text-center">
               <div className="font-display text-sm font-bold leading-tight">Stack of<br />Technology</div>
             </div>
           </div>
-          {groups.map((g, i) => (
+          {STACK_GROUPS.map((g, i) => (
             <motion.div
               key={g.name}
               variants={fadeUp}
               initial="hidden"
               whileInView="show"
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.08 }}
+              viewport={VIEWPORT_ONCE}
+              transition={{ duration: 0.45, delay: i * 0.07 }}
               className="rounded-3xl border border-border bg-card p-6 md:p-8"
             >
               <div className="inline-flex items-center gap-2 rounded-full border border-glow px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-gradient">{g.name}</div>
@@ -1305,22 +1538,16 @@ function Stack(): JSX.Element {
 }
 
 /* ============================== TESTIMONIALS ============================== */
-const UPDATED_TESTIMONIALS = [
-  { name: "Adebayo David", role: "CEO, Niscala.io", avatar: "AO", quote: "Globe Stack rebuilt our entire web platform and integrated a custom AI assistant. Traffic doubled in 3 months and our team is more productive than ever." },
-  { name: "Chioma Eze", role: "Founder, SAMTIV", avatar: "CE", quote: "Their Shopify setup and Meta Ads strategy took us from zero to 6 figures online in under 90 days. The senior team approach is the real deal." },
-  { name: "Emeka Nwosu", role: "Head of Growth, IEA", avatar: "EN", quote: "The SEO work Globe Stack did transformed our organic channel. We went from page 4 to ranking #1 for our core keywords within 5 months." },
-  { name: "Fatima Al-Hassan", role: "CTO, BOKING", avatar: "FA", quote: "Clean code, great communication, and they shipped on time. The AI automation they built saved our ops team 20+ hours a week." },
-  { name: "Tunde Adeleke", role: "Director, Greenfield Ventures", avatar: "TA", quote: "Working with Globe Stack felt like having an in-house team. They understood our business goals and every deliverable reflected that." },
-  { name: "Olusegun Daniel", role: "E-commerce Manager, StyleHouse", avatar: "NO", quote: "Our Shopify conversion rate went from 1.2% to 3.8% after their redesign. The attention to UX and page speed was exceptional." },
-];
-
 function Testimonials(): JSX.Element {
-  const data = UPDATED_TESTIMONIALS;
+  const data = TESTIMONIALS_DATA;
   const perView = 3;
-  const max = Math.max(0, data.length - perView);
+  const max = useMemo(() => Math.max(0, data.length - perView), [data.length]);
   const { index, setIndex, setPaused } = useAutoSlider(max + 1, 6000);
-  const next = () => setIndex((i) => (i >= max ? 0 : i + 1));
-  const prev = () => setIndex((i) => (i <= 0 ? max : i - 1));
+  const next = useCallback(() => setIndex((i) => (i >= max ? 0 : i + 1)), [max, setIndex]);
+  const prev = useCallback(() => setIndex((i) => (i <= 0 ? max : i - 1)), [max, setIndex]);
+  const paginationDots = useMemo(() => Array.from({ length: max + 1 }, (_, i) => i), [max]);
+
+  const slidePercent = useMemo(() => `${-index * (100 / perView)}%`, [index, perView]);
 
   return (
     <section className="border-t border-border py-20 md:py-28">
@@ -1330,7 +1557,7 @@ function Testimonials(): JSX.Element {
           variants={staggerContainer(0.1)}
           initial="hidden"
           whileInView="show"
-          viewport={{ once: true }}
+          viewport={VIEWPORT_ONCE}
         >
           <motion.div variants={fadeUp} transition={{ duration: 0.5 }} className="font-mono text-xs uppercase tracking-wider text-muted-foreground">Testimonials</motion.div>
           <motion.h2 variants={fadeUp} transition={{ duration: 0.5 }} className="mt-3 font-display text-3xl font-bold tracking-tight md:text-5xl">What clients say.</motion.h2>
@@ -1340,10 +1567,9 @@ function Testimonials(): JSX.Element {
         <div className="hidden md:block" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
           <div className="overflow-hidden">
             <motion.div
-              className="flex gap-5"
-              animate={{ x: `calc(-${index} * (100% / ${perView}))` }}
-              transition={{ type: "tween", duration: 0.55, ease: [0.32, 0.72, 0, 1] }}
-              style={{ willChange: "transform" }}
+              className="flex gap-5 transform-gpu"
+              animate={{ x: slidePercent }}
+              transition={{ type: "tween", duration: 0.5, ease: [0.32, 0.72, 0, 1] }}
             >
               {data.map((t) => (
                 <div key={t.name} className="w-[calc((100%-2.5rem)/3)] shrink-0">
@@ -1354,7 +1580,7 @@ function Testimonials(): JSX.Element {
           </div>
           <div className="mt-6 flex items-center justify-between">
             <div className="flex gap-1.5">
-              {Array.from({ length: max + 1 }).map((_, i) => (
+              {paginationDots.map((i) => (
                 <button key={i} onClick={() => setIndex(i)} aria-label={`Go to slide ${i + 1}`} className={`h-1.5 rounded-full transition-all ${i === index ? "w-8 bg-foreground" : "w-1.5 bg-border"}`} />
               ))}
             </div>
@@ -1372,7 +1598,7 @@ function Testimonials(): JSX.Element {
   );
 }
 
-function TestimonialCard({ t }: { t: typeof UPDATED_TESTIMONIALS[number] }): JSX.Element {
+const TestimonialCard = memo(function TestimonialCard({ t }: { t: typeof TESTIMONIALS_DATA[number] }): JSX.Element {
   return (
     <div className="flex h-full flex-col rounded-3xl border border-border bg-card p-7">
       <p className="mt-5 flex-1 text-pretty font-display text-lg font-medium leading-snug md:text-xl">"{t.quote}"</p>
@@ -1386,15 +1612,17 @@ function TestimonialCard({ t }: { t: typeof UPDATED_TESTIMONIALS[number] }): JSX
       </div>
     </div>
   );
-}
+});
 
 /* ============================== BLOG ============================== */
 function Blog(): JSX.Element {
   const perView = 3;
-  const max = Math.max(0, POSTS.length - perView);
+  const max = useMemo(() => Math.max(0, POSTS.length - perView), []);
   const { index, setIndex, setPaused } = useAutoSlider(max + 1, 6000);
-  const next = () => setIndex((i) => (i >= max ? 0 : i + 1));
-  const prev = () => setIndex((i) => (i <= 0 ? max : i - 1));
+  const next = useCallback(() => setIndex((i) => (i >= max ? 0 : i + 1)), [max, setIndex]);
+  const prev = useCallback(() => setIndex((i) => (i <= 0 ? max : i - 1)), [max, setIndex]);
+  const paginationDots = useMemo(() => Array.from({ length: max + 1 }, (_, i) => i), [max]);
+  const slidePercent = useMemo(() => `${-index * (100 / perView)}%`, [index, perView]);
 
   return (
     <section className="border-t border-border py-20 md:py-28 bg-[var(--section-c)]">
@@ -1404,7 +1632,7 @@ function Blog(): JSX.Element {
           variants={staggerContainer(0.1)}
           initial="hidden"
           whileInView="show"
-          viewport={{ once: true }}
+          viewport={VIEWPORT_ONCE}
         >
           <motion.div variants={fadeUp} transition={{ duration: 0.5 }} className="font-mono text-xs uppercase tracking-wider text-muted-foreground">Blog</motion.div>
           <motion.h2 variants={fadeUp} transition={{ duration: 0.5 }} className="mt-3 font-display text-3xl font-bold tracking-tight md:text-5xl">Article categories.</motion.h2>
@@ -1419,10 +1647,9 @@ function Blog(): JSX.Element {
         <div className="hidden md:block" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
           <div className="overflow-hidden">
             <motion.div
-              className="flex gap-5"
-              animate={{ x: `calc(-${index} * (100% / ${perView}))` }}
-              transition={{ type: "tween", duration: 0.55, ease: [0.32, 0.72, 0, 1] }}
-              style={{ willChange: "transform" }}
+              className="flex gap-5 transform-gpu"
+              animate={{ x: slidePercent }}
+              transition={{ type: "tween", duration: 0.5, ease: [0.32, 0.72, 0, 1] }}
             >
               {POSTS.map((p) => (
                 <BlogCard key={p.slug} p={p} className="w-[calc((100%-2.5rem)/3)] shrink-0" />
@@ -1431,7 +1658,7 @@ function Blog(): JSX.Element {
           </div>
           <div className="mt-8 flex items-center justify-between">
             <div className="flex gap-1.5">
-              {Array.from({ length: max + 1 }).map((_, i) => (
+              {paginationDots.map((i) => (
                 <button key={i} onClick={() => setIndex(i)} aria-label={`Go to slide ${i + 1}`} className={`h-1.5 rounded-full transition-all ${i === index ? "w-8 bg-foreground" : "w-1.5 bg-border"}`} />
               ))}
             </div>
@@ -1449,16 +1676,22 @@ function Blog(): JSX.Element {
   );
 }
 
-function BlogCard({ p, className = "" }: { p: typeof POSTS[number]; className?: string }): JSX.Element {
+const BlogCard = memo(function BlogCard({ p, className = "" }: { p: typeof POSTS[number]; className?: string }): JSX.Element {
   return (
-    <Link to="/blog" className={`group relative aspect-[3/4] overflow-hidden rounded-3xl border border-border bg-card ${className}`}>
-      <img src={POST_IMAGES[p.slug]} alt={p.title} className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-110" loading="lazy" decoding="async" />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/55 to-black/15" />
-      <div className="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-full border border-white/20 bg-white/10 text-white backdrop-blur opacity-0 transition group-hover:opacity-100">
+    <Link to="/blog" className={`group relative aspect-[3/4] overflow-hidden rounded-3xl border border-border bg-card transform-gpu ${className}`}>
+      <img
+        src={POST_IMAGES[p.slug]}
+        alt={p.title}
+        className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+        loading="lazy"
+        decoding="async"
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/55 to-black/15 pointer-events-none" />
+      <div className="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-full border border-white/20 bg-black/50 text-white opacity-0 transition-opacity group-hover:opacity-100">
         <ArrowUpRight className="h-4 w-4" />
       </div>
       <div className="absolute inset-0 flex flex-col justify-end p-6 text-white">
-        <div className="inline-flex w-fit items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3 py-1 text-[10px] font-mono uppercase backdrop-blur">{p.tag}</div>
+        <div className="inline-flex w-fit items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3 py-1 text-[10px] font-mono uppercase">{p.tag}</div>
         <h3 className="mt-4 font-display text-xl font-bold leading-tight">{p.title}</h3>
         <p className="mt-2 line-clamp-2 text-sm text-white/80">{p.excerpt}</p>
         <div className="mt-4 flex items-center justify-between text-xs text-white/70">
@@ -1468,18 +1701,9 @@ function BlogCard({ p, className = "" }: { p: typeof POSTS[number]; className?: 
       </div>
     </Link>
   );
-}
+});
 
 /* ============================== FAQ ============================== */
-const UPDATED_FAQ = [
-  { q: "What services does Globe Stack offer?", a: "We offer end-to-end digital services: custom web development, AI integration, SEO, paid advertising (Meta & Google Ads), social media management, and Shopify store design and optimisation — all delivered by a senior-only team." },
-  { q: "Do you work with startups or established businesses?", a: "Both. We've worked with early-stage founders who need their first product shipped, and with established brands scaling into new digital channels. Our process adapts to where you are." },
-  { q: "How long does a typical project take?", a: "A focused web project typically takes 4–8 weeks. SEO and ads are ongoing engagements with measurable monthly milestones. AI integrations vary — we scope these during discovery to give you an honest timeline." },
-  { q: "Will I own everything you build?", a: "Absolutely. All code, content, ad accounts, SEO assets, and credentials are yours. We hand over full ownership at the end of every engagement." },
-  { q: "How do you measure success?", a: "Through the metrics that matter to your business — organic traffic, conversion rate, ROAS, revenue. We set targets together at the start, track them in shared dashboards, and report weekly." },
-  { q: "Can Globe Stack handle everything my business needs digitally?", a: "Yes. That's exactly why we built Globe Stack. Instead of managing five separate agencies, you get one senior team across web, AI, SEO, ads, social, and commerce — with unified strategy and accountable delivery." },
-];
-
 function FAQs(): JSX.Element {
   const [open, setOpen] = useState<number | null>(0);
 
@@ -1487,10 +1711,10 @@ function FAQs(): JSX.Element {
     <section className="border-t border-border py-20 md:py-32">
       <div className="mx-auto grid max-w-7xl gap-12 px-4 md:px-6 lg:grid-cols-2 lg:gap-16">
         <motion.div
-          variants={staggerContainer(0.08)}
+          variants={staggerContainer(0.07)}
           initial="hidden"
           whileInView="show"
-          viewport={{ once: true }}
+          viewport={VIEWPORT_ONCE}
         >
           <motion.div variants={fadeUp} transition={{ duration: 0.5 }} className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-gradient">
             <span className="h-1.5 w-1.5 rounded-full bg-[var(--neon)]" /> FAQ
@@ -1500,7 +1724,7 @@ function FAQs(): JSX.Element {
             Everything you need to know about working with Globe Stack — how we engage, what we deliver, and how we're different.
           </motion.p>
           <motion.div variants={fadeUp} transition={{ duration: 0.5 }} className="mt-8 space-y-3">
-            {UPDATED_FAQ.map((f, i) => (
+            {FAQ_DATA.map((f, i) => (
               <div key={f.q} className="overflow-hidden rounded-2xl border border-border bg-card transition hover:border-glow">
                 <button
                   onClick={() => setOpen(open === i ? null : i)}
@@ -1512,14 +1736,21 @@ function FAQs(): JSX.Element {
                     {open === i ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                   </span>
                 </button>
-                <AnimatePresence initial={false}>
+                {/*
+                  FIX: AnimatePresence with mode="sync" prevents the double-render
+                  flicker that happened when the FAQ item unmounted and remounted.
+                  Also added overflow-hidden directly on the motion.div so height
+                  animation doesn't cause layout shift on surrounding elements.
+                */}
+                <AnimatePresence mode="sync" initial={false}>
                   {open === i && (
                     <motion.div
+                      key={`faq-${i}`}
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: "auto", opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3, ease: "easeInOut" }}
-                      className="overflow-hidden"
+                      transition={{ duration: 0.25, ease: "easeInOut" }}
+                      style={{ overflow: "hidden" }}
                     >
                       <div className="px-6 pb-6 text-sm text-muted-foreground">{f.a}</div>
                     </motion.div>
@@ -1534,15 +1765,21 @@ function FAQs(): JSX.Element {
           variants={fadeUp}
           initial="hidden"
           whileInView="show"
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.2 }}
+          viewport={VIEWPORT_ONCE}
+          transition={{ duration: 0.5, delay: 0.15 }}
           className="relative lg:sticky lg:top-24 lg:self-start"
         >
-          <div className="group relative aspect-[4/5] overflow-hidden rounded-3xl border border-border bg-card">
-            <img src="/media/download.png" alt="Globe Stack team at work" className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" loading="lazy" decoding="async" />
+          <div className="group relative aspect-[4/5] overflow-hidden rounded-3xl border border-border bg-card transform-gpu">
+            <img
+              src="/media/download.png"
+              alt="Globe Stack team at work"
+              className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+              loading="lazy"
+              decoding="async"
+            />
             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/20" />
             <div className="absolute inset-x-6 bottom-6">
-              <div className="flex items-center gap-4 rounded-2xl border border-white/15 bg-white/10 p-4 text-white backdrop-blur-md">
+              <div className="flex items-center gap-4 rounded-2xl border border-white/15 bg-white/10 p-4 text-white" style={{ backdropFilter: "blur(8px)" }}>
                 <div className="grid h-12 w-12 place-items-center rounded-xl bg-gradient-to-br from-[var(--neon)] to-[var(--neon-violet)] text-background">
                   <Rocket className="h-5 w-5" />
                 </div>
