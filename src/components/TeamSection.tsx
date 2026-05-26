@@ -3,29 +3,30 @@ import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 
 const TEAM = [
+
+    {
+    name: "Oreoluwa Samuel",
+    role: "Growth & Performance",
+    img: "/media/ore.png",
+    bio: "Engineered SEO, paid media, and full-funnel attribution that moves revenue.",
+  },
   {
     name: "Kehinde Bakare",
     role: "Full Stack Engineer",
-    img: "/media/kenny.png",
+    img: "/media/keno.png",
     bio: "12+ years shipping React, Node, and distributed systems at production scale.",
   },
   {
     name: "Daniel Amalunweze",
-    role: "Frontend Developer & UI/UX Designer",
-    img: "/media/daniel.jfif",
-    bio: "Pixel-perfect interfaces and custom design systems that convert and hold.",
-  },
-  {
-    name: "Taiwo Ayomide",
     role: "AI & Backend Engineer",
-    img: "/media/taiwo.jpeg",
+    img: "/media/daniel.jfif",
     bio: "Production RAG pipelines, LLM fine-tunes, and cloud infra for fintech and SaaS.",
   },
   {
-    name: "Oreoluwa Samuel",
-    role: "Growth & Performance",
-    img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80",
-    bio: "Engineered SEO, paid media, and full-funnel attribution that moves revenue.",
+    name: "David Richard",
+    role: "Frontend Developer & UI/UX Designer",
+    img: "/media/taiwo.jpeg",
+    bio: "Pixel-perfect interfaces and custom design systems that convert and hold.",
   },
 ];
 

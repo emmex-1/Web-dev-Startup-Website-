@@ -448,18 +448,27 @@ function Hero(): JSX.Element {
 }
 
 /* ============================== ABOUT ============================== */
-function About(): JSX.Element {
+function About() {
+  const cards = [
+    {
+      tag: "Vision-driven",
+      t: "Built for the long game",
+      d: "From brand systems to product foundations, we architect digital strategies designed for compounding growth — not vanity launches that fade.",
+      img: "/media/about-vision.jpg",
+    },
+    {
+      tag: "Full-stack craft",
+      t: "Web, AI & Commerce unified",
+      d: "Every project ships with modern tech: performant web apps, intelligent AI integrations, and conversion-optimised Shopify stores, all from one senior team.",
+      img: "/media/about-craft.jpg",
+    },
+  ];
+
   return (
     <section className="relative border-t border-border py-20 md:py-32 bg-[var(--section-a)]">
       <div className="mx-auto grid max-w-7xl gap-12 px-4 md:px-6 lg:grid-cols-2 lg:gap-16">
-        <motion.div
-          variants={fadeUp}
-          initial="hidden"
-          whileInView="show"
-          viewport={VIEWPORT_ONCE}
-          transition={{ duration: 0.5 }}
-        >
-          <div className="font-mono text-xs uppercase tracking-wider">About Us</div>
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
+          <div className="font-mono text-xs uppercase tracking-wider ">About Us</div>
           <h2 className="mt-3 font-display text-4xl font-bold leading-[1.05] tracking-tight md:text-6xl">
             Your Growth Partner Across Every Digital Channel
           </h2>
@@ -472,33 +481,15 @@ function About(): JSX.Element {
           </Link>
         </motion.div>
 
-        <motion.div
-          className="grid gap-5 sm:grid-cols-2"
-          variants={staggerContainer(0.1)}
-          initial="hidden"
-          whileInView="show"
-          viewport={VIEWPORT_ONCE}
-        >
-          {ABOUT_CARDS.map((c, i) => (
+        <div className="grid gap-5 sm:grid-cols-2">
+          {cards.map((c, i) => (
             <motion.div
               key={c.t}
-              variants={fadeUp}
-              transition={{ duration: 0.4, delay: i * 0.06 }}
-              className="group relative aspect-[3/4] overflow-hidden rounded-3xl border border-border transform-gpu transition-transform duration-300 hover:-translate-y-1.5"
+              initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: i * 0.1 }}
+              whileHover={{ y: -6 }}
+              className="group relative aspect-[3/4] overflow-hidden rounded-3xl border border-border"
             >
-              {/* 
-                FIX: About cards are below the fold — keep lazy but add explicit
-                dimensions so browser reserves space immediately (prevents CLS).
-              */}
-              <img
-                src={c.img}
-                alt={c.t}
-                width={400}
-                height={533}
-                className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-out will-change-transform group-hover:scale-105"
-                loading="lazy"
-                decoding="async"
-              />
+              <img src={c.img} alt={c.t} className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-110" loading="eager" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/60" />
               <div className="absolute inset-0 flex flex-col p-6 text-white">
                 <div className="font-display text-xl font-semibold italic">
@@ -509,10 +500,7 @@ function About(): JSX.Element {
                   <div className="font-display text-2xl font-bold leading-tight">{c.t}</div>
                   <p className="mt-2 line-clamp-3 text-sm text-white/80">{c.d}</p>
                   <div className="mt-4 flex items-center justify-between">
-                    <Link
-                      to="/about"
-                      className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-3 py-1.5 text-xs"
-                    >
+                    <Link to="/about" className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-3 py-1.5 text-xs backdrop-blur">
                       Learn More <span className="grid h-5 w-5 place-items-center rounded-full bg-white text-black"><Zap className="h-2.5 w-2.5" /></span>
                     </Link>
                     <div className="font-display text-5xl font-bold text-white/20">0{i + 1}</div>
@@ -521,11 +509,12 @@ function About(): JSX.Element {
               </div>
             </motion.div>
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   );
 }
+
 
 /* ============================== SLIDER HOOK ============================== */
 function useAutoSlider(count: number, intervalMs = 5000) {
@@ -1341,102 +1330,134 @@ function CaseStudies(): JSX.Element {
 }
 
 /* ============================== WHY US ============================== */
-function WhyUs(): JSX.Element {
-  const cardGrid = (
-    <motion.div
-      className="grid gap-4 sm:grid-cols-2"
-      variants={staggerContainer(0.06)}
-      initial="hidden"
-      whileInView="show"
-      viewport={VIEWPORT_ONCE_MARGIN}
-    >
-      {WHY_CARDS.map((c, idx) => {
-        const I = c.icon;
-        return (
-          <motion.div
-            key={c.t}
-            variants={fadeUp}
-            transition={{ duration: 0.3 }}
-            className="group relative aspect-[4/5] overflow-hidden rounded-3xl border border-border bg-card transform-gpu transition-transform duration-300 hover:-translate-y-1.5"
-          >
-            {/*
-              FIX: Why Us cards are well below the fold — keep lazy, but add
-              explicit dimensions and will-change-transform for smooth hover.
-            */}
-            <img
-              src={c.img}
-              alt={c.t}
-              width={400}
-              height={500}
-              className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 will-change-transform group-hover:scale-105"
-              loading="lazy"
-              decoding="async"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/55 to-black/20" />
-            <div className="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-xl border border-white/20 bg-black/50 text-white">
-              <I className="h-5 w-5" />
-            </div>
-            <div className="absolute inset-0 flex flex-col justify-end p-6 text-white">
-              <h3 className="font-display text-xl font-semibold">{c.t}</h3>
-              <p className="mt-2 text-sm text-white/80">{c.d}</p>
-            </div>
-          </motion.div>
-        );
-      })}
-    </motion.div>
-  );
+function WhyUs() {
+  const cards = [
+    {
+      t: "Strategy + Execution",
+      d: "We don't just design or code. We help shape the product, plan the roadmap, and build solutions that align with your business goals.",
+      icon: Users,
+      img: "/media/why-team.jpg",
+    },
+    {
+      t: "Built for Growth",
+      d: "From websites to SaaS platforms and AI systems, everything is designed to scale as your users, traffic, and business grow.",
+      icon: TrendingUp,
+      img: "/media/why-outcomes.jpg",
+    },
+    {
+      t: "Transparent Process",
+      d: "Weekly updates, shared workspaces, and live progress tracking mean you're always informed from kickoff to launch.",
+      icon: ShieldCheck,
+      img: "/media/why-transparency.jpg",
+    },
+    {
+      t: "Performance First",
+      d: "Fast loading, SEO-ready, secure, and optimized products built with clean architecture that lasts beyond launch.",
+      icon: Award,
+      img: "/media/why-qualit.jpg",
+    },
+  ];
 
   return (
     <section className="border-t border-border py-20 md:py-32 bg-[var(--section-a)]">
       <div className="mx-auto max-w-7xl px-4 md:px-6">
-        {/* Mobile */}
+
+        {/* Mobile layout */}
         <div className="lg:hidden">
-          <motion.div variants={staggerContainer(0.1)} initial="hidden" whileInView="show" viewport={VIEWPORT_ONCE} className="mb-8">
-            <motion.div variants={fadeUp} transition={{ duration: 0.5 }} className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-gradient">
+          <div className="mb-8">
+            <div className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-gradient">
               <span className="h-1.5 w-1.5 rounded-full bg-[var(--neon)]" /> Why Globe Stack
-            </motion.div>
-            <motion.h2 variants={fadeUp} transition={{ duration: 0.5 }} className="mt-4 font-display text-4xl font-bold leading-[1.05] tracking-tight md:text-6xl">Why Choose Us</motion.h2>
-            <motion.p variants={fadeUp} transition={{ duration: 0.5 }} className="mt-6 max-w-md text-muted-foreground">
+            </div>
+            <h2 className="mt-4 font-display text-4xl font-bold leading-[1.05] tracking-tight md:text-6xl">
+              Why Choose Us
+            </h2>
+            <p className="mt-6 max-w-md text-muted-foreground">
               This isn't just another agency. It's a transformation for your product, your growth, and your team. Built by senior operators who have actually shipped.
-            </motion.p>
-          </motion.div>
-          {cardGrid}
-          <motion.div variants={fadeIn} initial="hidden" whileInView="show" viewport={VIEWPORT_ONCE} transition={{ duration: 0.5 }} className="mt-8">
+            </p>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            {cards.map((c, i) => {
+              const I = c.icon;
+              return (
+                <motion.div
+                  key={c.t}
+                  initial={{ opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: i * 0.07 }}
+                  whileHover={{ y: -6 }}
+                  className="group relative aspect-[4/5] overflow-hidden rounded-3xl border border-border bg-card"
+                >
+                  <img src={c.img} alt={c.t} className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-110" loading="lazy" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/55 to-black/20" />
+                  <div className="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-xl border border-white/20 bg-white/10 text-white backdrop-blur">
+                    <I className="h-5 w-5" />
+                  </div>
+                  <div className="absolute inset-0 flex flex-col justify-end p-6 text-white">
+                    <h3 className="font-display text-xl font-semibold">{c.t}</h3>
+                    <p className="mt-2 text-sm text-white/80">{c.d}</p>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+          <div className="mt-8">
             <Link to="/about" className="inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-3 text-sm font-medium text-background hover:opacity-90">
               More about us
               <span className="grid h-7 w-7 place-items-center rounded-full bg-background text-foreground"><ArrowUpRight className="h-3.5 w-3.5" /></span>
             </Link>
-          </motion.div>
+          </div>
         </div>
 
-        {/* Desktop */}
+        {/* Desktop layout */}
         <div className="hidden lg:grid gap-16 lg:grid-cols-2">
-          <motion.div
-            initial="hidden"
-            animate="show"
-            variants={staggerContainer(0.1)}
-            className="lg:sticky lg:top-24 lg:self-start"
-          >
-            <motion.div variants={fadeUp} transition={{ duration: 0.5 }} className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-gradient">
+          <div className="lg:sticky lg:top-24 lg:self-start">
+            <div className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-gradient">
               <span className="h-1.5 w-1.5 rounded-full bg-[var(--neon)]" /> Why Globe Stack
-            </motion.div>
-            <motion.h2 variants={fadeUp} transition={{ duration: 0.5 }} className="mt-4 font-display text-4xl font-bold leading-[1.05] tracking-tight md:text-6xl">Why Choose Us</motion.h2>
-            <motion.p variants={fadeUp} transition={{ duration: 0.5 }} className="mt-6 max-w-md text-muted-foreground">
+            </div>
+            <h2 className="mt-4 font-display text-4xl font-bold leading-[1.05] tracking-tight md:text-6xl">
+              Why Choose Us
+            </h2>
+            <p className="mt-6 max-w-md text-muted-foreground">
               This isn't just another agency. It's a transformation for your product, your growth, and your team. Built by senior operators who have actually shipped.
-            </motion.p>
-            <motion.div variants={fadeIn} transition={{ duration: 0.5, delay: 0.3 }}>
-              <Link to="/about" className="mt-8 inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-3 text-sm font-medium text-background hover:opacity-90">
-                More about us
-                <span className="grid h-7 w-7 place-items-center rounded-full bg-background text-foreground"><ArrowUpRight className="h-3.5 w-3.5" /></span>
-              </Link>
-            </motion.div>
-          </motion.div>
-          {cardGrid}
+            </p>
+            <Link to="/about" className="mt-8 inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-3 text-sm font-medium text-background hover:opacity-90">
+              More about us
+              <span className="grid h-7 w-7 place-items-center rounded-full bg-background text-foreground"><ArrowUpRight className="h-3.5 w-3.5" /></span>
+            </Link>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            {cards.map((c, i) => {
+              const I = c.icon;
+              return (
+                <motion.div
+                  key={c.t}
+                  initial={{ opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: i * 0.07 }}
+                  whileHover={{ y: -6 }}
+                  className="group relative aspect-[4/5] overflow-hidden rounded-3xl border border-border bg-card"
+                >
+                  <img src={c.img} alt={c.t} className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-110" loading="lazy" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/55 to-black/20" />
+                  <div className="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-xl border border-white/20 bg-white/10 text-white backdrop-blur">
+                    <I className="h-5 w-5" />
+                  </div>
+                  <div className="absolute inset-0 flex flex-col justify-end p-6 text-white">
+                    <h3 className="font-display text-xl font-semibold">{c.t}</h3>
+                    <p className="mt-2 text-sm text-white/80">{c.d}</p>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
         </div>
       </div>
     </section>
   );
 }
+
 
 /* ============================== PROCESS ============================== */
 function Process(): JSX.Element {
