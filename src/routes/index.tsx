@@ -464,19 +464,70 @@ function About() {
     },
   ];
 
-  return (
-    <section className="relative border-t border-border py-20 md:py-32 bg-[var(--section-a)]">
+  // return (
+  //   <section className="relative border-t border-border py-20 md:py-32 bg-[var(--section-a)]">
+  //     <div className="mx-auto grid max-w-7xl gap-12 px-4 md:px-6 lg:grid-cols-2 lg:gap-16">
+  //       <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
+  //         <div className="font-mono text-xs uppercase tracking-wider ">About Us</div>
+  //         <h2 className="mt-3 font-display text-4xl font-bold leading-[1.05] tracking-tight md:text-6xl">
+  //           Your Growth Partner Across Every Digital Channel
+  //         </h2>
+  //         <p className="mt-6 max-w-md text-muted-foreground">
+  //           Globe Stack is a full-stack tech studio built by senior specialists. We handle web development, AI integration, SEO, paid ads, social media, and Shopify so you get one accountable team delivering measurable outcomes across every touchpoint.
+  //         </p>
+  //         <Link to="/about" className="mt-8 inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-3 text-sm font-medium text-background hover:opacity-90">
+  //           Our Story
+  //           <span className="grid h-7 w-7 place-items-center rounded-full bg-background text-foreground"><Zap className="h-3.5 w-3.5" /></span>
+  //         </Link>
+  //       </motion.div>
+
+  //       <div className="grid gap-5 sm:grid-cols-2">
+  //         {cards.map((c, i) => (
+  //           <motion.div
+  //             key={c.t}
+  //             initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: i * 0.1 }}
+  //             whileHover={{ y: -6 }}
+  //             className="group relative aspect-[3/4] overflow-hidden rounded-3xl border border-border"
+  //           >
+  //             <img src={c.img} alt={c.t} className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-110" loading="eager" />
+  //             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/60" />
+  //             <div className="absolute inset-0 flex flex-col p-6 text-white">
+  //               <div className="font-display text-xl font-semibold italic">
+  //                 {c.tag} <span className="not-italic"></span>
+  //               </div>
+  //               <div className="mt-1 text-xs text-white/70">Our Values</div>
+  //               <div className="mt-auto">
+  //                 <div className="font-display text-2xl font-bold leading-tight">{c.t}</div>
+  //                 <p className="mt-2 line-clamp-3 text-sm text-white/80">{c.d}</p>
+  //                 <div className="mt-4 flex items-center justify-between">
+  //                   <Link to="/about" className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-3 py-1.5 text-xs backdrop-blur">
+  //                     Learn More <span className="grid h-5 w-5 place-items-center rounded-full bg-white text-black"><Zap className="h-2.5 w-2.5" /></span>
+  //                   </Link>
+  //                   <div className="font-display text-5xl font-bold text-white/20">0{i + 1}</div>
+  //                 </div>
+  //               </div>
+  //             </div>
+  //           </motion.div>
+  //         ))}
+  //       </div>
+  //     </div>
+  //   </section>
+  // );
+
+
+    return (
+    <section className="relative border-t border-border py-20 md:py-32  bg-[var(--section-a)]">
       <div className="mx-auto grid max-w-7xl gap-12 px-4 md:px-6 lg:grid-cols-2 lg:gap-16">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
-          <div className="font-mono text-xs uppercase tracking-wider ">About Us</div>
+          <div className="font-mono text-xs uppercase tracking-wider text-muted-foreground">About Us</div>
           <h2 className="mt-3 font-display text-4xl font-bold leading-[1.05] tracking-tight md:text-6xl">
-            Your Growth Partner Across Every Digital Channel
+              Your Growth Partner Across Every Digital Channel
           </h2>
           <p className="mt-6 max-w-md text-muted-foreground">
-            Globe Stack is a full-stack tech studio built by senior specialists. We handle web development, AI integration, SEO, paid ads, social media, and Shopify so you get one accountable team delivering measurable outcomes across every touchpoint.
+             Globe Stack is a full-stack tech studio built by senior specialists. We handle web development, AI integration, SEO, paid ads, social media, and Shopify so you get one accountable team delivering measurable outcomes across every touchpoint.
           </p>
           <Link to="/about" className="mt-8 inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-3 text-sm font-medium text-background hover:opacity-90">
-            Our Story
+             Our Story
             <span className="grid h-7 w-7 place-items-center rounded-full bg-background text-foreground"><Zap className="h-3.5 w-3.5" /></span>
           </Link>
         </motion.div>
@@ -489,7 +540,7 @@ function About() {
               whileHover={{ y: -6 }}
               className="group relative aspect-[3/4] overflow-hidden rounded-3xl border border-border"
             >
-              <img src={c.img} alt={c.t} className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-110" loading="eager" />
+              <img src={c.img} alt={c.t} className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-110" loading="lazy" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/60" />
               <div className="absolute inset-0 flex flex-col p-6 text-white">
                 <div className="font-display text-xl font-semibold italic">
@@ -563,101 +614,96 @@ function SliderArrows({ onPrev, onNext }: { onPrev: () => void; onNext: () => vo
 }
 
 /* ============================== SERVICES ============================== */
-function Services(): JSX.Element {
+function Services() {
   const perView = 3;
   const max = Math.max(0, SERVICES.length - perView);
   const { index, setIndex, setPaused } = useAutoSlider(max + 1, 6000);
-
   const next = useCallback(() => setIndex((i) => (i >= max ? 0 : i + 1)), [max, setIndex]);
   const prev = useCallback(() => setIndex((i) => (i <= 0 ? max : i - 1)), [max, setIndex]);
 
-  const paginationDots = useMemo(() => Array.from({ length: max + 1 }, (_, i) => i), [max]);
-
-  const animateX = -index * (100 / perView);
-
   return (
-    /*
-      FIX: Removed content-visibility-auto from Services — it was causing the
-      section to be skipped during initial render, making images load later than
-      they should. Only use content-visibility on truly far-below-fold sections.
-    */
     <section className="border-t border-border py-20 md:py-28">
       <div className="mx-auto max-w-7xl px-4 md:px-6">
-        <motion.div
-          className="mb-10 text-center"
-          variants={staggerContainer(0.1)}
-          initial="hidden"
-          whileInView="show"
-          viewport={VIEWPORT_ONCE}
-        >
-          <motion.div variants={fadeUp} transition={{ duration: 0.4 }} className="font-mono text-xs uppercase tracking-wider text-muted-foreground">
-            Services
-          </motion.div>
-          <motion.h2 variants={fadeUp} transition={{ duration: 0.4 }} className="mt-3 font-display text-3xl font-bold tracking-tight md:text-5xl">
-            What we do best.
-          </motion.h2>
-          <motion.p variants={fadeUp} transition={{ duration: 0.4 }} className="mt-3 mx-auto max-w-xl text-muted-foreground">
-            From idea to revenue, we power every stage of your digital growth.
-          </motion.p>
-        </motion.div>
+        {/* CENTERED HEADER */}
+{/* CENTERED HEADER */}
+<motion.div
+  className="mb-10 text-center"
+  variants={staggerContainer(0.1)}
+  initial="hidden"
+  whileInView="show"
+  viewport={VIEWPORT_ONCE}
+>
+  <motion.div
+    variants={fadeUp}
+    transition={{ duration: 0.4 }}
+    className="font-mono text-xs uppercase tracking-wider text-muted-foreground"
+  >
+    Services
+  </motion.div>
+
+  <motion.h2
+    variants={fadeUp}
+    transition={{ duration: 0.4 }}
+    className="mt-3 font-display text-3xl font-bold tracking-tight md:text-5xl"
+  >
+    What we do best.
+  </motion.h2>
+
+  <motion.p
+    variants={fadeUp}
+    transition={{ duration: 0.4 }}
+    className="mt-3 mx-auto max-w-xl text-muted-foreground"
+  >
+    From idea to revenue, we power every stage of your digital growth.
+  </motion.p>
+</motion.div>
 
         {/* Desktop slider */}
-        <div
-          className="hidden md:block overflow-hidden"
-          onMouseEnter={() => setPaused(true)}
-          onMouseLeave={() => setPaused(false)}
-        >
-          <motion.div
-            className="flex gap-5 will-change-transform"
-            animate={{ x: `${animateX}%` }}
-            transition={{ type: "spring", stiffness: 300, damping: 30 }}
-          >
-            {SERVICES.map((s, i) => (
-              <ServiceCard
-                key={s.slug}
-                s={s}
-                className="w-[calc((100%-2.5rem)/3)] shrink-0"
-                /*
-                  FIX: First 3 cards are visible on load — eager + high priority.
-                  Rest are lazy + low priority since they're off-screen in the slider.
-                */
-                isPriority={i < perView}
-              />
-            ))}
-          </motion.div>
-
-          <div className="mt-8 flex items-center justify-between">
-            <div className="flex gap-1.5">
-              {paginationDots.map((i) => (
-                <button
-                  key={i}
-                  onClick={() => setIndex(i)}
-                  aria-label={`Go to slide ${i + 1}`}
-                  className={`h-1.5 rounded-full transition-all duration-300 ${i === index ? "w-8 bg-foreground" : "w-1.5 bg-border"}`}
-                />
+        <div className="hidden md:block" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
+          <div className="overflow-hidden">
+            <div
+              className="flex gap-5 transition-transform duration-700 ease-out"
+              style={{ transform: `translateX(calc(-${index} * (100% / ${perView})))` }}
+            >
+              {SERVICES.map((s, i) => (
+                <ServiceCard key={s.slug} s={s} className="w-[calc((100%-2.5rem)/3)] shrink-0" />
               ))}
             </div>
-            <div className="flex items-center gap-4">
-              <Link to="/services" className="inline-flex items-center gap-2 rounded-full border border-border px-5 py-2.5 text-sm font-medium hover:bg-muted">
-                Browse all services <ArrowUpRight className="h-4 w-4" />
-              </Link>
-              <SliderArrows onPrev={prev} onNext={next} />
-            </div>
           </div>
-        </div>
+<div className="mt-8 flex items-center justify-between">
+  <div className="flex gap-1.5">
+    {Array.from({ length: max + 1 }).map((_, i) => (
+      <button
+        key={i}
+        onClick={() => setIndex(i)}
+        aria-label={`Slide ${i + 1}`}
+        className={`h-1.5 rounded-full transition-all ${
+          i === index
+            ? "w-8 bg-foreground"
+            : "w-1.5 bg-border"
+        }`}
+      />
+    ))}
+  </div>
 
-        {/* Mobile horizontal scroll */}
-        <div
-          className="mt-10 -mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto scrollbar-hide px-4 md:hidden"
-          style={{ WebkitOverflowScrolling: "touch" }}
-        >
+  <div className="flex items-center gap-4">
+    <Link
+      to="/services"
+      className="inline-flex items-center gap-2 rounded-full border border-border px-5 py-2.5 text-sm font-medium hover:bg-muted"
+    >
+      Browse all services
+      <ArrowUpRight className="h-4 w-4" />
+    </Link>
+
+    <SliderArrows onPrev={prev} onNext={next} />
+  </div>
+</div>
+</div>
+
+        {/* Mobile scrollable */}
+        <div className="mt-10 -mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto scrollbar-hide px-4 md:hidden">
           {SERVICES.map((s, i) => (
-            <ServiceCard
-              key={s.slug}
-              s={s}
-              className="w-[85%] shrink-0 snap-start"
-              isPriority={i < 2}
-            />
+            <ServiceCard key={s.slug} s={s} className="w-[80%] shrink-0 snap-start" />
           ))}
         </div>
       </div>
@@ -665,14 +711,13 @@ function Services(): JSX.Element {
   );
 }
 
-/* ============================ SERVICE CARD ============================ */
-interface CardProps {
+function ServiceCard({
+  s,
+  className = "",
+}: {
   s: typeof SERVICES[number];
   className?: string;
-  isPriority?: boolean;
-}
-
-const ServiceCard = memo(function ServiceCard({ s, className = '', isPriority = false }: CardProps): JSX.Element {
+}) {
   const Icon = ICONS[s.icon] ?? Sparkles;
   const blurb = SERVICE_BLURBS[s.slug] ?? s.blurb;
 
@@ -680,47 +725,24 @@ const ServiceCard = memo(function ServiceCard({ s, className = '', isPriority = 
     <Link
       to="/services/$slug"
       params={{ slug: s.slug }}
-      className={`group relative aspect-[3/4] overflow-hidden rounded-3xl border border-border bg-card isolation-isolate ${className}`}
+      className={`group relative aspect-[3/4] overflow-hidden rounded-3xl border border-border bg-card ${className}`}
     >
-      {/*
-        FIX: Service card images are near the top of the page and almost always
-        visible. Use eager loading for priority cards (first visible 3 on desktop,
-        first 2 on mobile). Add explicit dimensions so browser paints layout
-        immediately without waiting for the image dimensions response.
-        Add will-change-transform so browser promotes the element to its own
-        GPU layer before the hover transition fires — eliminates the "jank" on
-        first hover where the GPU layer is created mid-animation.
-      */}
       <img
         src={SERVICE_IMAGES[s.slug]}
         alt={s.title}
-        width={400}
-        height={533}
-        className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-out will-change-transform group-hover:scale-105"
-        loading={isPriority ? "eager" : "lazy"}
-        fetchPriority={isPriority ? "high" : "auto"}
-        decoding={isPriority ? "sync" : "async"}
+        className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-110"
+        loading="lazy"
       />
 
-      {/* Background Gradient Layer */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/60 to-black/40 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/40" />
 
-      {/* Top Hover Arrow */}
-      <div className="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-full bg-black/50 border border-white/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+      <div className="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-full glass border border-white/20 opacity-0 transition group-hover:opacity-100">
         <ArrowUpRight className="h-4 w-4 text-white" />
       </div>
 
-      {/* Bottom Content Area */}
-      <div className="absolute inset-0 flex flex-col justify-end p-6 pointer-events-none">
-        <div className="grid h-11 w-11 place-items-center rounded-xl bg-black/50 border border-white/20 pointer-events-auto">
-          <Icon className="h-5 w-5 text-white" />
-        </div>
-        <h3 className="mt-4 font-display text-2xl font-bold leading-tight text-white drop-shadow-lg">{s.title}</h3>
-        <p className="mt-2 text-sm text-white/70 leading-relaxed line-clamp-2">{blurb}</p>
-      </div>
-    </Link>
+<div className="absolute inset-0 flex flex-col justify-end p-6 pointer-events-none"> <div className="grid h-11 w-11 place-items-center rounded-xl bg-black/50 border border-white/20 pointer-events-auto"> <Icon className="h-5 w-5 text-white" /> </div> <h3 className="mt-4 font-display text-2xl font-bold leading-tight text-white drop-shadow-lg">{s.title}</h3> <p className="mt-2 text-sm text-white/70 leading-relaxed line-clamp-2">{blurb}</p> </div> </Link>
   );
-});
+}
 
 /* ============================== PORTFOLIO ============================== */
 function ScreenshotModal({ project, onClose }: { project: typeof PROJECTS[number]; onClose: () => void }): JSX.Element {
