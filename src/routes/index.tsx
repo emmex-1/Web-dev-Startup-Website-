@@ -473,19 +473,18 @@ function Hero(): JSX.Element {
 }
 
 /* ============================== ABOUT ============================== */
-/* ============================== ABOUT ============================== */
 function About(): JSX.Element {
   return (
-    <section className="relative border-t border-border py-20 md:py-32 bg-[var(--section-a)] content-visibility-auto">
+    <section className="relative border-t border-border py-20 md:py-32 bg-[var(--section-a)]">
       <div className="mx-auto grid max-w-7xl gap-12 px-4 md:px-6 lg:grid-cols-2 lg:gap-16">
         <motion.div
           variants={fadeUp}
           initial="hidden"
           whileInView="show"
           viewport={VIEWPORT_ONCE}
-          transition={{ duration: 0.4 }}
+          transition={{ duration: 0.5 }}
         >
-          <div className="font-mono text-xs uppercase tracking-wider text-muted-foreground">About Us</div>
+          <div className="font-mono text-xs uppercase tracking-wider">About Us</div>
           <h2 className="mt-3 font-display text-4xl font-bold leading-[1.05] tracking-tight md:text-6xl">
             Your Growth Partner Across Every Digital Channel
           </h2>
@@ -500,7 +499,7 @@ function About(): JSX.Element {
 
         <motion.div
           className="grid gap-5 sm:grid-cols-2"
-          variants={staggerContainer(0.05)} // Tightened up stagger delay to prevent visible whitespace lag
+          variants={staggerContainer(0.1)}
           initial="hidden"
           whileInView="show"
           viewport={VIEWPORT_ONCE}
@@ -509,32 +508,33 @@ function About(): JSX.Element {
             <motion.div
               key={c.t}
               variants={fadeUp}
-              transition={{ duration: 0.4 }}
-              className="group relative aspect-[3/4] overflow-hidden rounded-3xl border border-border isolation-isolate transition-transform duration-300 hover:-translate-y-1.5"
+              transition={{ duration: 0.5, delay: i * 0.08 }}
+              /*
+                FIX: whileHover y transform was triggering layout reflow.
+                Use CSS transform via a className toggle instead — GPU-only.
+              */
+              className="group relative aspect-[3/4] overflow-hidden rounded-3xl border border-border transform-gpu transition-transform duration-300 hover:-translate-y-1.5"
             >
               <img
                 src={c.img}
                 alt={c.t}
-                width={400}  // Explicit width dimension hints
-                height={533} // Explicit height dimension hints
                 className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                loading="eager" // Pre-fetch immediately when block approaches screen
-                fetchPriority={i < 2 ? "high" : "low"} // High priority for initial side-by-side view cards
+                loading="lazy"
                 decoding="async"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/60 pointer-events-none" />
-              <div className="absolute inset-0 flex flex-col p-6 text-white pointer-events-none">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/60" />
+              <div className="absolute inset-0 flex flex-col p-6 text-white">
                 <div className="font-display text-xl font-semibold italic">
                   {c.tag} <span className="not-italic"></span>
                 </div>
                 <div className="mt-1 text-xs text-white/70">Our Values</div>
-                <div className="mt-auto w-full">
+                <div className="mt-auto">
                   <div className="font-display text-2xl font-bold leading-tight">{c.t}</div>
                   <p className="mt-2 line-clamp-3 text-sm text-white/80">{c.d}</p>
-                  <div className="mt-4 flex items-center justify-between pointer-events-auto">
+                  <div className="mt-4 flex items-center justify-between">
                     <Link
                       to="/about"
-                      className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-3 py-1.5 text-xs hover:bg-white/20 transition-colors"
+                      className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-3 py-1.5 text-xs"
                     >
                       Learn More <span className="grid h-5 w-5 place-items-center rounded-full bg-white text-black"><Zap className="h-2.5 w-2.5" /></span>
                     </Link>
@@ -555,7 +555,6 @@ function About(): JSX.Element {
   FIX: Added Page Visibility API check so the auto-slider pauses when
   the tab is hidden — stops wasting CPU/GPU on background tabs.
 */
-/* ============================ SLIDER HOOK ============================ */
 function useAutoSlider(count: number, intervalMs = 5000) {
   const [index, setIndex] = useState(0);
   const pausedRef = useRef(false);
@@ -611,6 +610,9 @@ function Services(): JSX.Element {
   const prev = useCallback(() => setIndex((i) => (i <= 0 ? max : i - 1)), [max, setIndex]);
 
   const paginationDots = useMemo(() => Array.from({ length: max + 1 }, (_, i) => i), [max]);
+
+  // FIX: Shift by exact percentage steps. Framer motion handles raw numbers 
+  // passed to custom properties or transforms much cleaner than dynamically calculated strings.
   const animateX = -index * (100 / perView);
 
   return (
@@ -650,7 +652,7 @@ function Services(): JSX.Element {
                 key={s.slug} 
                 s={s} 
                 className="w-[calc((100%-2.5rem)/3)] shrink-0" 
-                isPriority={i < perView}
+                isPriority={i < perView} // Prioritize first 3 images
               />
             ))}
           </motion.div>
@@ -711,20 +713,26 @@ const ServiceCard = memo(function ServiceCard({ s, className = '', isPriority = 
       params={{ slug: s.slug }}
       className={`group relative aspect-[3/4] overflow-hidden rounded-3xl border border-border bg-card isolation-isolate ${className}`}
     >
-      <img
-        src={SERVICE_IMAGES[s.slug]}
-        alt={s.title}
-        width={400}  
-        height={533} 
-        className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
-        loading={isPriority ? "eager" : "lazy"}
-        fetchPriority={isPriority ? "high" : "low"}
-        decoding="async"
-      />
+<img
+  src={SERVICE_IMAGES[s.slug]}
+  alt={s.title}
+  width={400}  
+  height={533} 
+  className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+  loading={isPriority ? "eager" : "lazy"}
+  fetchPriority={isPriority ? "high" : "low"} // <-- Changed to camelCase
+  decoding="async"
+/>
+      
+      {/* Background Gradient Layer */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/60 to-black/40 pointer-events-none" />
+      
+      {/* Top Hover Arrow */}
       <div className="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-full bg-black/50 border border-white/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100 backface-hidden">
         <ArrowUpRight className="h-4 w-4 text-white" />
       </div>
+      
+      {/* Bottom Content Area */}
       <div className="absolute inset-0 flex flex-col justify-end p-6 pointer-events-none">
         <div className="grid h-11 w-11 place-items-center rounded-xl bg-black/50 border border-white/20 pointer-events-auto">
           <Icon className="h-5 w-5 text-white" />
@@ -735,6 +743,7 @@ const ServiceCard = memo(function ServiceCard({ s, className = '', isPriority = 
     </Link>
   );
 });
+
 /* ============================== PORTFOLIO ============================== */
 function ScreenshotModal({ project, onClose }: { project: typeof PROJECTS[number]; onClose: () => void }): JSX.Element {
   const images = useMemo(() => project.images ?? [PROJECT_IMAGES[project.slug]], [project]);
