@@ -41,7 +41,7 @@ const SERVICE_BLURBS: Record<string, string> = {
   "backend-api-development": "REST & GraphQL APIs, integrations, and scalable infrastructure.",
 };
 
-/* ─── Static data (defined outside components so they never recreate) ─── */
+/* ─── Static data ─── */
 const ABOUT_CARDS = [
   {
     tag: "Vision-driven",
@@ -89,9 +89,9 @@ const FAQ_DATA = [
   { q: "Can Globe Stack handle everything my business needs digitally?", a: "Yes. That's exactly why we built Globe Stack. Instead of managing five separate agencies, you get one senior team across web, AI, SEO, ads, social, and commerce — with unified strategy and accountable delivery." },
 ];
 
-/* ─── Shared animation variants (defined once, never recreated) ─── */
+/* ─── Shared animation variants ─── */
 const fadeUp: Variants = {
-  hidden: { opacity: 0, y: 24 },
+  hidden: { opacity: 0, y: 20 },
   show: { opacity: 1, y: 0 },
 };
 
@@ -100,10 +100,6 @@ const fadeIn: Variants = {
   show: { opacity: 1 },
 };
 
-/* 
-  FIX: staggerContainer was called as a function inside render, returning a new object
-  every render cycle. Now it's a stable factory whose results are cached per stagger value.
-*/
 const staggerCache: Record<number, Variants> = {};
 function staggerContainer(stagger = 0.08): Variants {
   if (!staggerCache[stagger]) {
@@ -115,7 +111,6 @@ function staggerContainer(stagger = 0.08): Variants {
   return staggerCache[stagger];
 }
 
-/* ─── Shared viewport config ─── */
 const VIEWPORT_ONCE = { once: true, amount: 0.15 } as const;
 const VIEWPORT_ONCE_MARGIN = { once: true, amount: 0.1, margin: "-40px" } as const;
 
@@ -140,21 +135,9 @@ function Home(): JSX.Element {
 }
 
 /* ============================== HERO ============================== */
-/*
-  FIX 1: Video is the #1 cause of slow LCP + white flash.
-  - Added `poster` so the browser has a frame immediately.
-  - Removed the video entirely on mobile (it's hidden anyway and wastes bandwidth).
-  - Lazy-load the video via useEffect so it doesn't block the main thread.
-  - Removed the 500×500 blur-3xl div (GPU-expensive, not visible enough to matter).
-  - Replaced with a CSS radial-gradient background instead — zero GPU cost.
-  FIX 2: Removed the large ghost "GLOBE STACK" text that forced a massive layout
-  calculation on every paint due to clamp() font-size + clip-path + gradient.
-  Replaced with a lightweight SVG-based version.
-*/
 function HeroVisual(): JSX.Element {
   return (
     <div className="relative flex justify-center items-center">
-      {/* CSS gradient glow — zero GPU blur cost */}
       <div
         className="absolute inset-0 mx-auto h-[500px] w-[500px] rounded-full"
         style={{ background: "radial-gradient(circle, rgba(14,165,233,0.18) 0%, transparent 70%)" }}
@@ -163,6 +146,8 @@ function HeroVisual(): JSX.Element {
         src="/media/downl.png"
         className="relative z-10 w-[340px] md:w-[420px]"
         alt="Laptop UI"
+        width={420}
+        height={420}
         loading="eager"
         decoding="async"
         fetchPriority="high"
@@ -174,7 +159,6 @@ function HeroVisual(): JSX.Element {
 function Hero(): JSX.Element {
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  /* FIX: Load video after LCP — don't block initial paint */
   useEffect(() => {
     const t = setTimeout(() => {
       if (videoRef.current) {
@@ -191,7 +175,6 @@ function Hero(): JSX.Element {
       style={{ background: "linear-gradient(160deg,#020d1a 0%,#041e38 50%,#061428 100%)", minHeight: "100vh" }}
     >
       <div className="absolute inset-0 pointer-events-none">
-        {/* FIX: No src on mount — injected after LCP via useEffect above */}
         <video
           ref={videoRef}
           className="h-full w-full object-cover opacity-15"
@@ -202,8 +185,6 @@ function Hero(): JSX.Element {
           suppressHydrationWarning
         />
         <div className="absolute inset-0 bg-black/40" />
-        {/* FIX: Replaced two expensive radial-gradient absolute divs with a single
-            CSS background layer baked into the section background above */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{ background: "radial-gradient(ellipse 80% 50% at 50% 0%, rgba(14,165,233,0.25) 0%, transparent 60%)" }}
@@ -262,13 +243,12 @@ function Hero(): JSX.Element {
               src="/media/downl.png"
               alt=""
               aria-hidden="true"
+              width={500}
+              height={500}
               className="absolute inset-0 h-full w-full object-contain object-center opacity-60"
               loading="eager"
               decoding="async"
-            />
-            <div
-              className="absolute inset-0"
-              // style={{ background: "radial-gradient(ellipse 80% 80% at 50% 50%, transparent 55%, #020d1a 90%)" }}
+              fetchPriority="high"
             />
           </motion.div>
 
@@ -322,11 +302,6 @@ function Hero(): JSX.Element {
 
         {/* Desktop center */}
         <div className="relative flex-1 mt-8 md:mt-10">
-          {/*
-            FIX: The original giant "GLOBE STACK" text used clamp(3rem,15vw,18rem)
-            with bg-clip-text + gradient — extremely expensive to render and repaint.
-            Replaced with a static SVG text that renders in one GPU draw call.
-          */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -410,7 +385,7 @@ function Hero(): JSX.Element {
             className="hidden md:block absolute right-0 bottom-0 max-w-xs text-right z-30"
           >
             <p className="text-sm text-white/50 md:text-base leading-relaxed">
-              One senior team. Every digital channel. Outcomes that compound.
+              One senior team. Every digital channel. Outcomes that compound. We love to give you the best digital experience.
             </p>
             <div className="mt-5 flex items-center gap-3 justify-end">
               <Link
@@ -508,17 +483,19 @@ function About(): JSX.Element {
             <motion.div
               key={c.t}
               variants={fadeUp}
-              transition={{ duration: 0.5, delay: i * 0.08 }}
-              /*
-                FIX: whileHover y transform was triggering layout reflow.
-                Use CSS transform via a className toggle instead — GPU-only.
-              */
+              transition={{ duration: 0.4, delay: i * 0.06 }}
               className="group relative aspect-[3/4] overflow-hidden rounded-3xl border border-border transform-gpu transition-transform duration-300 hover:-translate-y-1.5"
             >
+              {/* 
+                FIX: About cards are below the fold — keep lazy but add explicit
+                dimensions so browser reserves space immediately (prevents CLS).
+              */}
               <img
                 src={c.img}
                 alt={c.t}
-                className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                width={400}
+                height={533}
+                className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-out will-change-transform group-hover:scale-105"
                 loading="lazy"
                 decoding="async"
               />
@@ -551,10 +528,6 @@ function About(): JSX.Element {
 }
 
 /* ============================== SLIDER HOOK ============================== */
-/*
-  FIX: Added Page Visibility API check so the auto-slider pauses when
-  the tab is hidden — stops wasting CPU/GPU on background tabs.
-*/
 function useAutoSlider(count: number, intervalMs = 5000) {
   const [index, setIndex] = useState(0);
   const pausedRef = useRef(false);
@@ -611,12 +584,15 @@ function Services(): JSX.Element {
 
   const paginationDots = useMemo(() => Array.from({ length: max + 1 }, (_, i) => i), [max]);
 
-  // FIX: Shift by exact percentage steps. Framer motion handles raw numbers 
-  // passed to custom properties or transforms much cleaner than dynamically calculated strings.
   const animateX = -index * (100 / perView);
 
   return (
-    <section className="border-t border-border py-20 md:py-28 content-visibility-auto">
+    /*
+      FIX: Removed content-visibility-auto from Services — it was causing the
+      section to be skipped during initial render, making images load later than
+      they should. Only use content-visibility on truly far-below-fold sections.
+    */
+    <section className="border-t border-border py-20 md:py-28">
       <div className="mx-auto max-w-7xl px-4 md:px-6">
         <motion.div
           className="mb-10 text-center"
@@ -648,11 +624,15 @@ function Services(): JSX.Element {
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
           >
             {SERVICES.map((s, i) => (
-              <ServiceCard 
-                key={s.slug} 
-                s={s} 
-                className="w-[calc((100%-2.5rem)/3)] shrink-0" 
-                isPriority={i < perView} // Prioritize first 3 images
+              <ServiceCard
+                key={s.slug}
+                s={s}
+                className="w-[calc((100%-2.5rem)/3)] shrink-0"
+                /*
+                  FIX: First 3 cards are visible on load — eager + high priority.
+                  Rest are lazy + low priority since they're off-screen in the slider.
+                */
+                isPriority={i < perView}
               />
             ))}
           </motion.div>
@@ -683,11 +663,11 @@ function Services(): JSX.Element {
           style={{ WebkitOverflowScrolling: "touch" }}
         >
           {SERVICES.map((s, i) => (
-            <ServiceCard 
-              key={s.slug} 
-              s={s} 
-              className="w-[85%] shrink-0 snap-start" 
-              isPriority={i < 2} 
+            <ServiceCard
+              key={s.slug}
+              s={s}
+              className="w-[85%] shrink-0 snap-start"
+              isPriority={i < 2}
             />
           ))}
         </div>
@@ -696,7 +676,7 @@ function Services(): JSX.Element {
   );
 }
 
-/* ============================ CARD COMPONENT ============================ */
+/* ============================ SERVICE CARD ============================ */
 interface CardProps {
   s: typeof SERVICES[number];
   className?: string;
@@ -713,25 +693,34 @@ const ServiceCard = memo(function ServiceCard({ s, className = '', isPriority = 
       params={{ slug: s.slug }}
       className={`group relative aspect-[3/4] overflow-hidden rounded-3xl border border-border bg-card isolation-isolate ${className}`}
     >
-<img
-  src={SERVICE_IMAGES[s.slug]}
-  alt={s.title}
-  width={400}  
-  height={533} 
-  className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
-  loading={isPriority ? "eager" : "lazy"}
-  fetchPriority={isPriority ? "high" : "low"} // <-- Changed to camelCase
-  decoding="async"
-/>
-      
+      {/*
+        FIX: Service card images are near the top of the page and almost always
+        visible. Use eager loading for priority cards (first visible 3 on desktop,
+        first 2 on mobile). Add explicit dimensions so browser paints layout
+        immediately without waiting for the image dimensions response.
+        Add will-change-transform so browser promotes the element to its own
+        GPU layer before the hover transition fires — eliminates the "jank" on
+        first hover where the GPU layer is created mid-animation.
+      */}
+      <img
+        src={SERVICE_IMAGES[s.slug]}
+        alt={s.title}
+        width={400}
+        height={533}
+        className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-out will-change-transform group-hover:scale-105"
+        loading={isPriority ? "eager" : "lazy"}
+        fetchPriority={isPriority ? "high" : "auto"}
+        decoding={isPriority ? "sync" : "async"}
+      />
+
       {/* Background Gradient Layer */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/60 to-black/40 pointer-events-none" />
-      
+
       {/* Top Hover Arrow */}
-      <div className="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-full bg-black/50 border border-white/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100 backface-hidden">
+      <div className="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-full bg-black/50 border border-white/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
         <ArrowUpRight className="h-4 w-4 text-white" />
       </div>
-      
+
       {/* Bottom Content Area */}
       <div className="absolute inset-0 flex flex-col justify-end p-6 pointer-events-none">
         <div className="grid h-11 w-11 place-items-center rounded-xl bg-black/50 border border-white/20 pointer-events-auto">
@@ -751,7 +740,6 @@ function ScreenshotModal({ project, onClose }: { project: typeof PROJECTS[number
   const prev = useCallback(() => setImgIdx((i) => (i <= 0 ? images.length - 1 : i - 1)), [images.length]);
   const next = useCallback(() => setImgIdx((i) => (i >= images.length - 1 ? 0 : i + 1)), [images.length]);
 
-  /* FIX: trap focus + close on Escape */
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -867,14 +855,6 @@ function Portfolio(): JSX.Element {
           </motion.p>
         </motion.div>
 
-        {/*
-          FIX: Reduced stagger from 0.07 to 0.04 — 6 items × 70ms = 420ms of
-          stagger delay meant the last card appeared almost half a second late,
-          making the grid feel sluggish. 40ms stagger is imperceptible but
-          still provides the cascade effect.
-          Also added `amount: 0.1` to viewport so cards animate in earlier
-          instead of waiting until they're 50%+ in view.
-        */}
         <motion.div
           className="grid gap-5 md:grid-cols-2 lg:grid-cols-3"
           variants={staggerContainer(0.04)}
@@ -882,23 +862,30 @@ function Portfolio(): JSX.Element {
           whileInView="show"
           viewport={VIEWPORT_ONCE_MARGIN}
         >
-          {PROJECTS.slice(0, 6).map((p) => {
+          {PROJECTS.slice(0, 6).map((p, idx) => {
             const images = p.images ?? [PROJECT_IMAGES[p.slug]];
+            /*
+              FIX: First 3 portfolio cards should load eagerly — they're typically
+              visible when the user scrolls to this section. After that, lazy.
+            */
+            const isEager = idx < 3;
             return (
               <motion.div
                 key={p.slug}
                 variants={fadeUp}
-                transition={{ duration: 0.45 }}
-                /* FIX: CSS hover transform instead of whileHover */
+                transition={{ duration: 0.3 }}
                 className="group overflow-hidden rounded-2xl border border-border bg-card transform-gpu transition-all duration-300 hover:border-glow hover:-translate-y-1"
               >
                 <div className="relative h-56 overflow-hidden bg-zinc-950">
                   <img
                     src={images[0]}
                     alt={p.title}
-                    className="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
-                    loading="lazy"
-                    decoding="async"
+                    width={600}
+                    height={224}
+                    className="h-full w-full object-cover object-top transition-transform duration-500 will-change-transform group-hover:scale-105"
+                    loading={isEager ? "eager" : "lazy"}
+                    fetchPriority={isEager ? "high" : "auto"}
+                    decoding={isEager ? "sync" : "async"}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent pointer-events-none" />
                   <div className="absolute bottom-3 left-3 rounded-full border border-white/30 bg-black/40 px-2.5 py-1 font-mono text-[10px] uppercase text-white">{p.tag}</div>
@@ -907,7 +894,8 @@ function Portfolio(): JSX.Element {
                       {images.length} shots
                     </div>
                   )}
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                  {/* Desktop: hover overlay with action buttons */}
+                  <div className="absolute inset-0 hidden md:flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                     <div className="flex gap-2">
                       <button
                         onClick={() => setShotFor(p.slug)}
@@ -924,6 +912,7 @@ function Portfolio(): JSX.Element {
                     </div>
                   </div>
                 </div>
+
                 <div className="p-5">
                   <div className="text-xs text-muted-foreground">{p.category}</div>
                   <Link to="/portfolio/$slug" params={{ slug: p.slug }} className="mt-1 block font-display text-lg font-semibold hover:text-gradient">{p.title}</Link>
@@ -936,7 +925,35 @@ function Portfolio(): JSX.Element {
                       <span className="rounded-md bg-muted px-2 py-0.5 font-mono text-[10px] text-muted-foreground">+{p.tech.length - 4}</span>
                     )}
                   </div>
-                  <div className="mt-4 flex items-center justify-between gap-2">
+
+                  {/*
+                    FIX: Mobile action buttons — always visible, no hover needed.
+                    On desktop these are hidden (desktop uses the image overlay above).
+                    Two tappable buttons side-by-side with clear visual affordance.
+                  */}
+                  <div className="mt-4 flex items-center gap-2 md:hidden">
+                    <button
+                      onClick={() => setShotFor(p.slug)}
+                      aria-label={`View screenshots for ${p.title}`}
+                      className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-full border border-border bg-muted px-3 py-2 text-xs font-medium hover:bg-muted/80 active:scale-95 transition"
+                    >
+                      <Eye className="h-3.5 w-3.5" />
+                      Screenshots {images.length > 1 && `(${images.length})`}
+                    </button>
+                    {p.live && (
+                      <a
+                        href={p.live}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-full bg-foreground px-3 py-2 text-xs font-medium text-background hover:opacity-90 active:scale-95 transition"
+                      >
+                        <ExternalLink className="h-3.5 w-3.5" /> Live site
+                      </a>
+                    )}
+                  </div>
+
+                  {/* Desktop bottom row — kept for desktop non-hover state */}
+                  <div className="mt-2 hidden md:flex items-center justify-between gap-2">
                     <button
                       onClick={() => setShotFor(p.slug)}
                       aria-label={`View ${images.length} screenshots for ${p.title}`}
@@ -992,13 +1009,6 @@ function CaseStudyModal({ cs, onClose }: { cs: typeof CASE_STUDIES[number]; onCl
   }, [onClose]);
 
   return (
-    /*
-      FIX: Removed the outer AnimatePresence wrapper around a non-conditionally-
-      rendered modal. AnimatePresence needs to be in the PARENT, not wrapping
-      the entire modal body. The original caused double-render flicker on open.
-      The parent (CaseStudies) now conditionally renders this component, and
-      the inner motion.div handles its own entrance/exit animation.
-    */
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -1028,7 +1038,7 @@ function CaseStudyModal({ cs, onClose }: { cs: typeof CASE_STUDIES[number]; onCl
         </button>
 
         <div className="relative h-64 overflow-hidden rounded-t-3xl md:h-80">
-          <img src={images[0]} alt={cs.title} className="h-full w-full object-cover" loading="lazy" decoding="async" />
+          <img src={images[0]} alt={cs.title} width={800} height={320} className="h-full w-full object-cover" loading="lazy" decoding="async" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/20" />
           <div className="absolute inset-x-6 bottom-6">
             <div className="flex flex-wrap gap-2 mb-3">
@@ -1254,12 +1264,11 @@ function CaseStudies(): JSX.Element {
           whileInView="show"
           viewport={VIEWPORT_ONCE_MARGIN}
         >
-          {list.map((c) => (
+          {list.map((c, idx) => (
             <motion.div
               key={c.slug}
               variants={fadeUp}
-              transition={{ duration: 0.45 }}
-              /* FIX: CSS hover instead of whileHover */
+              transition={{ duration: 0.3 }}
               className="transform-gpu transition-transform duration-300 hover:-translate-y-1.5"
             >
               <button
@@ -1268,12 +1277,20 @@ function CaseStudies(): JSX.Element {
                 className="group relative block w-full overflow-hidden rounded-3xl border border-border bg-card transition hover:border-glow text-left"
               >
                 <div className="relative h-52 overflow-hidden">
+                  {/*
+                    FIX: Case study images — first 2 visible cards get eager loading.
+                    Explicit dimensions prevent CLS. will-change-transform pre-promotes
+                    the layer so hover scale doesn't stutter.
+                  */}
                   <img
                     src={CASE_IMAGES[c.slug]}
                     alt={c.title}
-                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    loading="lazy"
-                    decoding="async"
+                    width={600}
+                    height={208}
+                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 will-change-transform group-hover:scale-105"
+                    loading={idx < 2 ? "eager" : "lazy"}
+                    fetchPriority={idx < 2 ? "high" : "auto"}
+                    decoding={idx < 2 ? "sync" : "async"}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent pointer-events-none" />
                   <div className="absolute right-3 top-3 rounded-full bg-white/95 px-3 py-1 font-mono text-[10px] uppercase text-black">{c.result}</div>
@@ -1314,11 +1331,6 @@ function CaseStudies(): JSX.Element {
         </motion.div>
       </div>
 
-      {/*
-        FIX: AnimatePresence now correctly wraps the conditional render.
-        The modal itself handles its own enter/exit via motion.div.
-        mode="wait" ensures exit animation completes before the next modal opens.
-      */}
       <AnimatePresence mode="wait">
         {modalCase !== null && (
           <CaseStudyModal key={modalCase.slug} cs={modalCase} onClose={() => setActiveCase(null)} />
@@ -1333,22 +1345,33 @@ function WhyUs(): JSX.Element {
   const cardGrid = (
     <motion.div
       className="grid gap-4 sm:grid-cols-2"
-      variants={staggerContainer(0.07)}
+      variants={staggerContainer(0.06)}
       initial="hidden"
       whileInView="show"
       viewport={VIEWPORT_ONCE_MARGIN}
     >
-      {WHY_CARDS.map((c) => {
+      {WHY_CARDS.map((c, idx) => {
         const I = c.icon;
         return (
           <motion.div
             key={c.t}
             variants={fadeUp}
-            transition={{ duration: 0.45 }}
-            /* FIX: CSS hover transform instead of whileHover */
+            transition={{ duration: 0.3 }}
             className="group relative aspect-[4/5] overflow-hidden rounded-3xl border border-border bg-card transform-gpu transition-transform duration-300 hover:-translate-y-1.5"
           >
-            <img src={c.img} alt={c.t} className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" decoding="async" />
+            {/*
+              FIX: Why Us cards are well below the fold — keep lazy, but add
+              explicit dimensions and will-change-transform for smooth hover.
+            */}
+            <img
+              src={c.img}
+              alt={c.t}
+              width={400}
+              height={500}
+              className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 will-change-transform group-hover:scale-105"
+              loading="lazy"
+              decoding="async"
+            />
             <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/55 to-black/20" />
             <div className="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-xl border border-white/20 bg-black/50 text-white">
               <I className="h-5 w-5" />
@@ -1388,11 +1411,6 @@ function WhyUs(): JSX.Element {
 
         {/* Desktop */}
         <div className="hidden lg:grid gap-16 lg:grid-cols-2">
-          {/*
-            FIX: lg:sticky + whileInView fires repeatedly as the sticky element
-            stays in the viewport while the user scrolls. Removed whileInView from
-            the sticky column and use a simple animate on mount instead.
-          */}
           <motion.div
             initial="hidden"
             animate="show"
@@ -1451,7 +1469,7 @@ function Process(): JSX.Element {
             <motion.div
               key={p.step}
               variants={fadeUp}
-              transition={{ duration: 0.4 }}
+              transition={{ duration: 0.35 }}
               className="rounded-2xl border border-background/10 bg-background/5 p-6"
             >
               <div className="font-display text-2xl font-bold">{p.step}.</div>
@@ -1520,7 +1538,7 @@ function Stack(): JSX.Element {
               initial="hidden"
               whileInView="show"
               viewport={VIEWPORT_ONCE}
-              transition={{ duration: 0.45, delay: i * 0.07 }}
+              transition={{ duration: 0.35, delay: i * 0.06 }}
               className="rounded-3xl border border-border bg-card p-6 md:p-8"
             >
               <div className="inline-flex items-center gap-2 rounded-full border border-glow px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-gradient">{g.name}</div>
@@ -1682,7 +1700,9 @@ const BlogCard = memo(function BlogCard({ p, className = "" }: { p: typeof POSTS
       <img
         src={POST_IMAGES[p.slug]}
         alt={p.title}
-        className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+        width={400}
+        height={533}
+        className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 will-change-transform group-hover:scale-105"
         loading="lazy"
         decoding="async"
       />
@@ -1736,12 +1756,6 @@ function FAQs(): JSX.Element {
                     {open === i ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                   </span>
                 </button>
-                {/*
-                  FIX: AnimatePresence with mode="sync" prevents the double-render
-                  flicker that happened when the FAQ item unmounted and remounted.
-                  Also added overflow-hidden directly on the motion.div so height
-                  animation doesn't cause layout shift on surrounding elements.
-                */}
                 <AnimatePresence mode="sync" initial={false}>
                   {open === i && (
                     <motion.div
@@ -1773,7 +1787,9 @@ function FAQs(): JSX.Element {
             <img
               src="/media/download.png"
               alt="Globe Stack team at work"
-              className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+              width={500}
+              height={625}
+              className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 will-change-transform group-hover:scale-105"
               loading="lazy"
               decoding="async"
             />
@@ -1784,7 +1800,7 @@ function FAQs(): JSX.Element {
                   <Rocket className="h-5 w-5" />
                 </div>
                 <div>
-                  <div className="font-display text-lg font-semibold">120+ Projects shipped</div>
+                  <div className="font-display text-lg font-semibold">30+ Projects shipped</div>
                   <div className="text-xs text-white/75">Across 6 disciplines & 4 continents</div>
                 </div>
               </div>
