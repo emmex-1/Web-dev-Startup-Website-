@@ -1,4 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { primeBlogCache } from "@/lib/blog";
 import { FaWhatsapp } from "react-icons/fa";
 import {
   Outlet,
@@ -13,6 +14,7 @@ import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { ThemeProvider } from "@/components/theme-provider";
 import { SITE_URL, organizationJsonLd, websiteJsonLd } from "@/lib/seo";
+
 
 function NotFoundComponent() {
   return (
@@ -41,6 +43,8 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   );
 }
 
+
+primeBlogCache();
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   head: () => ({
     meta: [

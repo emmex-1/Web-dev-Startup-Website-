@@ -1,3 +1,4 @@
+
 import { createClient, type SanityClient } from "@sanity/client";
 // import imageUrlBuilder from "@sanity/image-url";
 import { createImageUrlBuilder } from "@sanity/image-url";
@@ -8,7 +9,6 @@ export const SANITY_PROJECT_ID =
   (import.meta.env.VITE_SANITY_PROJECT_ID as string | undefined) ?? "";
 export const SANITY_DATASET =
   (import.meta.env.VITE_SANITY_DATASET as string | undefined) ?? "production";
-
 export const sanityEnabled = SANITY_PROJECT_ID.length > 0;
 
 export const sanityClient: SanityClient | null = sanityEnabled

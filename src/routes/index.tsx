@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { fetchAllPosts, type BlogPost } from "@/lib/blog";
 import {
   ArrowRight, ArrowUpRight, ArrowLeft, Sparkles, Code2, Search, Target,
   MessageCircle, ShoppingBag, Star, Plus, Minus, ExternalLink, Eye, X,
@@ -289,7 +290,7 @@ function Hero(): JSX.Element {
               className="flex-1 text-center rounded-full px-4 py-3 text-sm font-semibold text-white transition hover:opacity-90"
               style={{ background: "linear-gradient(135deg,#0ea5e9,#06b6d4)", boxShadow: "0 0 28px -5px rgba(14,165,233,0.7)" }}
             >
-              Get Started
+              Start a project
             </Link>
             <Link
               to="/portfolio"
@@ -1676,14 +1677,115 @@ const TestimonialCard = memo(function TestimonialCard({ t }: { t: typeof TESTIMO
 });
 
 /* ============================== BLOG ============================== */
+// function Blog(): JSX.Element {
+//   const perView = 3;
+//   const max = useMemo(() => Math.max(0, POSTS.length - perView), []);
+//   const { index, setIndex, setPaused } = useAutoSlider(max + 1, 6000);
+//   const next = useCallback(() => setIndex((i) => (i >= max ? 0 : i + 1)), [max, setIndex]);
+//   const prev = useCallback(() => setIndex((i) => (i <= 0 ? max : i - 1)), [max, setIndex]);
+//   const paginationDots = useMemo(() => Array.from({ length: max + 1 }, (_, i) => i), [max]);
+//   const slidePercent = useMemo(() => `${-index * (100 / perView)}%`, [index, perView]);
+
+//   return (
+//     <section className="border-t border-border py-20 md:py-28 bg-[var(--section-c)]">
+//       <div className="mx-auto max-w-7xl px-4 md:px-6">
+//         <motion.div
+//           className="mb-10 text-center"
+//           variants={staggerContainer(0.1)}
+//           initial="hidden"
+//           whileInView="show"
+//           viewport={VIEWPORT_ONCE}
+//         >
+//           <motion.div variants={fadeUp} transition={{ duration: 0.5 }} className="font-mono text-xs uppercase tracking-wider text-muted-foreground">Blog</motion.div>
+//           <motion.h2 variants={fadeUp} transition={{ duration: 0.5 }} className="mt-3 font-display text-3xl font-bold tracking-tight md:text-5xl">Article categories.</motion.h2>
+//           <motion.p variants={fadeUp} transition={{ duration: 0.5 }} className="mt-3 max-w-md mx-auto text-muted-foreground">Field notes, deep-dives, and frameworks from our work.</motion.p>
+//           <motion.div variants={fadeIn} transition={{ duration: 0.5 }} className="mt-4 flex justify-center">
+//             <Link to="/blog" className="inline-flex items-center gap-2 rounded-full border border-border px-5 py-2.5 text-sm font-medium hover:bg-muted">
+//               Browse all articles <ArrowUpRight className="h-4 w-4" />
+//             </Link>
+//           </motion.div>
+//         </motion.div>
+
+//         <div className="hidden md:block" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
+//           <div className="overflow-hidden">
+//             <motion.div
+//               className="flex gap-5 transform-gpu"
+//               animate={{ x: slidePercent }}
+//               transition={{ type: "tween", duration: 0.5, ease: [0.32, 0.72, 0, 1] }}
+//             >
+//               {POSTS.map((p) => (
+//                 <BlogCard key={p.slug} p={p} className="w-[calc((100%-2.5rem)/3)] shrink-0" />
+//               ))}
+//             </motion.div>
+//           </div>
+//           <div className="mt-8 flex items-center justify-between">
+//             <div className="flex gap-1.5">
+//               {paginationDots.map((i) => (
+//                 <button key={i} onClick={() => setIndex(i)} aria-label={`Go to slide ${i + 1}`} className={`h-1.5 rounded-full transition-all ${i === index ? "w-8 bg-foreground" : "w-1.5 bg-border"}`} />
+//               ))}
+//             </div>
+//             <SliderArrows onPrev={prev} onNext={next} />
+//           </div>
+//         </div>
+
+//         <div className="mt-10 -mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto scrollbar-hide px-4 md:hidden" style={{ WebkitOverflowScrolling: "touch" }}>
+//           {POSTS.map((p) => (
+//             <BlogCard key={p.slug} p={p} className="w-[80%] shrink-0 snap-start" />
+//           ))}
+//         </div>
+//       </div>
+//     </section>
+//   );
+// }
+
+
+/* ============================== BLOG ============================== */
+
+// Unified shape for both static and Sanity posts
+type BlogCardPost = {
+  slug: string;
+  title: string;
+  excerpt: string;
+  tag: string;
+  date: string;
+  read: string;
+  coverImage?: string; // Sanity posts have this; static posts use POST_IMAGES
+};
+
 function Blog(): JSX.Element {
+  // Start with static posts for instant render, then merge with Sanity data
+  const [posts, setPosts] = useState<BlogCardPost[]>(
+    POSTS.map((p) => ({ ...p, read: p.read }))
+  );
+
   const perView = 3;
-  const max = useMemo(() => Math.max(0, POSTS.length - perView), []);
+  const max = useMemo(() => Math.max(0, posts.length - perView), [posts.length]);
   const { index, setIndex, setPaused } = useAutoSlider(max + 1, 6000);
   const next = useCallback(() => setIndex((i) => (i >= max ? 0 : i + 1)), [max, setIndex]);
   const prev = useCallback(() => setIndex((i) => (i <= 0 ? max : i - 1)), [max, setIndex]);
   const paginationDots = useMemo(() => Array.from({ length: max + 1 }, (_, i) => i), [max]);
   const slidePercent = useMemo(() => `${-index * (100 / perView)}%`, [index, perView]);
+
+  useEffect(() => {
+    fetchAllPosts().then((all) => {
+      const sanitySlugs = new Set(all.map((p) => p.slug));
+      // Static posts not in Sanity (keep them as fallback)
+      const staticOnly = POSTS
+        .filter((p) => !sanitySlugs.has(p.slug))
+        .map((p) => ({ slug: p.slug, title: p.title, excerpt: p.excerpt, tag: p.tag, date: p.date, read: p.read }));
+      // Sanity posts mapped to BlogCardPost shape
+      const sanityMapped: BlogCardPost[] = all.map((p) => ({
+        slug: p.slug,
+        title: p.title,
+        excerpt: p.excerpt,
+        tag: p.tag,
+        date: p.date,
+        read: p.readTime,
+        coverImage: p.coverImage,
+      }));
+      setPosts([...sanityMapped, ...staticOnly]);
+    });
+  }, []);
 
   return (
     <section className="border-t border-border py-20 md:py-28 bg-[var(--section-c)]">
@@ -1712,7 +1814,7 @@ function Blog(): JSX.Element {
               animate={{ x: slidePercent }}
               transition={{ type: "tween", duration: 0.5, ease: [0.32, 0.72, 0, 1] }}
             >
-              {POSTS.map((p) => (
+              {posts.map((p) => (
                 <BlogCard key={p.slug} p={p} className="w-[calc((100%-2.5rem)/3)] shrink-0" />
               ))}
             </motion.div>
@@ -1728,7 +1830,7 @@ function Blog(): JSX.Element {
         </div>
 
         <div className="mt-10 -mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto scrollbar-hide px-4 md:hidden" style={{ WebkitOverflowScrolling: "touch" }}>
-          {POSTS.map((p) => (
+          {posts.map((p) => (
             <BlogCard key={p.slug} p={p} className="w-[80%] shrink-0 snap-start" />
           ))}
         </div>
@@ -1737,11 +1839,44 @@ function Blog(): JSX.Element {
   );
 }
 
-const BlogCard = memo(function BlogCard({ p, className = "" }: { p: typeof POSTS[number]; className?: string }): JSX.Element {
+// const BlogCard = memo(function BlogCard({ p, className = "" }: { p: typeof POSTS[number]; className?: string }): JSX.Element {
+//   return (
+//     <Link to="/blog/$slug" params={{ slug: p.slug }} preload="intent" className={`group relative aspect-[3/4] overflow-hidden rounded-3xl border border-border bg-card transform-gpu ${className}`}>
+//       <img
+//         src={POST_IMAGES[p.slug]}
+//         alt={p.title}
+//         width={400}
+//         height={533}
+//         className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 will-change-transform group-hover:scale-105"
+//         loading="lazy"
+//         decoding="async"
+//       />
+//       <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/55 to-black/15 pointer-events-none" />
+//       <div className="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-full border border-white/20 bg-black/50 text-white opacity-0 transition-opacity group-hover:opacity-100">
+//         <ArrowUpRight className="h-4 w-4" />
+//       </div>
+//       <div className="absolute inset-0 flex flex-col justify-end p-6 text-white">
+//         <div className="inline-flex w-fit items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3 py-1 text-[10px] font-mono uppercase">{p.tag}</div>
+//         <h3 className="mt-4 font-display text-xl font-bold leading-tight">{p.title}</h3>
+//         <p className="mt-2 line-clamp-2 text-sm text-white/80">{p.excerpt}</p>
+//         <div className="mt-4 flex items-center justify-between text-xs text-white/70">
+//           <span>{p.date}</span>
+//           <span>{p.read} read</span>
+//         </div>
+//       </div>
+//     </Link>
+//   );
+// });
+
+
+const BlogCard = memo(function BlogCard({ p, className = "" }: { p: BlogCardPost; className?: string }): JSX.Element {
+  // Sanity posts carry coverImage directly; static posts fall back to the POST_IMAGES map
+  const imgSrc = p.coverImage || POST_IMAGES[p.slug] || "";
+
   return (
-    <Link to="/blog" className={`group relative aspect-[3/4] overflow-hidden rounded-3xl border border-border bg-card transform-gpu ${className}`}>
+    <Link to="/blog/$slug" params={{ slug: p.slug }} preload="intent" className={`group relative aspect-[3/4] overflow-hidden rounded-3xl border border-border bg-card transform-gpu ${className}`}>
       <img
-        src={POST_IMAGES[p.slug]}
+        src={imgSrc}
         alt={p.title}
         width={400}
         height={533}
