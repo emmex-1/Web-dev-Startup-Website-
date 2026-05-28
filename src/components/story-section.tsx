@@ -9,7 +9,7 @@ const TIMELINE = [
     year: "2022",
     title: "A JOURNEY OF CULTURE AND INNOVATION",
     subtitle: "Where it all began",
-    desc: "Two senior engineers left big tech, fed up with bloated agencies that over-promised and under-delivered. Globe Stack was founded with one strict rule: senior only. We shipped our first three projects—a Shopify rebuild, a React SaaS dashboard, and a custom web app—in 90 days. Every client referred another.",
+    desc: "Two senior engineers left big tech, fed up with bloated agencies that over-promised and under-delivered. Rexsolv was founded with one strict rule: senior only. We shipped our first three projects—a Shopify rebuild, a React SaaS dashboard, and a custom web app—in 90 days. Every client referred another.",
     imgLeft: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&q=80",
     imgRight: "/media/web.jpg",
     imgBottomLeft: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=400&q=80",

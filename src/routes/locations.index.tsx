@@ -8,8 +8,8 @@ import { seo } from "@/lib/seo";
 export const Route = createFileRoute("/locations/")({
   head: () =>
     seo({
-      title: "Where We Work — Nigeria, USA, UK, Canada, India, France, Germany | Globe Stack",
-      description: "Globe Stack delivers web, SaaS, AI, SEO, social & ads, and Shopify across Nigeria (Lagos, Abuja), USA, UK, Canada, India, France, Germany and worldwide.",
+      title: "Where We Work — Nigeria, USA, UK, Canada, India, France, Germany | Rexsolv",
+      description: " Rexsolv delivers websites, SaaS, AI, SEO, social media management, ads, and Shopify across Nigeria (Lagos, Abuja, Ogun state, Oyo state), USA, UK, Canada, India, France, Germany and worldwide.",
       path: "/locations",
     }),
   component: LocationsIndex,

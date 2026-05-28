@@ -77,12 +77,12 @@ export const Route = createFileRoute("/blog/$slug")({
     const post = loaderData?.post;
     if (!post)
       return seo({
-        title: "Article — Globe Stack",
-        description: "Globe Stack blog.",
+        title: "Article — Rexsolv",
+        description: "Rexsolv blog.",
         path: `/blog/${params.slug}`,
       });
     const base = seo({
-      title: post.seoTitle ?? `${post.title} — Globe Stack`,
+      title: post.seoTitle ?? `${post.title} — Rexsolv`,
       description: post.seoDescription ?? post.excerpt,
       path: `/blog/${post.slug}`,
       image: post.coverImage,

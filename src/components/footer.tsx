@@ -31,7 +31,7 @@ export function Footer() {
               <span className="grid h-8 w-8 place-items-center rounded-md bg-gradient-to-br from-[var(--neon)] to-[var(--neon-violet)] text-background glow">
                 <Globe className="h-4 w-4" strokeWidth={2.5} />
               </span>
-              Globe<span className="text-gradient">Stack</span>
+              Rexsolv<span className="text-gradient">Technologies</span>
             </Link>
             <p className="mt-3 max-w-sm text-xs leading-relaxed text-muted-foreground">
               {SITE.description}
@@ -117,7 +117,7 @@ export function Footer() {
         {/* ── Sub-Footer Divider Line ───────────────────────────────────── */}
         <div className="mt-10 border-t border-border/50 pt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between text-[11px] text-muted-foreground">
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
-            <span>© {new Date().getFullYear()} Globe Stack.</span>
+            <span>© {new Date().getFullYear()} Rexsolv.</span>
             <span className="hidden sm:inline text-border">|</span>
             <span className="select-all">Contact: {SITE.email}</span>
             <span className="hidden sm:inline text-border">|</span>

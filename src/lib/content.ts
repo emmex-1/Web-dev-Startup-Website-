@@ -22,7 +22,7 @@ export const PROJECTS: Project[] = [
     tag: "Website",
     desc: "A responsive corporate website showcasing services, brand identity, and key information with a clean and modern user experience.",
     color: "from-cyan-500/30 to-violet-500/30",
-    client: "Globe Stack",
+    client: "Rexsolv",
     year: "2024",
     tech: ["React", "Tailwind css", "Socket.io", "Sanity CMS", ],
     images: [
@@ -85,7 +85,7 @@ export const PROJECTS: Project[] = [
       "/media/byte.png",
       "/media/byti.png",
     ],
-    live: "https://bytitude.vercel.app/",
+    live: "https://rexsolv.vercel.app/",
     serviceSlug: "web-development",
   },
   {
@@ -103,7 +103,7 @@ export const PROJECTS: Project[] = [
       "https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?w=1200&q=80",
       "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1200&q=80",
     ],
-    live: "https://kehinde-bakare-portfolio.vercel.app/",
+    live: "https://rexsolv.vercel.app/",
     serviceSlug: "saas-development",
   },
   {
@@ -121,7 +121,7 @@ export const PROJECTS: Project[] = [
 "/media/maj3.jpeg",
 "/media/maj2.jpeg",
     ],
-    live: "https://kehinde-bakare-portfolio.vercel.app/",
+    live: "https://rexsolv.vercel.app/",
     serviceSlug: "social-and-ads",
   },
 ];
@@ -152,9 +152,9 @@ export type CaseStudy = {
 };
 
 export const SITE = {
-  name: "Globe Stack",
-  url: "https://globestack.com",
-  email: "info@globestack.com",
+  name: "Rexsolv",
+  url: "https://Rexsolv.com",
+  email: "info@rexsolv.com",
   phone: "+234 7048595478",
   description:
     "Senior-only digital agency building web, AI, SEO and growth systems.",
@@ -220,7 +220,7 @@ export const CASE_STUDIES: CaseStudy[] = [
       name: "Tim Collins",
       role: "Founder, Own Your Home · Licensed Realtor, Nebraska Realty",
       quote:
-        "Globe Stack didn't just build me a website — they built me a business asset. The SEO work alone has brought in more qualified leads than everything I was doing manually combined.",
+        "Rexsolv didn't just build me a website — they built me a business asset. The SEO work alone has brought in more qualified leads than everything I was doing manually combined.",
     },
     images: [
       "/media/timoyh.jpg",
@@ -442,7 +442,7 @@ export const POSTS = [
 ];
 
 export const TESTIMONIALS = [
-  { name: "Maya Chen", role: "CEO, Lumen Skincare", quote: "Globe Stack rebuilt our Shopify store and our revenue 2.6x'd in 5 months. They feel like an in-house team.", avatar: "MC" },
+  { name: "Maya Chen", role: "CEO, Lumen Skincare", quote: "Rexsolv rebuilt our Shopify store and our revenue 2.6x'd in 5 months. They feel like an in-house team.", avatar: "MC" },
   { name: "Daniel Park", role: "VP Eng, Atlas Finance", quote: "Their AI team shipped a production RAG copilot in 8 weeks. Support tickets dropped 47%. Insane.", avatar: "DP" },
   { name: "Priya Sharma", role: "Founder, Vector Tools", quote: "We went from invisible to ranking #1 on our money keywords. Their SEO process is unreal.", avatar: "PS" },
   { name: "Marcus Webb", role: "CMO, Orbit Apparel", quote: "Best ad agency we've worked with — and we've worked with five. 4.2 ROAS at $400k/mo.", avatar: "MW" },
@@ -483,7 +483,7 @@ export const COMPANY_STORIES: CompanyStory[] = [
   {
     year: "2022",
     title: "The Beginning",
-    desc: "Globe Stack was founded with a single mission: build senior-only digital teams that deliver real outcomes.",
+    desc: "Rexsolv was founded with a single mission: build senior-only digital teams that deliver real outcomes.",
     img: "https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=1200&q=80",
     detail: "Two engineers and a designer left an agency to build something better. We took on our first three clients — a SaaS startup, a DTC brand, and a fintech company. All three are still with us today.",
   },

@@ -13,7 +13,7 @@ import { seo } from "@/lib/seo";
 export const Route = createFileRoute("/services/")({
   head: () =>
     seo({
-      title: "Services — Globe Stack",
+      title: "Services — Rexsolv",
       description:
         "Web Development, SEO, AI Solutions, Ads Management, Social Media, and Shopify Store Design — all under one roof.",
       path: "/services",

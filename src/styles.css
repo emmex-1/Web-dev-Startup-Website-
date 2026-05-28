@@ -146,6 +146,21 @@
     50% { transform: translateY(-8px); }
   }
 
+
+  @keyframes fade-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-up {
+  opacity: 0;
+  animation: fade-up 0.5s ease forwards;
+  animation-play-state: paused;
+}
+
+.in-view .animate-fade-up {
+  animation-play-state: running;
+}
   @keyframes marquee {
   0%   { transform: translateX(0); }
   100% { transform: translateX(-50%); }

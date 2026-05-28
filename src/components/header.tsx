@@ -117,12 +117,12 @@ export function Header() {
 >
   <img
     src="/media/lol.png"
-    alt="Globe Stack logo"
+    alt="Rexsolv logo"
     className="h-9 w-9 object-contain shrink-0"
   />
 
   <span>
-    Globe<span className="text-primary"> Stack</span>
+    Rex<span className="text-primary">solv</span>
   </span>
 </Link>
 

@@ -11,15 +11,15 @@ import { motion, AnimatePresence, type Variants } from "framer-motion";
 import { CTA } from "@/components/section";
 import { SERVICES } from "@/lib/site";
 import {
-  PROJECTS, CASE_STUDIES, POSTS, PROJECT_IMAGES,
+  PROJECTS, CASE_STUDIES, PROJECT_IMAGES,
   CASE_IMAGES, SERVICE_IMAGES, POST_IMAGES, PROCESS,
 } from "@/lib/content";
 import { seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/")({
   head: () => seo({
-    title: "Globe Stack Technologies | Web development, Web app, AI, SEO, Ads, Social, Shopify",
-    description: "Globe Stack is a full-stack tech studio. We build websites, web apps, ship AI, run ads, manage social, optimize SEO, develop e-commerce stores and design Shopify stores that convert.",
+    title: "Rexsolv Technologies | Web development, Web app, AI, SEO, Ads, Social, Shopify",
+    description: "Rexsolv is a full-stack tech studio. We build websites, web apps, ship AI, run ads, manage social, optimize SEO, develop e-commerce stores and design Shopify stores that convert.",
     path: "/",
   }),
   component: Home,
@@ -73,21 +73,21 @@ const STACK_GROUPS = [
 ];
 
 const TESTIMONIALS_DATA = [
-  { name: "Adebayo David", role: "CEO, Niscala.io", avatar: "AO", quote: "Globe Stack rebuilt our entire web platform and integrated a custom AI assistant. Traffic doubled in 3 months and our team is more productive than ever." },
+  { name: "Adebayo David", role: "CEO, Niscala.io", avatar: "AO", quote: "Rexsolv rebuilt our entire web platform and integrated a custom AI assistant. Traffic doubled in 3 months and our team is more productive than ever." },
   { name: "Chioma Eze", role: "Founder, SAMTIV", avatar: "CE", quote: "Their Shopify setup and Meta Ads strategy took us from zero to 6 figures online in under 90 days. The senior team approach is the real deal." },
-  { name: "Emeka Nwosu", role: "Head of Growth, IEA", avatar: "EN", quote: "The SEO work Globe Stack did transformed our organic channel. We went from page 4 to ranking #1 for our core keywords within 5 months." },
+  { name: "Emeka Nwosu", role: "Head of Growth, IEA", avatar: "EN", quote: "The SEO work Rexsolv did transformed our organic channel. We went from page 4 to ranking #1 for our core keywords within 5 months." },
   { name: "Fatima Al-Hassan", role: "CTO, BOKING", avatar: "FA", quote: "Clean code, great communication, and they shipped on time. The AI automation they built saved our ops team 20+ hours a week." },
-  { name: "Tunde Adeleke", role: "Director, Greenfield Ventures", avatar: "TA", quote: "Working with Globe Stack felt like having an in-house team. They understood our business goals and every deliverable reflected that." },
+  { name: "Tunde Adeleke", role: "Director, Greenfield Ventures", avatar: "TA", quote: "Working with Rexsolv felt like having an in-house team. They understood our business goals and every deliverable reflected that." },
   { name: "Olusegun Daniel", role: "E-commerce Manager, StyleHouse", avatar: "NO", quote: "Our Shopify conversion rate went from 1.2% to 3.8% after their redesign. The attention to UX and page speed was exceptional." },
 ];
 
 const FAQ_DATA = [
-  { q: "What services does Globe Stack offer?", a: "We offer end-to-end digital services: custom web development, AI integration, SEO, paid advertising (Meta & Google Ads), social media management, and Shopify store design and optimisation — all delivered by a senior-only team." },
+  { q: "What services does Rexsolv offer?", a: "We offer end-to-end digital services: custom web development, AI integration, SEO, paid advertising (Meta & Google Ads), social media management, and Shopify store design and optimisation — all delivered by a senior-only team." },
   { q: "Do you work with startups or established businesses?", a: "Both. We've worked with early-stage founders who need their first product shipped, and with established brands scaling into new digital channels. Our process adapts to where you are." },
   { q: "How long does a typical project take?", a: "A focused web project typically takes 4–8 weeks. SEO and ads are ongoing engagements with measurable monthly milestones. AI integrations vary — we scope these during discovery to give you an honest timeline." },
   { q: "Will I own everything you build?", a: "Absolutely. All code, content, ad accounts, SEO assets, and credentials are yours. We hand over full ownership at the end of every engagement." },
   { q: "How do you measure success?", a: "Through the metrics that matter to your business — organic traffic, conversion rate, ROAS, revenue. We set targets together at the start, track them in shared dashboards, and report weekly." },
-  { q: "Can Globe Stack handle everything my business needs digitally?", a: "Yes. That's exactly why we built Globe Stack. Instead of managing five separate agencies, you get one senior team across web, AI, SEO, ads, social, and commerce — with unified strategy and accountable delivery." },
+  { q: "Can Rexsolv handle everything my business needs digitally?", a: "Yes. That's exactly why we built Rexsolv. Instead of managing five separate agencies, you get one senior team across web, AI, SEO, ads, social, and commerce — with unified strategy and accountable delivery." },
 ];
 
 /* ─── Shared animation variants ─── */
@@ -202,7 +202,7 @@ function Hero(): JSX.Element {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="inline-flex w-max items-center rounded-full border border-sky-400/40 bg-sky-500/10 px-4 py-2 text-xs font-medium text-sky-200"
+className="inline-flex w-max items-center rounded-full border border-sky-400/40 bg-sky-500/10 px-4 py-2 text-xs font-medium text-sky-200 md:mt-6"
           >
             ✦ Next-Level Business
           </motion.div>
@@ -333,7 +333,7 @@ function Hero(): JSX.Element {
                 fontSize="200"
                 letterSpacing="-4"
               >
-                GLOBE STACK
+               REX SOLV
               </text>
             </svg>
           </motion.div>
@@ -525,7 +525,7 @@ function About() {
               Your Growth Partner Across Every Digital Channel
           </h2>
           <p className="mt-6 max-w-md text-muted-foreground">
-             Globe Stack is a full-stack tech studio built by senior specialists. We handle web development, AI integration, SEO, paid ads, social media, and Shopify so you get one accountable team delivering measurable outcomes across every touchpoint.
+             Rexsolv is a full-stack tech studio built by senior specialists. We handle web development, AI integration, SEO, paid ads, social media, and Shopify so you get one accountable team delivering measurable outcomes across every touchpoint.
           </p>
           <Link to="/about" className="mt-8 inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-3 text-sm font-medium text-background hover:opacity-90">
              Our Story
@@ -1389,7 +1389,7 @@ function WhyUs() {
         <div className="lg:hidden">
           <div className="mb-8">
             <div className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-gradient">
-              <span className="h-1.5 w-1.5 rounded-full bg-[var(--neon)]" /> Why Globe Stack
+              <span className="h-1.5 w-1.5 rounded-full bg-[var(--neon)]" /> Why Rexsolv
             </div>
             <h2 className="mt-4 font-display text-4xl font-bold leading-[1.05] tracking-tight md:text-6xl">
               Why Choose Us
@@ -1436,7 +1436,7 @@ function WhyUs() {
         <div className="hidden lg:grid gap-16 lg:grid-cols-2">
           <div className="lg:sticky lg:top-24 lg:self-start">
             <div className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-gradient">
-              <span className="h-1.5 w-1.5 rounded-full bg-[var(--neon)]" /> Why Globe Stack
+              <span className="h-1.5 w-1.5 rounded-full bg-[var(--neon)]" /> Why Rexsolv
             </div>
             <h2 className="mt-4 font-display text-4xl font-bold leading-[1.05] tracking-tight md:text-6xl">
               Why Choose Us
@@ -1754,9 +1754,7 @@ type BlogCardPost = {
 
 function Blog(): JSX.Element {
   // Start with static posts for instant render, then merge with Sanity data
-  const [posts, setPosts] = useState<BlogCardPost[]>(
-    POSTS.map((p) => ({ ...p, read: p.read }))
-  );
+const [posts, setPosts] = useState<BlogCardPost[]>([]);
 
   const perView = 3;
   const max = useMemo(() => Math.max(0, posts.length - perView), [posts.length]);
@@ -1766,26 +1764,19 @@ function Blog(): JSX.Element {
   const paginationDots = useMemo(() => Array.from({ length: max + 1 }, (_, i) => i), [max]);
   const slidePercent = useMemo(() => `${-index * (100 / perView)}%`, [index, perView]);
 
-  useEffect(() => {
-    fetchAllPosts().then((all) => {
-      const sanitySlugs = new Set(all.map((p) => p.slug));
-      // Static posts not in Sanity (keep them as fallback)
-      const staticOnly = POSTS
-        .filter((p) => !sanitySlugs.has(p.slug))
-        .map((p) => ({ slug: p.slug, title: p.title, excerpt: p.excerpt, tag: p.tag, date: p.date, read: p.read }));
-      // Sanity posts mapped to BlogCardPost shape
-      const sanityMapped: BlogCardPost[] = all.map((p) => ({
-        slug: p.slug,
-        title: p.title,
-        excerpt: p.excerpt,
-        tag: p.tag,
-        date: p.date,
-        read: p.readTime,
-        coverImage: p.coverImage,
-      }));
-      setPosts([...sanityMapped, ...staticOnly]);
-    });
-  }, []);
+useEffect(() => {
+  fetchAllPosts().then((all) => {
+    setPosts(all.map((p) => ({
+      slug: p.slug,
+      title: p.title,
+      excerpt: p.excerpt,
+      tag: p.tag,
+      date: p.date,
+      read: p.readTime,
+      coverImage: p.coverImage,
+    })));
+  });
+}, []);
 
   return (
     <section className="border-t border-border py-20 md:py-28 bg-[var(--section-c)]">
@@ -1919,7 +1910,7 @@ function FAQs(): JSX.Element {
           </motion.div>
           <motion.h2 variants={fadeUp} transition={{ duration: 0.5 }} className="mt-4 font-display text-4xl font-bold leading-[1.05] tracking-tight md:text-6xl">Questions & Answers</motion.h2>
           <motion.p variants={fadeUp} transition={{ duration: 0.5 }} className="mt-6 max-w-md text-muted-foreground">
-            Everything you need to know about working with Globe Stack — how we engage, what we deliver, and how we're different.
+            Everything you need to know about working with Rexsolv — how we engage, what we deliver, and how we're different.
           </motion.p>
           <motion.div variants={fadeUp} transition={{ duration: 0.5 }} className="mt-8 space-y-3">
             {FAQ_DATA.map((f, i) => (
@@ -1964,7 +1955,7 @@ function FAQs(): JSX.Element {
           <div className="group relative aspect-[4/5] overflow-hidden rounded-3xl border border-border bg-card transform-gpu">
             <img
               src="/media/download.png"
-              alt="Globe Stack team at work"
+              alt="Rexsolv team at work"
               width={500}
               height={625}
               className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 will-change-transform group-hover:scale-105"

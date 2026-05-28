@@ -22,7 +22,7 @@ export const LOCATIONS: Location[] = [
     countryCode: "NG",
     flag: "🇳🇬",
     hero: "https://images.unsplash.com/photo-1618828665011-0abd973f7bb8?w=1600&q=80",
-    intro: "Globe Stack partners with Nigerian startups, SMEs, and enterprises across Lagos, Abuja, Port Harcourt, and Kano. We deliver world-class web, SaaS, AI, SEO, and Shopify work — billed in NGN or USD.",
+    intro: "Rexsolv partners with Nigerian startups, SMEs, and enterprises across Lagos, Abuja, Port Harcourt, and Kano. We deliver world-class web, SaaS, AI, SEO, and Shopify work — billed in NGN or USD.",
     localKeywords: ["web development Nigeria", "SEO agency Lagos", "AI solutions Abuja", "Shopify designer Nigeria", "SaaS developer Lagos"],
     highlights: [
       { t: "Local + global", d: "Nigerian roots, global delivery standards. We sell to your customers in Lagos and London." },
@@ -30,7 +30,7 @@ export const LOCATIONS: Location[] = [
       { t: "Same-day calls", d: "WAT-friendly hours, on Slack and WhatsApp." },
     ],
     industries: ["Fintech", "E-commerce", "EdTech", "Logistics", "Media"],
-    testimonial: { quote: "Globe Stack rebuilt our fintech dashboard and shipped on time. Best engineering team we've worked with in Nigeria.", name: "Adaeze O.", role: "CTO, Lagos fintech" },
+    testimonial: { quote: "Rexsolv rebuilt our fintech dashboard and shipped on time. Best engineering team we've worked with in Nigeria.", name: "Adaeze O.", role: "CTO, Lagos fintech" },
   },
   {
     slug: "lagos",
@@ -57,7 +57,7 @@ export const LOCATIONS: Location[] = [
     countryCode: "NG",
     flag: "🇳🇬",
     hero: "https://images.unsplash.com/photo-1618828665011-0abd973f7bb8?w=1600&q=80",
-    intro: "Abuja's government, NGOs, and enterprise clients trust Globe Stack for compliant, secure, scalable digital products.",
+    intro: "Abuja's government, NGOs, and enterprise clients trust Rexsolv for compliant, secure, scalable digital products.",
     localKeywords: ["web development Abuja", "Abuja SEO", "Abuja software company", "Abuja AI consultant"],
     highlights: [
       { t: "Government-grade", d: "We work with public-sector and NGO clients on compliant builds." },
@@ -74,7 +74,7 @@ export const LOCATIONS: Location[] = [
     countryCode: "US",
     flag: "🇺🇸",
     hero: "https://images.unsplash.com/photo-1496588152823-86ff7695e68f?w=1600&q=80",
-    intro: "From SF to NYC, Austin to Miami — Globe Stack ships product for venture-backed US startups and growth-stage companies.",
+    intro: "From SF to NYC, Austin to Miami — Rexsolv ships product for venture-backed US startups and growth-stage companies.",
     localKeywords: ["web development USA", "SaaS developer USA", "SEO agency United States", "AI consultant US", "Shopify expert USA"],
     highlights: [
       { t: "Coast-to-coast coverage", d: "PT–ET overlap hours, weekly demos, async-first." },
@@ -109,7 +109,7 @@ export const LOCATIONS: Location[] = [
     countryCode: "CA",
     flag: "🇨🇦",
     hero: "https://images.unsplash.com/photo-1517935706615-2717063c2225?w=1600&q=80",
-    intro: "Toronto, Vancouver, Montreal — Globe Stack helps Canadian startups and enterprises build and grow digital products.",
+    intro: "Toronto, Vancouver, Montreal — Rexsolv helps Canadian startups and enterprises build and grow digital products.",
     localKeywords: ["web development Canada", "Toronto SEO agency", "Vancouver software developer", "Canadian SaaS builder"],
     highlights: [
       { t: "Canadian-friendly hours", d: "PT and ET overlap with weekly demos." },
@@ -126,7 +126,7 @@ export const LOCATIONS: Location[] = [
     countryCode: "IN",
     flag: "🇮🇳",
     hero: "https://images.unsplash.com/photo-1532375810709-75b1da00537c?w=1600&q=80",
-    intro: "Bangalore, Mumbai, Delhi, Hyderabad — Globe Stack works with Indian product teams scaling globally.",
+    intro: "Bangalore, Mumbai, Delhi, Hyderabad — Rexsolv works with Indian product teams scaling globally.",
     localKeywords: ["web development India", "SEO agency Bangalore", "Shopify expert India", "AI consultant Mumbai"],
     highlights: [
       { t: "IST overlap", d: "Indian working hours, daily syncs." },
@@ -160,7 +160,7 @@ export const LOCATIONS: Location[] = [
     countryCode: "DE",
     flag: "🇩🇪",
     hero: "https://images.unsplash.com/photo-1467269204594-9661b134dd2b?w=1600&q=80",
-    intro: "Berlin, München, Hamburg — Globe Stack baut digitale Produkte für deutsche Startups und den Mittelstand.",
+    intro: "Berlin, München, Hamburg — Rexsolv baut digitale Produkte für deutsche Startups und den Mittelstand.",
     localKeywords: ["Webentwicklung Deutschland", "SEO Agentur Berlin", "Shopify Experten München", "KI Agentur Deutschland"],
     highlights: [
       { t: "CET-Stunden", d: "Tägliche Stand-ups in Ihrer Zeitzone." },

@@ -7,7 +7,7 @@ import { seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/tools/seo-analyzer")({
   head: () => seo({
-    title: "Free SEO Analyzer — Globe Stack",
+    title: "Free SEO Analyzer — Rexsolv",
     description: "Free, instant SEO audit. Analyze any URL for meta tags, headings, images, and more.",
     path: "/tools/seo-analyzer",
   }),

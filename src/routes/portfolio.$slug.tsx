@@ -39,12 +39,12 @@ export const Route = createFileRoute("/portfolio/$slug")({
     const p = PROJECTS.find((x) => x.slug === params.slug);
     if (!p)
       return seo({
-        title: "Project — Globe Stack",
+        title: "Project — Rexsolv",
         description: "Project case.",
         path: `/portfolio/${params.slug}`,
       });
     const base = seo({
-      title: `${p.title} — Portfolio — Globe Stack`,
+      title: `${p.title} — Portfolio — Rexsolv`,
       description: p.desc,
       path: `/portfolio/${p.slug}`,
     });

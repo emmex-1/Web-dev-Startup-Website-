@@ -47,7 +47,7 @@ export function MissionVisionSection() {
             A Purposeful Framework for Lasting Impact.
           </h2>
           <p className="text-pretty text-sm leading-relaxed text-muted-foreground">
-            Globe Stack's internal philosophy targets the root causes of agency breakdown — combining senior skillsets with structural milestones to take ideas to deployment reliably.
+            Rexsolv's internal philosophy targets the root causes of agency breakdown — combining senior skillsets with structural milestones to take ideas to deployment reliably.
           </p>
         </div>
 

@@ -21,9 +21,9 @@ const modalState = { modal: true } as any;
 export const Route = createFileRoute("/portfolio")({
   head: () =>
     seo({
-      title: "Portfolio — Globe Stack",
+      title: "Portfolio — Rexsolv",
       description:
-        "Selected work from Globe Stack — web apps, AI, Shopify, SEO, ads, and social.",
+        "Selected work from  Rexsolv — web apps, AI, Shopify, SEO, ads, and social.",
       path: "/portfolio",
     }),
   component: PortfolioPage,
@@ -61,9 +61,9 @@ const PORTFOLIO_FAQ = [
 ];
 
 const STATS = [
-  { value: "50+", label: "Projects shipped" },
+  { value: "20+", label: "Projects shipped" },
   { value: "98%", label: "Client satisfaction" },
-  { value: "$1M+", label: "Revenue generated" },
+  { value: "$20k+", label: "Revenue generated" },
   { value: "5 days", label: "Avg. kickoff time" },
 ];
 
@@ -367,7 +367,7 @@ function PortfolioPage() {
                   <div className="h-2.5 w-2.5 rounded-full bg-yellow-400/60" />
                   <div className="h-2.5 w-2.5 rounded-full bg-green-400/60" />
                   <div className="mx-auto rounded-md border border-border bg-background px-8 py-0.5 font-mono text-[9px] text-muted-foreground">
-                    globestack.io/portfolio
+                   Rexsolv.com/portfolio
                   </div>
                 </div>
                 <img

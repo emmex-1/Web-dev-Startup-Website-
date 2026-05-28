@@ -28,7 +28,7 @@ import { SITE } from "@/lib/site";
 export const Route = createFileRoute("/pricing")({
   head: () => {
     const base = seo({
-      title: "Pricing — Web, SaaS, UI/UX, SEO, AI, Shopify | Globe Stack",
+      title: "Pricing — Web, SaaS, UI/UX, SEO, AI, Shopify | Rexsolv",
       description:
         "Transparent pricing in USD and NGN for web development, SaaS, UI/UX, SEO, AI, social & ads, Shopify, maintenance, and backend/API. Serving Nigeria, USA, UK, Canada, India, EU and worldwide.",
       path: "/pricing",

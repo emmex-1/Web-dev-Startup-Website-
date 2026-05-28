@@ -8,15 +8,15 @@ import { seo, jsonLdScript, breadcrumbJsonLd, abs } from "@/lib/seo";
 export const Route = createFileRoute("/case-studies/$slug")({
   head: ({ params }) => {
     const c = CASE_STUDIES.find((x) => x.slug === params.slug);
-    if (!c) return seo({ title: "Case Study — Globe Stack", description: "Case study.", path: `/case-studies/${params.slug}` });
-    const base = seo({ title: `${c.title} — Case Study — Globe Stack`, description: c.overview, path: `/case-studies/${c.slug}`, type: "article" });
+    if (!c) return seo({ title: "Case Study — Rexsolv", description: "Case study.", path: `/case-studies/${params.slug}` });
+    const base = seo({ title: `${c.title} — Case Study — Rexsolv`, description: c.overview, path: `/case-studies/${c.slug}`, type: "article" });
     const articleLd = {
       "@context": "https://schema.org",
       "@type": "Article",
       headline: c.title,
       description: c.overview,
-      author: { "@type": "Organization", name: "Globe Stack" },
-      publisher: { "@type": "Organization", name: "Globe Stack" },
+      author: { "@type": "Organization", name: "Rexsolv" },
+      publisher: { "@type": "Organization", name: "Rexsolv" },
       url: abs(`/case-studies/${c.slug}`),
       about: c.industry,
     };

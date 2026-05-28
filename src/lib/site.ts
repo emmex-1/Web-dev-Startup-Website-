@@ -1,11 +1,11 @@
 // lib/site.ts
 
 export const SITE = {
-  name: "Globe Stack",
+  name: "Rexsolv",
   tagline: "Engineering the digital edge.",
   description:
-    "Globe Stack is a global tech studio building web apps, SaaS, UI/UX, AI solutions, SEO, social & ads, and Shopify experiences for ambitious brands in Nigeria, the USA, UK, Canada, India, France, Germany, and worldwide.",
-  email: "info@globestack.com",
+    "Rexsolv is a global tech studio building web apps, SaaS, UI/UX, AI solutions, SEO, social & ads, and Shopify experiences for ambitious brands in Nigeria, the USA, UK, Canada, India, France, Germany, and worldwide.",
+  email: "info@rexsolv.com",
   phone: "+234 7048595478",
   social: {
     twitter: "https://twitter.com",

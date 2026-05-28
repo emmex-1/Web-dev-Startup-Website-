@@ -5,7 +5,7 @@ import {schemaTypes} from './schemaTypes'
 
 export default defineConfig({
   name: 'default',
-  title: 'Globe Stack',
+  title: 'Rexsolv',
 
   projectId: 'vy0y8q8k',
   dataset: 'production',

@@ -134,36 +134,24 @@ let _cache: BlogPost[] | null = null;
 let _inFlight: Promise<BlogPost[]> | null = null;
 
 export async function fetchAllPosts(): Promise<BlogPost[]> {
-  // 1. Instant return if already resolved
   if (_cache) return _cache;
-
-  // 2. Deduplicate concurrent calls (e.g. navbar preload + route loader fire simultaneously)
   if (_inFlight) return _inFlight;
 
   _inFlight = (async () => {
     if (!sanityEnabled || !sanityClient) {
-      _cache = STATIC;
-      return STATIC;
+      _cache = [];
+      return [];
     }
     try {
       const data = await sanityClient.fetch<SanityRaw[]>(
         `*[_type == "post"] | order(publishedAt desc) { ${POST_FIELDS} }`
       );
-      // _cache = data?.length ? data.map(map) : STATIC;
-      if (data?.length) {
-  // Merge: Sanity posts take priority; static posts fill in any slug not in Sanity
-  const sanityPosts = data.map(map);
-  const sanitySlugs = new Set(sanityPosts.map((p) => p.slug));
-  const staticFallbacks = STATIC.filter((p) => !sanitySlugs.has(p.slug));
-  _cache = [...sanityPosts, ...staticFallbacks];
-} else {
-  _cache = STATIC;
-}
+      _cache = data?.length ? data.map(map) : [];
       return _cache;
     } catch (e) {
       console.error("[sanity] fetchAllPosts failed", e);
-      _cache = STATIC;
-      return STATIC;
+      _cache = [];
+      return [];
     } finally {
       _inFlight = null;
     }

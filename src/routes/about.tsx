@@ -19,29 +19,30 @@ import { MissionVisionSection } from "../components/MissionVisionSection";
 export const Route = createFileRoute("/about")({
   head: () =>
     seo({
-      title: "About — Globe Stack",
+      title: "About —  Rexsolv",
       description:
-        "Globe Stack is a senior-only tech studio building websites, AI systems, and growth engines for ambitious brands.",
+        "Rexsolv is a senior-only tech studio building websites, AI systems, and growth engines for ambitious brands.",
       path: "/about",
     }),
   component: AboutPage,
 });
 
 const STATS = [
-  { v: "30+", l: "Projects shipped" },
-  { v: "35+", l: "Happy clients" },
+  { v: "20+", l: "Projects shipped" },
+  { v: "25+", l: "Happy clients" },
   { v: "7y", l: "Avg. senior experience" },
-  { v: "95%", l: "Client growth" },
+  { v: "98%", l: "Client growth" },
 ];
 
 function AboutPage() {
   return (
-    <>
+    // FIX: Wrapped whole page container with overflow-x-hidden to neutralize unexpected layout shifts
+    <div className="w-full overflow-x-hidden">
       <PageHero
         image={HERO_IMAGES.about}
         eyebrow="About"
         title={<>Built by senior operators, for ambitious brands.</>}
-        desc="Globe Stack is a small, senior-only studio. We take on a handful of clients per quarter and treat each project like it's our own."
+        desc="Rexsolv is a small, senior-only studio. We take on a handful of clients per quarter and treat each project like it's our own."
       >
         <Link
           to="/contact"
@@ -52,7 +53,6 @@ function AboutPage() {
       </PageHero>
 
       {/* Story — Interactive timeline */}
-      {/* StorySection itself uses bg-[var(--section-a)] */}
       <StorySection />
 
       {/* Stats strip */}
@@ -71,16 +71,9 @@ function AboutPage() {
         </div>
       </section>
 
-      {/* ══════════════════════════ MISSION & VISION SECTION ════════════════════════════ */}
-      {/*
-        FIX: overflow-hidden clips decorative watermark letters that caused horizontal scroll.
-             bg-background keeps this section white/dark so it contrasts with adjacent sections.
-      */}
+      {/* MISSION & VISION SECTION */}
       <section className="py-16 sm:py-24 bg-background text-foreground border-b border-border overflow-hidden transition-colors duration-300">
         <div className="container mx-auto px-4 sm:px-6 lg:px-16">
-          {/*
-            FIX: min-w-0 on grid wrapper prevents children from blowing past container on narrow viewports.
-          */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-[72px] max-w-[1200px] mx-auto items-start min-w-0">
 
             {/* Left Column */}
@@ -95,7 +88,7 @@ function AboutPage() {
                 A Purposeful Blueprint<br />for Modern<br />Digital Craft.
               </h2>
               <p className="text-muted-foreground text-sm sm:text-base leading-relaxed max-w-[420px] mb-10">
-                Globe Stack counters the industry standard of bloated agency timelines. We combine hyper-focused senior talent with transparent engineering practices to take products from concept to launch efficiently.
+                Rexsolv counters the industry standard of bloated agency timelines. We combine hyper-focused senior talent with transparent engineering practices to take products from concept to launch efficiently.
               </p>
 
               <motion.div
@@ -107,10 +100,6 @@ function AboutPage() {
               >
                 <img src={solImage} alt="Our Mission" className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.02]" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/60 to-black/10" />
-                {/*
-                  FIX: clamp() on font-size prevents the watermark letter from overflowing
-                       the card and pushing horizontal scroll at any viewport width.
-                */}
                 <span
                   className="absolute top-2 right-4 text-white/5 font-bold leading-none select-none pointer-events-none font-display"
                   style={{ fontSize: "clamp(4rem, 15vw, 7.5rem)" }}
@@ -139,10 +128,7 @@ function AboutPage() {
               </motion.div>
             </div>
 
-            {/* Right Column
-                FIX: Changed lg:pt-28 → xl:pt-28 so the offset only applies when there's
-                     enough viewport width, preventing height blowout on 1024–1200px screens.
-            */}
+            {/* Right Column */}
             <div className="flex flex-col gap-7 xl:pt-28 min-w-0">
               <motion.div
                 initial={{ opacity: 0, y: 24 }}
@@ -197,12 +183,12 @@ function AboutPage() {
         </div>
       </section>
 
-      {/* Downstream components — each has its own bg via section-a/b/c vars */}
+      {/* Downstream components */}
       <TeamSection />
       <WhyChooseUsSection />
       <ValuesSection />
       <PartnershipsSection />
       <CTA />
-    </>
+    </div>
   );
 }

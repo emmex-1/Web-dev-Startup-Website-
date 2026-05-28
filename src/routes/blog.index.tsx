@@ -15,9 +15,9 @@ export const Route = createFileRoute("/blog/")({
   staleTime: 1000 * 60 * 5, // 5 minutes
   head: ({ loaderData }) => {
     const base = seo({
-      title: "Blog — Website, AI, SEO, Shopify | Globe Stack",
+      title: "Blog — Website, AI, SEO, Shopify | Rexsolv",
       description:
-        "Practical writing on web development, AI, SEO, ads, social, and Shopify from Globe Stack — for teams in Nigeria, USA, UK, Canada, India, and worldwide.",
+        "Practical writing on web development, AI, SEO, ads, social, and Shopify from Rexsolv — for teams in Nigeria, USA, UK, Canada, India, and worldwide.",
       path: "/blog",
     });
     const blogLd = {

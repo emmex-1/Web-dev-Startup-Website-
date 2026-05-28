@@ -9,7 +9,7 @@ const PARTNERS = [
   { title: "Meta Business", detail: "Performance media partner." },
 ];
 
-const CERT_IMAGE = "/media/ccc.png";
+const CERT_IMAGE = "/media/cbc.png";
 
 export function PartnershipsSection() {
   return (
@@ -34,7 +34,7 @@ export function PartnershipsSection() {
             </h2>
 
             <p className="mt-4 text-sm sm:text-base leading-relaxed text-muted-foreground">
-              Globe Stack is a legally incorporated studio, ensuring transparency,
+              Rexsolv is a legally incorporated studio, ensuring transparency,
               accountability, and trust in every engagement — from first call to
               final delivery.
             </p>
@@ -52,7 +52,7 @@ export function PartnershipsSection() {
                 <ShieldCheck className="h-5 w-5 text-[oklch(0.78_0.18_195)]" />
                 <span className="text-sm text-muted-foreground">
                   <span className="font-semibold text-foreground">Name:</span>{" "}
-                  GLOBE STACK LIMITED
+                  REXSOLV LIMITED
                 </span>
               </div>
             </div>
@@ -103,7 +103,7 @@ export function PartnershipsSection() {
   />
 </div>
               <p className="mt-3 text-center text-xs text-muted-foreground/60 font-mono">
-                Certificate of Incorporation — Globe Stack Limited
+                Certificate of Incorporation — Rexsolv Limited
               </p>
             </div>
           </motion.div>

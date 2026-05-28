@@ -13,9 +13,9 @@ import { seo } from "@/lib/seo";
 export const Route = createFileRoute("/contact")({
   head: () =>
     seo({
-      title: "Contact — Globe Stack",
+      title: "Contact — Rexsolv",
       description:
-        "Tell us about your project. Globe Stack responds within one business day.",
+        "Tell us about your project. Rexsolv responds within one business day.",
       path: "/contact",
     }),
   component: ContactPage,
@@ -48,8 +48,8 @@ const infoCards = [
     bg: "bg-cyan-50/60 dark:bg-cyan-950/30",
     border: "border-fuchsia-200/60 dark:border-fuchsia-800/40",
     title: "Email Us",
-    lines: ["info@globestack.com", "We reply within 24 hours"],
-    action: { label: "Send Email", href: "mailto:info@globestack.com" },
+    lines: ["info@rexsolv.com", "We reply within 24 hours"],
+    action: { label: "Send Email", href: "mailto:info@rexsolv.com" },
   },
   {
     icon: Clock,
@@ -151,7 +151,7 @@ function ContactPage() {
           {/* Background image */}
           <img
             src={HERO_IMAGES.contact}
-            alt="Contact Globe Stack"
+            alt="Contact Rexsolv"
             className="absolute inset-0 w-full h-full object-cover object-center"
           />
           {/* Overlays */}
@@ -480,7 +480,7 @@ function ContactPage() {
               {/* Map */}
               <div className="relative rounded-3xl overflow-hidden border border-border shadow-md" style={{ height: "clamp(220px,30vw,320px)" }}>
                 <iframe
-                  title="Globe Stack — Remote HQ"
+                  title="Rexsolv — Remote HQ"
                   src="https://www.google.com/maps?q=San+Francisco,+California&output=embed"
                   width="100%" height="100%"
                   style={{ border: 0 }} allowFullScreen loading="lazy"
@@ -493,7 +493,7 @@ function ContactPage() {
                       <Globe size={14} className="text-white" />
                     </div>
                     <div>
-                      <p className="font-bold text-xs text-foreground font-display">Globe Stack</p>
+                      <p className="font-bold text-xs text-foreground font-display">Rexsolv</p>
                       <p className="text-muted-foreground text-[10px]">Remote-first · Worldwide</p>
                     </div>
                   </div>
@@ -502,7 +502,7 @@ function ContactPage() {
 
               {/* Quick contact buttons */}
               <div className="grid grid-cols-2 gap-3">
-                <a href="mailto:hello@globestack.io"
+                <a href="mailto:info@rexsolv.com"
                   className="flex items-center gap-2.5 bg-foreground hover:opacity-90 rounded-2xl px-4 py-4 no-underline group transition-all duration-200">
                   <div className="w-9 h-9 rounded-xl bg-background/15 flex items-center justify-center shrink-0">
                     <Mail size={15} className="text-background" />
@@ -545,7 +545,7 @@ function ContactPage() {
 
               {/* Social */}
               <div className="rounded-2xl border border-border bg-card p-5">
-                <p className="font-display font-bold text-sm text-foreground mb-4">Follow Globe Stack</p>
+                <p className="font-display font-bold text-sm text-foreground mb-4">Follow Rexsolv</p>
                 <div className="flex items-center gap-3">
                   {[
                     { icon: Linkedin, href: "#", label: "LinkedIn", hover: "hover:bg-blue-50 hover:text-blue-700 hover:border-blue-200 dark:hover:bg-blue-950/40 dark:hover:border-blue-800" },

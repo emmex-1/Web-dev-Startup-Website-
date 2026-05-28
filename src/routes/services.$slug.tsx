@@ -19,12 +19,12 @@ export const Route = createFileRoute("/services/$slug")({
     const s = SERVICES.find((x) => x.slug === params.slug);
     if (!s)
       return seo({
-        title: "Service — Globe Stack",
-        description: "Globe Stack services.",
+        title: "Service — Rexsolv",
+        description: "Rexsolv services.",
         path: `/services/${params.slug}`,
       });
     const base = seo({
-      title: `${s.title} — Globe Stack`,
+      title: `${s.title} — Rexsolv`,
       description: s.blurb,
       path: `/services/${s.slug}`,
     });

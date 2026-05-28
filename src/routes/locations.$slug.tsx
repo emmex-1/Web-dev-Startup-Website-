@@ -8,16 +8,16 @@ import { seo, jsonLdScript, breadcrumbJsonLd, abs } from "@/lib/seo";
 export const Route = createFileRoute("/locations/$slug")({
   head: ({ params }) => {
     const l = findLocation(params.slug);
-    if (!l) return seo({ title: "Location — Globe Stack", description: "Globe Stack locations.", path: `/locations/${params.slug}` });
+    if (!l) return seo({ title: "Location — Rexsolv", description: "Rexsolv locations.", path: `/locations/${params.slug}` });
     const base = seo({
-      title: `Web, SaaS, AI, SEO & Shopify in ${l.city} | Globe Stack`,
+      title: `Web, SaaS, AI, SEO & Shopify in ${l.city} | Rexsolv`,
       description: `${l.intro} Keywords: ${l.localKeywords.join(", ")}.`,
       path: `/locations/${l.slug}`,
     });
     const placeLd = {
       "@context": "https://schema.org",
       "@type": "LocalBusiness",
-      name: `Globe Stack — ${l.city}`,
+      name: `Rexsolv — ${l.city}`,
       description: l.intro,
       address: { "@type": "PostalAddress", addressCountry: l.countryCode, addressRegion: l.region },
       areaServed: l.city,
@@ -62,7 +62,7 @@ function LocationPage() {
         </div>
       </PageHero>
 
-      <Section eyebrow="Why local" title={`Why teams in ${l.city} pick Globe Stack.`}>
+      <Section eyebrow="Why local" title={`Why teams in ${l.city} pick Rexsolv.`}>
         <div className="grid gap-5 md:grid-cols-3">
           {l.highlights.map((h) => (
             <div key={h.t} className="rounded-2xl border border-border bg-card p-6">

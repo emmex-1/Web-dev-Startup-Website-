@@ -14,9 +14,9 @@ import { seo } from "@/lib/seo";
 export const Route = createFileRoute("/case-studies")({
   head: () =>
     seo({
-      title: "Case Studies — Globe Stack",
+      title: "Case Studies — Rexsolv",
       description:
-        "Real outcomes for real clients — deep-dive case studies from Globe Stack.",
+        "Real outcomes for real clients — deep-dive case studies from Rexsolv.",
       path: "/case-studies",
     }),
   component: CaseStudiesPage,
@@ -75,7 +75,7 @@ const EXTENDED: Record<
       { category: "Marketing", items: ["Klaviyo", "Yotpo", "Triplewhale"] },
     ],
     testimonial: {
-      quote: "Globe Stack rebuilt our Shopify store and our revenue 2.6x'd in 5 months. They feel like an in-house team — they pushed back when our ideas weren't optimal and always had data to back their decisions.",
+      quote: " Rexsolv rebuilt our Shopify store and our revenue 2.6x'd in 5 months. They feel like an in-house team — they pushed back when our ideas weren't optimal and always had data to back their decisions.",
       name: "Maya Chen", role: "CEO, Lumen Skincare", avatar: "MC",
     },
     screenshots: [
@@ -171,7 +171,7 @@ const EXTENDED: Record<
       { category: "Analytics", items: ["GA4", "Heap", "Looker Studio"] },
     ],
     testimonial: {
-      quote: "We went from invisible to ranking #1 on our money keywords. Globe Stack's process is unreal — they treated SEO like a product, not a service. Data-driven decisions at every step.",
+      quote: "We went from invisible to ranking #1 on our money keywords. Rexsolv's process is unreal — they treated SEO like a product, not a service. Data-driven decisions at every step.",
       name: "Priya Sharma", role: "Founder, Vector Tools", avatar: "PS",
     },
     screenshots: [
@@ -219,7 +219,7 @@ const EXTENDED: Record<
       { category: "Attribution", items: ["Meta CAPI", "Google Enhanced Conversions", "Triplewhale"] },
     ],
     testimonial: {
-      quote: "Best ad agency we've worked with — and we've worked with five. 4.2 ROAS at $400k/mo is something we thought was impossible at our stage. Globe Stack proved us wrong every single month.",
+      quote: "Best ad agency we've worked with — and we've worked with five. 4.2 ROAS at $400k/mo is something we thought was impossible at our stage. Rexsolv proved us wrong every single month.",
       name: "Marcus Webb", role: "CMO, Orbit Apparel", avatar: "MW",
     },
     screenshots: [

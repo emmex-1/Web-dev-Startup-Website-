@@ -4,28 +4,29 @@ import { ArrowUpRight } from "lucide-react";
 
 const TEAM = [
 
-    {
+  {
     name: "Oreoluwa Samuel",
-    role: "Growth & Performance",
-    img: "/media/ore.png",
-    bio: "Engineered SEO, paid media, and full-funnel attribution that moves revenue.",
+    role: "Senior Growth & Performance Lead",
+    img: "/media/orezi.jpeg",
+    bio: "Leads SEO, paid media, and full-funnel attribution strategies that drive revenue growth.",
+    // senior: true,
   },
   {
     name: "Kehinde Bakare",
     role: "Full Stack Engineer",
     img: "/media/keno.png",
-    bio: "12+ years shipping React, Node, and distributed systems at production scale.",
+    bio: "6+ years shipping React, Node, and distributed systems at production scale.",
   },
   {
     name: "Daniel Amalunweze",
     role: "AI & Backend Engineer",
-    img: "/media/daniel.jfif",
+    img: "/media/dani.png",
     bio: "Production RAG pipelines, LLM fine-tunes, and cloud infra for fintech and SaaS.",
   },
   {
     name: "David Richard",
     role: "Frontend Developer & UI/UX Designer",
-    img: "/media/taiwo.jpeg",
+    img: "/media/taye.png",
     bio: "Pixel-perfect interfaces and custom design systems that convert and hold.",
   },
 ];
@@ -60,12 +61,15 @@ export function TeamSection() {
             >
               {/* Image fills the card */}
               <div className="relative aspect-[3/4] overflow-hidden bg-muted">
-                <img
-                  src={m.img}
-                  alt={m.name}
-                  className="h-full w-full object-cover transition duration-700 group-hover:scale-110"
-                  loading="lazy"
-                />
+<img
+  src={m.img}
+  alt={m.name}
+  className="h-full w-full object-cover transition duration-700 group-hover:scale-110"
+  loading="lazy"
+  onError={(e) => {
+    e.currentTarget.src = "/media/fallback.jpg";
+  }}
+/>
                 {/* Dark overlay for text readability */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
 
