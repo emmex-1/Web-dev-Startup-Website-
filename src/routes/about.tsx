@@ -19,7 +19,7 @@ import { MissionVisionSection } from "../components/MissionVisionSection";
 export const Route = createFileRoute("/about")({
   head: () =>
     seo({
-      title: "About —  Rexsolv",
+      title: "About | Rexsolv",
       description:
         "Rexsolv is a senior-only tech studio building websites, AI systems, and growth engines for ambitious brands.",
       path: "/about",
