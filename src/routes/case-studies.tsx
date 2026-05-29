@@ -453,7 +453,7 @@ function CaseStudyModal({
                 <div className="mt-2 flex gap-2 overflow-x-auto scrollbar-hide">
                   {images.map((img, i) => (
                     <button key={i} onClick={() => setImgIdx(i)} className={`h-14 w-20 shrink-0 overflow-hidden rounded-lg border-2 transition ${i === imgIdx ? "border-sky-500" : "border-border opacity-60 hover:opacity-100"}`}>
-                      <img src={img} alt="" className="h-full w-full object-cover" />
+                      <img src={img} alt="case studies images" className="h-full w-full object-cover" />
                     </button>
                   ))}
                 </div>

@@ -59,7 +59,7 @@ export function PageHero({
           <div className="absolute inset-0">
             <img
               src={bg}
-              alt=""
+              alt="page hero background pics"
               className="h-full w-full object-cover"
               loading="eager"
             />
@@ -145,7 +145,7 @@ export function CTA({
         {/* ── Background Image kept fully clear ────────────────────────── */}
         <img 
           src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1600&q=80" 
-          alt="" 
+          alt="section bckground image" 
           className="absolute inset-0 h-full w-full object-cover opacity-100" 
           loading="lazy" 
         />

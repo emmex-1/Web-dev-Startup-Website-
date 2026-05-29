@@ -364,7 +364,7 @@ function PricingPage() {
         <div className="relative overflow-hidden rounded-3xl border border-glow bg-card bg-[var(--section-a)]">
           <img
             src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1200&q=80"
-            alt=""
+            alt="cta image"
             aria-hidden
             className="absolute inset-0 h-full w-full object-cover opacity-[0.12]"
             loading="lazy"

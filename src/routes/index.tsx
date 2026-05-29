@@ -18,8 +18,8 @@ import { seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/")({
   head: () => seo({
-    title: "Rexsolv Technologies | Web development, Web app, AI, SEO, Ads, Social, Shopify",
-    description: "Rexsolv is a full-stack tech studio. We build websites, web apps, ship AI, run ads, manage social, optimize SEO, develop e-commerce stores and design Shopify stores that convert.",
+    title: "Web Development & AI Agency in Nigeria | Rexsolv",
+description: "Rexsolv is a full-stack tech studio in Nigeria. We build websites, web apps, AI solutions, run ads, manage SEO, social media & Shopify stores.",
     path: "/",
   }),
   component: Home,
@@ -146,7 +146,7 @@ function HeroVisual(): JSX.Element {
       <img
         src="/media/downl.png"
         className="relative z-10 w-[340px] md:w-[420px]"
-        alt="Laptop UI"
+        alt="Rexsolv web and AI agency dashboard preview"
         width={420}
         height={420}
         loading="eager"
@@ -242,7 +242,7 @@ className="inline-flex w-max items-center rounded-full border border-sky-400/40 
           >
             <img
               src="/media/downl.png"
-              alt=""
+              alt="Rexsolv web development and AI agency services"
               aria-hidden="true"
               width={500}
               height={500}
@@ -268,10 +268,10 @@ className="inline-flex w-max items-center rounded-full border border-sky-400/40 
             transition={{ duration: 0.6, delay: 0.2 }}
             className="relative z-10 space-y-4 pl-4"
           >
-            <h2 className="font-display text-[2.75rem] font-bold leading-[1.08] tracking-tight">
+            <h1 className="font-display text-[2.75rem] font-bold leading-[1.08] tracking-tight">
               Build Smarter,<br />
               Grow <span className="text-sky-400">Faster.</span>
-            </h2>
+            </h1>
             <p className="text-base sm:text-lg text-sky-100/80 leading-relaxed max-w-[20rem]">
               We design, build, and grow digital products Websites, AI solutions,
               UI/UX design, e-commerce systems, SEO, ads, social media, and Shopify
@@ -355,10 +355,10 @@ className="inline-flex w-max items-center rounded-full border border-sky-400/40 
             transition={{ duration: 0.6, delay: 0.45 }}
             className="hidden md:block absolute left-0 bottom-0 max-w-sm z-30"
           >
-            <h2 className="font-display text-3xl font-bold leading-tight lg:text-4xl">
+            <h1 className="font-display text-3xl font-bold leading-tight lg:text-4xl">
               Build Smarter,<br />
               Grow <span className="text-sky-400">Faster.</span>
-            </h2>
+            </h1>
             <p className="mt-3 text-sm text-white/60 leading-relaxed md:text-base">
               We design, build, and grow digital products websites, AI solutions, SEO, ads, social, and Shopify all under one senior team.
             </p>

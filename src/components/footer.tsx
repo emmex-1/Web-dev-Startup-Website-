@@ -13,7 +13,7 @@ export function Footer() {
       {/* ── Image Background & Smooth Overlay ─────────────────────────── */}
       <img
         src="https://images.unsplash.com/photo-1557683316-973673baf926?w=1600&q=80" 
-        alt=""
+        alt="footer pics"
         aria-hidden="true"
         className="absolute inset-0 h-full w-full object-cover opacity-[0.04] dark:opacity-[0.02]"
         loading="lazy"

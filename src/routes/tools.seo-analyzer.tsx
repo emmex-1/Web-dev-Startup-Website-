@@ -112,11 +112,12 @@ function SeoAnalyzer() {
 
   return (
     <>
-      <PageHero image="/media/back.jpg" eyebrow="Free Tool" title={<>Free <span className="text-gradient">SEO Analyzer.</span></>} desc="Get an instant SEO audit of any public URL — meta tags, headings, images, structured data, and more.">
+      <PageHero image="/media/back.jpg" eyebrow="Free Tool" title={<>Free <span className="text-gradient">SEO Analyzer.</span></>} desc="Get an instant SEO audit of any public URL meta tags, headings, images, structured data, and more.">
         <form onSubmit={onSubmit} className="mt-2 flex max-w-2xl flex-col gap-2 sm:flex-row">
           <div className="relative flex-1">
             <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <input value={url} onChange={(e) => setUrl(e.target.value)} placeholder="https://example.com" className="w-full rounded-md border border-input bg-background py-3 pl-10 pr-3 text-sm" />
+            <input value={url} onChange={(e) => setUrl(e.target.value)} placeholder="https://example.com"    className="w-full rounded-md border border-input bg-background py-3 pl-10 pr-3 text-sm text-foreground placeholder:text-muted-foreground caret-foreground"
+ />
           </div>
           <button disabled={loading} className="inline-flex items-center justify-center gap-2 rounded-md bg-primary px-6 py-3 text-sm font-medium text-primary-foreground disabled:opacity-50">
             {loading ? <><Loader2 className="h-4 w-4 animate-spin" /> Analyzing</> : <><Zap className="h-4 w-4" /> Analyze</>}
