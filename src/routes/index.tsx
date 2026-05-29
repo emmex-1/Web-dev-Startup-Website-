@@ -268,10 +268,10 @@ className="inline-flex w-max items-center rounded-full border border-sky-400/40 
             transition={{ duration: 0.6, delay: 0.2 }}
             className="relative z-10 space-y-4 pl-4"
           >
-            <h1 className="font-display text-[2.75rem] font-bold leading-[1.08] tracking-tight">
+            <h2 className="font-display text-[2.75rem] font-bold leading-[1.08] tracking-tight">
               Build Smarter,<br />
               Grow <span className="text-sky-400">Faster.</span>
-            </h1>
+            </h2>
             <p className="text-base sm:text-lg text-sky-100/80 leading-relaxed max-w-[20rem]">
               We design, build, and grow digital products Websites, AI solutions,
               UI/UX design, e-commerce systems, SEO, ads, social media, and Shopify
