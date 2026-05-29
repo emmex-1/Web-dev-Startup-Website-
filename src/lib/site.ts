@@ -1,5 +1,7 @@
 // lib/site.ts
 
+import { Instagram } from "lucide-react";
+
 export const SITE = {
   name: "Rexsolv",
   tagline: "Engineering the digital edge.",
@@ -11,6 +13,7 @@ export const SITE = {
     twitter: "https://twitter.com",
     github: "https://github.com",
     linkedin: "https://linkedin.com",
+    Instagram: "https://linkedin.com",
   },
 };
 

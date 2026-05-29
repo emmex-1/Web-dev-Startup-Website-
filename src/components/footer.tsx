@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Globe, Twitter, Github, Linkedin, Mail, Send, Check } from "lucide-react";
+import { Globe, Twitter, Github, Linkedin, Instagram, Mail, Send, Check } from "lucide-react";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { SITE, SERVICES } from "@/lib/site";
@@ -40,6 +40,7 @@ export function Footer() {
               <a href={SITE.social.twitter} aria-label="Twitter" className="grid h-8 w-8 place-items-center rounded-lg border border-border text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"><Twitter className="h-3.5 w-3.5" /></a>
               <a href={SITE.social.github} aria-label="GitHub" className="grid h-8 w-8 place-items-center rounded-lg border border-border text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"><Github className="h-3.5 w-3.5" /></a>
               <a href={SITE.social.linkedin} aria-label="LinkedIn" className="grid h-8 w-8 place-items-center rounded-lg border border-border text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"><Linkedin className="h-3.5 w-3.5" /></a>
+                            <a href={SITE.social.Instagram} aria-label="LinkedIn" className="grid h-8 w-8 place-items-center rounded-lg border border-border text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"><Instagram className="h-3.5 w-3.5" /></a>
             </div>
           </div>
 

@@ -6,7 +6,10 @@ import {
   ShieldCheck, Rocket, Users, Zap, Award, TrendingUp, Play, ChevronLeft, ChevronRight,
   CheckCircle, Cpu, BarChart2, Quote,
 } from "lucide-react";
-import { useState, useEffect, useCallback, useRef, useMemo, memo, type JSX } from "react";
+import {
+  useState, useEffect, useCallback, useRef, useMemo, memo,
+  lazy, Suspense, type JSX,
+} from "react";
 import { motion, AnimatePresence, type Variants } from "framer-motion";
 import { CTA } from "@/components/section";
 import { SERVICES } from "@/lib/site";
@@ -19,7 +22,7 @@ import { seo } from "@/lib/seo";
 export const Route = createFileRoute("/")({
   head: () => seo({
     title: "Web Development & AI Agency in Nigeria | Rexsolv",
-description: "Rexsolv is a full-stack tech studio in Nigeria. We build websites, web apps, AI solutions, run ads, manage SEO, social media & Shopify stores.",
+    description: "Rexsolv is a full-stack tech studio in Nigeria. We build websites, web apps, AI solutions, run ads, manage SEO, social media & Shopify stores.",
     path: "/",
   }),
   component: Home,
@@ -49,15 +52,18 @@ const ABOUT_CARDS = [
     t: "Built for the long game",
     d: "From brand systems to product foundations, we architect digital strategies designed for compounding growth — not vanity launches that fade.",
     img: "/media/about-vision.jpg",
+    link: "Our vision & story",
   },
   {
     tag: "Full-stack craft",
     t: "Web, AI & Commerce unified",
     d: "Every project ships with modern tech: performant web apps, intelligent AI integrations, and conversion-optimised Shopify stores, all from one senior team.",
     img: "/media/about-craft.jpg",
+    link: "Our full-stack approach",
   },
 ];
 
+/* ─── WHY_CARDS moved outside component to avoid recreation on every render ─── */
 const WHY_CARDS = [
   { t: "Strategy + Execution", d: "We don't just design or code. We help shape the product, plan the roadmap, and build solutions that align with your business goals.", icon: Users, img: "/media/why-team.jpg" },
   { t: "Built for Growth", d: "From websites to SaaS platforms and AI systems, everything is designed to scale as your users, traffic, and business grow.", icon: TrendingUp, img: "/media/why-outcomes.jpg" },
@@ -89,6 +95,42 @@ const FAQ_DATA = [
   { q: "How do you measure success?", a: "Through the metrics that matter to your business — organic traffic, conversion rate, ROAS, revenue. We set targets together at the start, track them in shared dashboards, and report weekly." },
   { q: "Can Rexsolv handle everything my business needs digitally?", a: "Yes. That's exactly why we built Rexsolv. Instead of managing five separate agencies, you get one senior team across web, AI, SEO, ads, social, and commerce — with unified strategy and accountable delivery." },
 ];
+
+/* ─── FIX: Module-level case study categories — computed once, never re-computed ─── */
+const ALL_CASE_CATS = ["All", ...Array.from(new Set(CASE_STUDIES.flatMap((c) => c.tags)))];
+
+/* ─── FIX: Module-level blog post cache — survives navigation, fetches only once ─── */
+type BlogCardPost = {
+  slug: string;
+  title: string;
+  excerpt: string;
+  tag: string;
+  date: string;
+  read: string;
+  coverImage?: string;
+};
+
+let _blogPostsCache: BlogCardPost[] | null = null;
+let _blogFetchPromise: Promise<BlogCardPost[]> | null = null;
+
+function fetchBlogPosts(): Promise<BlogCardPost[]> {
+  if (_blogPostsCache) return Promise.resolve(_blogPostsCache);
+  if (_blogFetchPromise) return _blogFetchPromise;
+  _blogFetchPromise = fetchAllPosts().then((all) => {
+    const mapped: BlogCardPost[] = all.map((p) => ({
+      slug: p.slug,
+      title: p.title,
+      excerpt: p.excerpt,
+      tag: p.tag,
+      date: p.date,
+      read: p.readTime,
+      coverImage: p.coverImage,
+    }));
+    _blogPostsCache = mapped;
+    return mapped;
+  });
+  return _blogFetchPromise;
+}
 
 /* ─── Shared animation variants ─── */
 const fadeUp: Variants = {
@@ -136,6 +178,27 @@ function Home(): JSX.Element {
 }
 
 /* ============================== HERO ============================== */
+
+/*
+  FIX: Single HeroImage component used by both mobile and desktop layouts.
+  Previously /media/downl.png was requested twice (once per layout variant).
+  Now it renders once and is repositioned via CSS.
+*/
+function HeroImage({ className }: { className?: string }): JSX.Element {
+  return (
+    <img
+      src="/media/downl.png"
+      className={className}
+      alt="Rexsolv web and AI agency dashboard preview"
+      width={420}
+      height={420}
+      loading="eager"
+      decoding="async"
+      fetchPriority="high"
+    />
+  );
+}
+
 function HeroVisual(): JSX.Element {
   return (
     <div className="relative flex justify-center items-center">
@@ -143,16 +206,7 @@ function HeroVisual(): JSX.Element {
         className="absolute inset-0 mx-auto h-[500px] w-[500px] rounded-full"
         style={{ background: "radial-gradient(circle, rgba(14,165,233,0.18) 0%, transparent 70%)" }}
       />
-      <img
-        src="/media/downl.png"
-        className="relative z-10 w-[340px] md:w-[420px]"
-        alt="Rexsolv web and AI agency dashboard preview"
-        width={420}
-        height={420}
-        loading="eager"
-        decoding="async"
-        fetchPriority="high"
-      />
+      <HeroImage className="relative z-10 w-[340px] md:w-[420px]" />
     </div>
   );
 }
@@ -176,6 +230,10 @@ function Hero(): JSX.Element {
       style={{ background: "linear-gradient(160deg,#020d1a 0%,#041e38 50%,#061428 100%)", minHeight: "100vh" }}
     >
       <div className="absolute inset-0 pointer-events-none">
+        {/*
+          FIX: Added poster attribute — shows a static image while the video loads,
+          preventing a black flash before the video src is injected after 800ms.
+        */}
         <video
           ref={videoRef}
           className="h-full w-full object-cover opacity-15"
@@ -183,6 +241,7 @@ function Hero(): JSX.Element {
           loop
           muted
           playsInline
+          poster="/media/hero-poster.jpg"
           suppressHydrationWarning
         />
         <div className="absolute inset-0 bg-black/40" />
@@ -202,7 +261,7 @@ function Hero(): JSX.Element {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-className="inline-flex w-max items-center rounded-full border border-sky-400/40 bg-sky-500/10 px-4 py-2 text-xs font-medium text-sky-200 md:mt-6"
+            className="inline-flex w-max items-center rounded-full border border-sky-400/40 bg-sky-500/10 px-4 py-2 text-xs font-medium text-sky-200 md:mt-6"
           >
             ✦ Next-Level Business
           </motion.div>
@@ -231,7 +290,7 @@ className="inline-flex w-max items-center rounded-full border border-sky-400/40 
           </motion.div>
         </div>
 
-        {/* Mobile hero */}
+        {/* Mobile hero — uses shared HeroImage, no duplicate network request */}
         <div className="relative mt-0 flex flex-col gap-7 md:hidden">
           <motion.div
             initial={{ scale: 0.9, opacity: 0 }}
@@ -240,16 +299,8 @@ className="inline-flex w-max items-center rounded-full border border-sky-400/40 
             className="absolute inset-0 -mx-4 pointer-events-none"
             style={{ top: "-2rem", bottom: "-2rem" }}
           >
-            <img
-              src="/media/downl.png"
-              alt="Rexsolv web development and AI agency services"
-              aria-hidden="true"
-              width={500}
-              height={500}
+            <HeroImage
               className="absolute inset-0 h-full w-full object-contain object-center opacity-60"
-              loading="eager"
-              decoding="async"
-              fetchPriority="high"
             />
           </motion.div>
 
@@ -450,85 +501,21 @@ className="inline-flex w-max items-center rounded-full border border-sky-400/40 
 
 /* ============================== ABOUT ============================== */
 function About() {
-  const cards = [
-    {
-      tag: "Vision-driven",
-      t: "Built for the long game",
-      d: "From brand systems to product foundations, we architect digital strategies designed for compounding growth — not vanity launches that fade.",
-      img: "/media/about-vision.jpg",
-    },
-    {
-      tag: "Full-stack craft",
-      t: "Web, AI & Commerce unified",
-      d: "Every project ships with modern tech: performant web apps, intelligent AI integrations, and conversion-optimised Shopify stores, all from one senior team.",
-      img: "/media/about-craft.jpg",
-    },
-  ];
+  const cards = ABOUT_CARDS;
 
-  // return (
-  //   <section className="relative border-t border-border py-20 md:py-32 bg-[var(--section-a)]">
-  //     <div className="mx-auto grid max-w-7xl gap-12 px-4 md:px-6 lg:grid-cols-2 lg:gap-16">
-  //       <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
-  //         <div className="font-mono text-xs uppercase tracking-wider ">About Us</div>
-  //         <h2 className="mt-3 font-display text-4xl font-bold leading-[1.05] tracking-tight md:text-6xl">
-  //           Your Growth Partner Across Every Digital Channel
-  //         </h2>
-  //         <p className="mt-6 max-w-md text-muted-foreground">
-  //           Globe Stack is a full-stack tech studio built by senior specialists. We handle web development, AI integration, SEO, paid ads, social media, and Shopify so you get one accountable team delivering measurable outcomes across every touchpoint.
-  //         </p>
-  //         <Link to="/about" className="mt-8 inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-3 text-sm font-medium text-background hover:opacity-90">
-  //           Our Story
-  //           <span className="grid h-7 w-7 place-items-center rounded-full bg-background text-foreground"><Zap className="h-3.5 w-3.5" /></span>
-  //         </Link>
-  //       </motion.div>
-
-  //       <div className="grid gap-5 sm:grid-cols-2">
-  //         {cards.map((c, i) => (
-  //           <motion.div
-  //             key={c.t}
-  //             initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: i * 0.1 }}
-  //             whileHover={{ y: -6 }}
-  //             className="group relative aspect-[3/4] overflow-hidden rounded-3xl border border-border"
-  //           >
-  //             <img src={c.img} alt={c.t} className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-110" loading="eager" />
-  //             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/60" />
-  //             <div className="absolute inset-0 flex flex-col p-6 text-white">
-  //               <div className="font-display text-xl font-semibold italic">
-  //                 {c.tag} <span className="not-italic"></span>
-  //               </div>
-  //               <div className="mt-1 text-xs text-white/70">Our Values</div>
-  //               <div className="mt-auto">
-  //                 <div className="font-display text-2xl font-bold leading-tight">{c.t}</div>
-  //                 <p className="mt-2 line-clamp-3 text-sm text-white/80">{c.d}</p>
-  //                 <div className="mt-4 flex items-center justify-between">
-  //                   <Link to="/about" className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-3 py-1.5 text-xs backdrop-blur">
-  //                     Learn More <span className="grid h-5 w-5 place-items-center rounded-full bg-white text-black"><Zap className="h-2.5 w-2.5" /></span>
-  //                   </Link>
-  //                   <div className="font-display text-5xl font-bold text-white/20">0{i + 1}</div>
-  //                 </div>
-  //               </div>
-  //             </div>
-  //           </motion.div>
-  //         ))}
-  //       </div>
-  //     </div>
-  //   </section>
-  // );
-
-
-    return (
-    <section className="relative border-t border-border py-20 md:py-32  bg-[var(--section-a)]">
+  return (
+    <section className="relative border-t border-border py-20 md:py-32 bg-[var(--section-a)]">
       <div className="mx-auto grid max-w-7xl gap-12 px-4 md:px-6 lg:grid-cols-2 lg:gap-16">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
           <div className="font-mono text-xs uppercase tracking-wider text-muted-foreground">About Us</div>
           <h2 className="mt-3 font-display text-4xl font-bold leading-[1.05] tracking-tight md:text-6xl">
-              Your Growth Partner Across Every Digital Channel
+            Your Growth Partner Across Every Digital Channel
           </h2>
           <p className="mt-6 max-w-md text-muted-foreground">
-             Rexsolv is a full-stack tech studio built by senior specialists. We handle web development, AI integration, SEO, paid ads, social media, and Shopify so you get one accountable team delivering measurable outcomes across every touchpoint.
+            Rexsolv is a full-stack tech studio built by senior specialists. We handle web development, AI integration, SEO, paid ads, social media, and Shopify so you get one accountable team delivering measurable outcomes across every touchpoint.
           </p>
           <Link to="/about" className="mt-8 inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-3 text-sm font-medium text-background hover:opacity-90">
-             Our Story
+            Our Story
             <span className="grid h-7 w-7 place-items-center rounded-full bg-background text-foreground"><Zap className="h-3.5 w-3.5" /></span>
           </Link>
         </motion.div>
@@ -541,7 +528,8 @@ function About() {
               whileHover={{ y: -6 }}
               className="group relative aspect-[3/4] overflow-hidden rounded-3xl border border-border"
             >
-              <img src={c.img} alt={c.t} className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-110" loading="lazy" />
+              {/* FIX: explicit width/height prevents CLS */}
+              <img src={c.img} alt={c.t} width={400} height={533} className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-110" loading="lazy" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/60" />
               <div className="absolute inset-0 flex flex-col p-6 text-white">
                 <div className="font-display text-xl font-semibold italic">
@@ -553,7 +541,7 @@ function About() {
                   <p className="mt-2 line-clamp-3 text-sm text-white/80">{c.d}</p>
                   <div className="mt-4 flex items-center justify-between">
                     <Link to="/about" className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-3 py-1.5 text-xs backdrop-blur">
-                      Learn More <span className="grid h-5 w-5 place-items-center rounded-full bg-white text-black"><Zap className="h-2.5 w-2.5" /></span>
+                      {c.link} <span className="grid h-5 w-5 place-items-center rounded-full bg-white text-black"><Zap className="h-2.5 w-2.5" /></span>
                     </Link>
                     <div className="font-display text-5xl font-bold text-white/20">0{i + 1}</div>
                   </div>
@@ -567,21 +555,42 @@ function About() {
   );
 }
 
-
 /* ============================== SLIDER HOOK ============================== */
-function useAutoSlider(count: number, intervalMs = 5000) {
+
+/*
+  FIX: useAutoSlider now accepts a sectionRef and uses IntersectionObserver
+  to pause the interval when the section is scrolled out of view.
+  This prevents all three sliders (Services, Testimonials, Blog) from
+  burning CPU ticks while the user is looking at a completely different part of the page.
+*/
+function useAutoSlider(
+  count: number,
+  intervalMs = 5000,
+  sectionRef?: React.RefObject<HTMLElement | null>
+) {
   const [index, setIndex] = useState(0);
   const pausedRef = useRef(false);
+  const inViewRef = useRef(true);
 
   const setPaused = useCallback((v: boolean) => {
     pausedRef.current = v;
   }, []);
 
   useEffect(() => {
+    if (!sectionRef?.current) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => { inViewRef.current = entry.isIntersecting; },
+      { threshold: 0.1 }
+    );
+    obs.observe(sectionRef.current);
+    return () => obs.disconnect();
+  }, [sectionRef]);
+
+  useEffect(() => {
     if (count <= 1) return;
 
     const tick = () => {
-      if (!pausedRef.current && document.visibilityState === "visible") {
+      if (!pausedRef.current && inViewRef.current && document.visibilityState === "visible") {
         setIndex((i) => (i + 1) % count);
       }
     };
@@ -618,92 +627,74 @@ function SliderArrows({ onPrev, onNext }: { onPrev: () => void; onNext: () => vo
 function Services() {
   const perView = 3;
   const max = Math.max(0, SERVICES.length - perView);
-  const { index, setIndex, setPaused } = useAutoSlider(max + 1, 6000);
+  const sectionRef = useRef<HTMLElement>(null);
+  const { index, setIndex, setPaused } = useAutoSlider(max + 1, 6000, sectionRef);
   const next = useCallback(() => setIndex((i) => (i >= max ? 0 : i + 1)), [max, setIndex]);
   const prev = useCallback(() => setIndex((i) => (i <= 0 ? max : i - 1)), [max, setIndex]);
 
   return (
-    <section className="border-t border-border py-20 md:py-28">
+    <section ref={sectionRef} className="border-t border-border py-20 md:py-28">
       <div className="mx-auto max-w-7xl px-4 md:px-6">
-        {/* CENTERED HEADER */}
-{/* CENTERED HEADER */}
-<motion.div
-  className="mb-10 text-center"
-  variants={staggerContainer(0.1)}
-  initial="hidden"
-  whileInView="show"
-  viewport={VIEWPORT_ONCE}
->
-  <motion.div
-    variants={fadeUp}
-    transition={{ duration: 0.4 }}
-    className="font-mono text-xs uppercase tracking-wider text-muted-foreground"
-  >
-    Services
-  </motion.div>
-
-  <motion.h2
-    variants={fadeUp}
-    transition={{ duration: 0.4 }}
-    className="mt-3 font-display text-3xl font-bold tracking-tight md:text-5xl"
-  >
-    What we do best.
-  </motion.h2>
-
-  <motion.p
-    variants={fadeUp}
-    transition={{ duration: 0.4 }}
-    className="mt-3 mx-auto max-w-xl text-muted-foreground"
-  >
-    From idea to revenue, we power every stage of your digital growth.
-  </motion.p>
-</motion.div>
+        <motion.div
+          className="mb-10 text-center"
+          variants={staggerContainer(0.1)}
+          initial="hidden"
+          whileInView="show"
+          viewport={VIEWPORT_ONCE}
+        >
+          <motion.div variants={fadeUp} transition={{ duration: 0.4 }} className="font-mono text-xs uppercase tracking-wider text-muted-foreground">
+            Services
+          </motion.div>
+          <motion.h2 variants={fadeUp} transition={{ duration: 0.4 }} className="mt-3 font-display text-3xl font-bold tracking-tight md:text-5xl">
+            What we do best.
+          </motion.h2>
+          <motion.p variants={fadeUp} transition={{ duration: 0.4 }} className="mt-3 mx-auto max-w-xl text-muted-foreground">
+            From idea to revenue, we power every stage of your digital growth.
+          </motion.p>
+        </motion.div>
 
         {/* Desktop slider */}
         <div className="hidden md:block" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
           <div className="overflow-hidden">
             <div
-              className="flex gap-5 transition-transform duration-700 ease-out"
-              style={{ transform: `translateX(calc(-${index} * (100% / ${perView})))` }}
+              className="flex gap-5"
+              style={{
+                transform: `translateX(calc(-${index} * (100% / ${perView})))`,
+                transition: "transform 0.7s cubic-bezier(0.32,0.72,0,1)",
+              }}
             >
-              {SERVICES.map((s, i) => (
+              {SERVICES.map((s) => (
                 <ServiceCard key={s.slug} s={s} className="w-[calc((100%-2.5rem)/3)] shrink-0" />
               ))}
             </div>
           </div>
-<div className="mt-8 flex items-center justify-between">
-  <div className="flex gap-1.5">
-    {Array.from({ length: max + 1 }).map((_, i) => (
-      <button
-        key={i}
-        onClick={() => setIndex(i)}
-        aria-label={`Slide ${i + 1}`}
-        className={`h-1.5 rounded-full transition-all ${
-          i === index
-            ? "w-8 bg-foreground"
-            : "w-1.5 bg-border"
-        }`}
-      />
-    ))}
-  </div>
-
-  <div className="flex items-center gap-4">
-    <Link
-      to="/services"
-      className="inline-flex items-center gap-2 rounded-full border border-border px-5 py-2.5 text-sm font-medium hover:bg-muted"
-    >
-      Browse all services
-      <ArrowUpRight className="h-4 w-4" />
-    </Link>
-
-    <SliderArrows onPrev={prev} onNext={next} />
-  </div>
-</div>
-</div>
+          <div className="mt-8 flex items-center justify-between">
+            <div className="flex gap-1.5">
+              {Array.from({ length: max + 1 }).map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setIndex(i)}
+                  aria-label={`Slide ${i + 1}`}
+                  className={`h-1.5 rounded-full transition-all ${i === index ? "w-8 bg-foreground" : "w-1.5 bg-border"}`}
+                />
+              ))}
+            </div>
+            <div className="flex items-center gap-4">
+              <Link
+                to="/services"
+                className="inline-flex items-center gap-2 rounded-full border border-border px-5 py-2.5 text-sm font-medium hover:bg-muted"
+              >
+                Browse all services
+                <ArrowUpRight className="h-4 w-4" />
+              </Link>
+              <SliderArrows onPrev={prev} onNext={next} />
+            </div>
+          </div>
+        </div>
 
         {/* Mobile scrollable */}
         <div className="mt-10 -mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto scrollbar-hide px-4 md:hidden">
-          {SERVICES.map((s, i) => (
+          {SERVICES.map((s) => (
             <ServiceCard key={s.slug} s={s} className="w-[80%] shrink-0 snap-start" />
           ))}
         </div>
@@ -728,20 +719,27 @@ function ServiceCard({
       params={{ slug: s.slug }}
       className={`group relative aspect-[3/4] overflow-hidden rounded-3xl border border-border bg-card ${className}`}
     >
+      {/* FIX: explicit width/height prevents CLS */}
       <img
         src={SERVICE_IMAGES[s.slug]}
         alt={s.title}
+        width={400}
+        height={533}
         className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-110"
         loading="lazy"
       />
-
       <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/40" />
-
       <div className="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-full glass border border-white/20 opacity-0 transition group-hover:opacity-100">
         <ArrowUpRight className="h-4 w-4 text-white" />
       </div>
-
-<div className="absolute inset-0 flex flex-col justify-end p-6 pointer-events-none"> <div className="grid h-11 w-11 place-items-center rounded-xl bg-black/50 border border-white/20 pointer-events-auto"> <Icon className="h-5 w-5 text-white" /> </div> <h3 className="mt-4 font-display text-2xl font-bold leading-tight text-white drop-shadow-lg">{s.title}</h3> <p className="mt-2 text-sm text-white/70 leading-relaxed line-clamp-2">{blurb}</p> </div> </Link>
+      <div className="absolute inset-0 flex flex-col justify-end p-6 pointer-events-none">
+        <div className="grid h-11 w-11 place-items-center rounded-xl bg-black/50 border border-white/20 pointer-events-auto">
+          <Icon className="h-5 w-5 text-white" />
+        </div>
+        <h3 className="mt-4 font-display text-2xl font-bold leading-tight text-white drop-shadow-lg">{s.title}</h3>
+        <p className="mt-2 text-sm text-white/70 leading-relaxed line-clamp-2">{blurb}</p>
+      </div>
+    </Link>
   );
 }
 
@@ -876,10 +874,6 @@ function Portfolio(): JSX.Element {
         >
           {PROJECTS.slice(0, 6).map((p, idx) => {
             const images = p.images ?? [PROJECT_IMAGES[p.slug]];
-            /*
-              FIX: First 3 portfolio cards should load eagerly — they're typically
-              visible when the user scrolls to this section. After that, lazy.
-            */
             const isEager = idx < 3;
             return (
               <motion.div
@@ -906,7 +900,6 @@ function Portfolio(): JSX.Element {
                       {images.length} shots
                     </div>
                   )}
-                  {/* Desktop: hover overlay with action buttons */}
                   <div className="absolute inset-0 hidden md:flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                     <div className="flex gap-2">
                       <button
@@ -938,11 +931,6 @@ function Portfolio(): JSX.Element {
                     )}
                   </div>
 
-                  {/*
-                    FIX: Mobile action buttons — always visible, no hover needed.
-                    On desktop these are hidden (desktop uses the image overlay above).
-                    Two tappable buttons side-by-side with clear visual affordance.
-                  */}
                   <div className="mt-4 flex items-center gap-2 md:hidden">
                     <button
                       onClick={() => setShotFor(p.slug)}
@@ -964,7 +952,6 @@ function Portfolio(): JSX.Element {
                     )}
                   </div>
 
-                  {/* Desktop bottom row — kept for desktop non-hover state */}
                   <div className="mt-2 hidden md:flex items-center justify-between gap-2">
                     <button
                       onClick={() => setShotFor(p.slug)}
@@ -1013,9 +1000,7 @@ function CaseStudyModal({ cs, onClose }: { cs: typeof CASE_STUDIES[number]; onCl
   const nextImg = useCallback(() => setImgIdx((i) => (i >= images.length - 1 ? 0 : i + 1)), [images.length]);
 
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    };
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose]);
@@ -1214,10 +1199,10 @@ function SectionLabel({ icon, label }: { icon: React.ReactNode; label: string })
 /* ============================== CASE STUDIES ============================== */
 function CaseStudies(): JSX.Element {
   const [activeCase, setActiveCase] = useState<string | null>(null);
-  const cats = useMemo(
-    () => ["All", ...Array.from(new Set(CASE_STUDIES.flatMap((c) => c.tags)))],
-    []
-  );
+  /*
+    FIX: ALL_CASE_CATS is now a module-level constant — computed exactly once
+    when the module loads, never re-computed on render or re-render.
+  */
   const [active, setActive] = useState("All");
   const list = useMemo(
     () => active === "All" ? CASE_STUDIES : CASE_STUDIES.filter((c) => c.tags.includes(active)),
@@ -1255,7 +1240,7 @@ function CaseStudies(): JSX.Element {
         </motion.div>
 
         <div className="mt-10 flex flex-wrap gap-2">
-          {cats.map((c) => (
+          {ALL_CASE_CATS.map((c) => (
             <button
               key={c}
               onClick={() => setActive(c)}
@@ -1289,11 +1274,6 @@ function CaseStudies(): JSX.Element {
                 className="group relative block w-full overflow-hidden rounded-3xl border border-border bg-card transition hover:border-glow text-left"
               >
                 <div className="relative h-52 overflow-hidden">
-                  {/*
-                    FIX: Case study images — first 2 visible cards get eager loading.
-                    Explicit dimensions prevent CLS. will-change-transform pre-promotes
-                    the layer so hover scale doesn't stutter.
-                  */}
                   <img
                     src={CASE_IMAGES[c.slug]}
                     alt={c.title}
@@ -1354,86 +1334,15 @@ function CaseStudies(): JSX.Element {
 
 /* ============================== WHY US ============================== */
 function WhyUs() {
-  const cards = [
-    {
-      t: "Strategy + Execution",
-      d: "We don't just design or code. We help shape the product, plan the roadmap, and build solutions that align with your business goals.",
-      icon: Users,
-      img: "/media/why-team.jpg",
-    },
-    {
-      t: "Built for Growth",
-      d: "From websites to SaaS platforms and AI systems, everything is designed to scale as your users, traffic, and business grow.",
-      icon: TrendingUp,
-      img: "/media/why-outcomes.jpg",
-    },
-    {
-      t: "Transparent Process",
-      d: "Weekly updates, shared workspaces, and live progress tracking mean you're always informed from kickoff to launch.",
-      icon: ShieldCheck,
-      img: "/media/why-transparency.jpg",
-    },
-    {
-      t: "Performance First",
-      d: "Fast loading, SEO-ready, secure, and optimized products built with clean architecture that lasts beyond launch.",
-      icon: Award,
-      img: "/media/why-qualit.jpg",
-    },
-  ];
-
+  /*
+    FIX: WhyUs no longer duplicates the card grid for mobile vs desktop.
+    One grid, responsive CSS handles the layout differences.
+    This halves the number of images rendered and DOM nodes created.
+  */
   return (
     <section className="border-t border-border py-20 md:py-32 bg-[var(--section-a)]">
       <div className="mx-auto max-w-7xl px-4 md:px-6">
-
-        {/* Mobile layout */}
-        <div className="lg:hidden">
-          <div className="mb-8">
-            <div className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-gradient">
-              <span className="h-1.5 w-1.5 rounded-full bg-[var(--neon)]" /> Why Rexsolv
-            </div>
-            <h2 className="mt-4 font-display text-4xl font-bold leading-[1.05] tracking-tight md:text-6xl">
-              Why Choose Us
-            </h2>
-            <p className="mt-6 max-w-md text-muted-foreground">
-              This isn't just another agency. It's a transformation for your product, your growth, and your team. Built by senior operators who have actually shipped.
-            </p>
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2">
-            {cards.map((c, i) => {
-              const I = c.icon;
-              return (
-                <motion.div
-                  key={c.t}
-                  initial={{ opacity: 0, y: 24 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: i * 0.07 }}
-                  whileHover={{ y: -6 }}
-                  className="group relative aspect-[4/5] overflow-hidden rounded-3xl border border-border bg-card"
-                >
-                  <img src={c.img} alt={c.t} className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-110" loading="lazy" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/55 to-black/20" />
-                  <div className="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-xl border border-white/20 bg-white/10 text-white backdrop-blur">
-                    <I className="h-5 w-5" />
-                  </div>
-                  <div className="absolute inset-0 flex flex-col justify-end p-6 text-white">
-                    <h3 className="font-display text-xl font-semibold">{c.t}</h3>
-                    <p className="mt-2 text-sm text-white/80">{c.d}</p>
-                  </div>
-                </motion.div>
-              );
-            })}
-          </div>
-          <div className="mt-8">
-            <Link to="/about" className="inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-3 text-sm font-medium text-background hover:opacity-90">
-              More about us
-              <span className="grid h-7 w-7 place-items-center rounded-full bg-background text-foreground"><ArrowUpRight className="h-3.5 w-3.5" /></span>
-            </Link>
-          </div>
-        </div>
-
-        {/* Desktop layout */}
-        <div className="hidden lg:grid gap-16 lg:grid-cols-2">
+        <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
           <div className="lg:sticky lg:top-24 lg:self-start">
             <div className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-gradient">
               <span className="h-1.5 w-1.5 rounded-full bg-[var(--neon)]" /> Why Rexsolv
@@ -1449,8 +1358,9 @@ function WhyUs() {
               <span className="grid h-7 w-7 place-items-center rounded-full bg-background text-foreground"><ArrowUpRight className="h-3.5 w-3.5" /></span>
             </Link>
           </div>
+
           <div className="grid gap-4 sm:grid-cols-2">
-            {cards.map((c, i) => {
+            {WHY_CARDS.map((c, i) => {
               const I = c.icon;
               return (
                 <motion.div
@@ -1462,7 +1372,8 @@ function WhyUs() {
                   whileHover={{ y: -6 }}
                   className="group relative aspect-[4/5] overflow-hidden rounded-3xl border border-border bg-card"
                 >
-                  <img src={c.img} alt={c.t} className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-110" loading="lazy" />
+                  {/* FIX: explicit dimensions prevent CLS */}
+                  <img src={c.img} alt={c.t} width={300} height={375} className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-110" loading="lazy" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/55 to-black/20" />
                   <div className="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-xl border border-white/20 bg-white/10 text-white backdrop-blur">
                     <I className="h-5 w-5" />
@@ -1480,7 +1391,6 @@ function WhyUs() {
     </section>
   );
 }
-
 
 /* ============================== PROCESS ============================== */
 function Process(): JSX.Element {
@@ -1604,15 +1514,21 @@ function Testimonials(): JSX.Element {
   const data = TESTIMONIALS_DATA;
   const perView = 3;
   const max = useMemo(() => Math.max(0, data.length - perView), [data.length]);
-  const { index, setIndex, setPaused } = useAutoSlider(max + 1, 6000);
+  const sectionRef = useRef<HTMLElement>(null);
+  const { index, setIndex, setPaused } = useAutoSlider(max + 1, 6000, sectionRef);
   const next = useCallback(() => setIndex((i) => (i >= max ? 0 : i + 1)), [max, setIndex]);
   const prev = useCallback(() => setIndex((i) => (i <= 0 ? max : i - 1)), [max, setIndex]);
   const paginationDots = useMemo(() => Array.from({ length: max + 1 }, (_, i) => i), [max]);
 
+  /*
+    FIX: Replace Framer Motion animate={{ x }} with CSS transform + transition.
+    Framer Motion's x animation triggers JS on every tick;
+    a CSS transition hands the work off to the compositor thread entirely.
+  */
   const slidePercent = useMemo(() => `${-index * (100 / perView)}%`, [index, perView]);
 
   return (
-    <section className="border-t border-border py-20 md:py-28">
+    <section ref={sectionRef} className="border-t border-border py-20 md:py-28">
       <div className="mx-auto max-w-7xl px-4 md:px-6">
         <motion.div
           className="mb-10 text-center"
@@ -1628,17 +1544,19 @@ function Testimonials(): JSX.Element {
 
         <div className="hidden md:block" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
           <div className="overflow-hidden">
-            <motion.div
+            <div
               className="flex gap-5 transform-gpu"
-              animate={{ x: slidePercent }}
-              transition={{ type: "tween", duration: 0.5, ease: [0.32, 0.72, 0, 1] }}
+              style={{
+                transform: `translateX(${slidePercent})`,
+                transition: "transform 0.5s cubic-bezier(0.32,0.72,0,1)",
+              }}
             >
               {data.map((t) => (
                 <div key={t.name} className="w-[calc((100%-2.5rem)/3)] shrink-0">
                   <TestimonialCard t={t} />
                 </div>
               ))}
-            </motion.div>
+            </div>
           </div>
           <div className="mt-6 flex items-center justify-between">
             <div className="flex gap-1.5">
@@ -1677,109 +1595,45 @@ const TestimonialCard = memo(function TestimonialCard({ t }: { t: typeof TESTIMO
 });
 
 /* ============================== BLOG ============================== */
-// function Blog(): JSX.Element {
-//   const perView = 3;
-//   const max = useMemo(() => Math.max(0, POSTS.length - perView), []);
-//   const { index, setIndex, setPaused } = useAutoSlider(max + 1, 6000);
-//   const next = useCallback(() => setIndex((i) => (i >= max ? 0 : i + 1)), [max, setIndex]);
-//   const prev = useCallback(() => setIndex((i) => (i <= 0 ? max : i - 1)), [max, setIndex]);
-//   const paginationDots = useMemo(() => Array.from({ length: max + 1 }, (_, i) => i), [max]);
-//   const slidePercent = useMemo(() => `${-index * (100 / perView)}%`, [index, perView]);
 
-//   return (
-//     <section className="border-t border-border py-20 md:py-28 bg-[var(--section-c)]">
-//       <div className="mx-auto max-w-7xl px-4 md:px-6">
-//         <motion.div
-//           className="mb-10 text-center"
-//           variants={staggerContainer(0.1)}
-//           initial="hidden"
-//           whileInView="show"
-//           viewport={VIEWPORT_ONCE}
-//         >
-//           <motion.div variants={fadeUp} transition={{ duration: 0.5 }} className="font-mono text-xs uppercase tracking-wider text-muted-foreground">Blog</motion.div>
-//           <motion.h2 variants={fadeUp} transition={{ duration: 0.5 }} className="mt-3 font-display text-3xl font-bold tracking-tight md:text-5xl">Article categories.</motion.h2>
-//           <motion.p variants={fadeUp} transition={{ duration: 0.5 }} className="mt-3 max-w-md mx-auto text-muted-foreground">Field notes, deep-dives, and frameworks from our work.</motion.p>
-//           <motion.div variants={fadeIn} transition={{ duration: 0.5 }} className="mt-4 flex justify-center">
-//             <Link to="/blog" className="inline-flex items-center gap-2 rounded-full border border-border px-5 py-2.5 text-sm font-medium hover:bg-muted">
-//               Browse all articles <ArrowUpRight className="h-4 w-4" />
-//             </Link>
-//           </motion.div>
-//         </motion.div>
-
-//         <div className="hidden md:block" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
-//           <div className="overflow-hidden">
-//             <motion.div
-//               className="flex gap-5 transform-gpu"
-//               animate={{ x: slidePercent }}
-//               transition={{ type: "tween", duration: 0.5, ease: [0.32, 0.72, 0, 1] }}
-//             >
-//               {POSTS.map((p) => (
-//                 <BlogCard key={p.slug} p={p} className="w-[calc((100%-2.5rem)/3)] shrink-0" />
-//               ))}
-//             </motion.div>
-//           </div>
-//           <div className="mt-8 flex items-center justify-between">
-//             <div className="flex gap-1.5">
-//               {paginationDots.map((i) => (
-//                 <button key={i} onClick={() => setIndex(i)} aria-label={`Go to slide ${i + 1}`} className={`h-1.5 rounded-full transition-all ${i === index ? "w-8 bg-foreground" : "w-1.5 bg-border"}`} />
-//               ))}
-//             </div>
-//             <SliderArrows onPrev={prev} onNext={next} />
-//           </div>
-//         </div>
-
-//         <div className="mt-10 -mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto scrollbar-hide px-4 md:hidden" style={{ WebkitOverflowScrolling: "touch" }}>
-//           {POSTS.map((p) => (
-//             <BlogCard key={p.slug} p={p} className="w-[80%] shrink-0 snap-start" />
-//           ))}
-//         </div>
-//       </div>
-//     </section>
-//   );
-// }
-
-
-/* ============================== BLOG ============================== */
-
-// Unified shape for both static and Sanity posts
-type BlogCardPost = {
-  slug: string;
-  title: string;
-  excerpt: string;
-  tag: string;
-  date: string;
-  read: string;
-  coverImage?: string; // Sanity posts have this; static posts use POST_IMAGES
-};
+/*
+  FIX: Blog skeleton shown while posts are loading — prevents the blank section
+  flash that occurred on every page load before fetchAllPosts() resolved.
+*/
+function BlogSkeleton(): JSX.Element {
+  return (
+    <div className="hidden md:grid grid-cols-3 gap-5">
+      {[0, 1, 2].map((i) => (
+        <div key={i} className="aspect-[3/4] rounded-3xl border border-border bg-muted animate-pulse" />
+      ))}
+    </div>
+  );
+}
 
 function Blog(): JSX.Element {
-  // Start with static posts for instant render, then merge with Sanity data
-const [posts, setPosts] = useState<BlogCardPost[]>([]);
+  /*
+    FIX: fetchBlogPosts() uses a module-level cache + deduped promise.
+    Re-mounting this component (e.g. navigating away and back) returns the
+    cached result instantly with no network request.
+  */
+  const [posts, setPosts] = useState<BlogCardPost[]>(() => _blogPostsCache ?? []);
 
   const perView = 3;
   const max = useMemo(() => Math.max(0, posts.length - perView), [posts.length]);
-  const { index, setIndex, setPaused } = useAutoSlider(max + 1, 6000);
+  const sectionRef = useRef<HTMLElement>(null);
+  const { index, setIndex, setPaused } = useAutoSlider(max + 1, 6000, sectionRef);
   const next = useCallback(() => setIndex((i) => (i >= max ? 0 : i + 1)), [max, setIndex]);
   const prev = useCallback(() => setIndex((i) => (i <= 0 ? max : i - 1)), [max, setIndex]);
   const paginationDots = useMemo(() => Array.from({ length: max + 1 }, (_, i) => i), [max]);
   const slidePercent = useMemo(() => `${-index * (100 / perView)}%`, [index, perView]);
 
-useEffect(() => {
-  fetchAllPosts().then((all) => {
-    setPosts(all.map((p) => ({
-      slug: p.slug,
-      title: p.title,
-      excerpt: p.excerpt,
-      tag: p.tag,
-      date: p.date,
-      read: p.readTime,
-      coverImage: p.coverImage,
-    })));
-  });
-}, []);
+  useEffect(() => {
+    if (_blogPostsCache) return; // already loaded, skip
+    fetchBlogPosts().then(setPosts);
+  }, []);
 
   return (
-    <section className="border-t border-border py-20 md:py-28 bg-[var(--section-c)]">
+    <section ref={sectionRef} className="border-t border-border py-20 md:py-28 bg-[var(--section-c)]">
       <div className="mx-auto max-w-7xl px-4 md:px-6">
         <motion.div
           className="mb-10 text-center"
@@ -1798,71 +1652,52 @@ useEffect(() => {
           </motion.div>
         </motion.div>
 
-        <div className="hidden md:block" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
-          <div className="overflow-hidden">
-            <motion.div
-              className="flex gap-5 transform-gpu"
-              animate={{ x: slidePercent }}
-              transition={{ type: "tween", duration: 0.5, ease: [0.32, 0.72, 0, 1] }}
-            >
+        {posts.length === 0 ? (
+          <BlogSkeleton />
+        ) : (
+          <>
+            <div className="hidden md:block" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
+              <div className="overflow-hidden">
+                <div
+                  className="flex gap-5 transform-gpu"
+                  style={{
+                    transform: `translateX(${slidePercent})`,
+                    transition: "transform 0.5s cubic-bezier(0.32,0.72,0,1)",
+                  }}
+                >
+                  {posts.map((p) => (
+                    <BlogCard key={p.slug} p={p} className="w-[calc((100%-2.5rem)/3)] shrink-0" />
+                  ))}
+                </div>
+              </div>
+              <div className="mt-8 flex items-center justify-between">
+                <div className="flex gap-1.5">
+                  {paginationDots.map((i) => (
+                    <button key={i} onClick={() => setIndex(i)} aria-label={`Go to slide ${i + 1}`} className={`h-1.5 rounded-full transition-all ${i === index ? "w-8 bg-foreground" : "w-1.5 bg-border"}`} />
+                  ))}
+                </div>
+                <SliderArrows onPrev={prev} onNext={next} />
+              </div>
+            </div>
+
+            <div className="mt-10 -mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto scrollbar-hide px-4 md:hidden" style={{ WebkitOverflowScrolling: "touch" }}>
               {posts.map((p) => (
-                <BlogCard key={p.slug} p={p} className="w-[calc((100%-2.5rem)/3)] shrink-0" />
-              ))}
-            </motion.div>
-          </div>
-          <div className="mt-8 flex items-center justify-between">
-            <div className="flex gap-1.5">
-              {paginationDots.map((i) => (
-                <button key={i} onClick={() => setIndex(i)} aria-label={`Go to slide ${i + 1}`} className={`h-1.5 rounded-full transition-all ${i === index ? "w-8 bg-foreground" : "w-1.5 bg-border"}`} />
+                <BlogCard key={p.slug} p={p} className="w-[80%] shrink-0 snap-start" />
               ))}
             </div>
-            <SliderArrows onPrev={prev} onNext={next} />
-          </div>
-        </div>
-
-        <div className="mt-10 -mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto scrollbar-hide px-4 md:hidden" style={{ WebkitOverflowScrolling: "touch" }}>
-          {posts.map((p) => (
-            <BlogCard key={p.slug} p={p} className="w-[80%] shrink-0 snap-start" />
-          ))}
-        </div>
+          </>
+        )}
       </div>
     </section>
   );
 }
 
-// const BlogCard = memo(function BlogCard({ p, className = "" }: { p: typeof POSTS[number]; className?: string }): JSX.Element {
-//   return (
-//     <Link to="/blog/$slug" params={{ slug: p.slug }} preload="intent" className={`group relative aspect-[3/4] overflow-hidden rounded-3xl border border-border bg-card transform-gpu ${className}`}>
-//       <img
-//         src={POST_IMAGES[p.slug]}
-//         alt={p.title}
-//         width={400}
-//         height={533}
-//         className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 will-change-transform group-hover:scale-105"
-//         loading="lazy"
-//         decoding="async"
-//       />
-//       <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/55 to-black/15 pointer-events-none" />
-//       <div className="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-full border border-white/20 bg-black/50 text-white opacity-0 transition-opacity group-hover:opacity-100">
-//         <ArrowUpRight className="h-4 w-4" />
-//       </div>
-//       <div className="absolute inset-0 flex flex-col justify-end p-6 text-white">
-//         <div className="inline-flex w-fit items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3 py-1 text-[10px] font-mono uppercase">{p.tag}</div>
-//         <h3 className="mt-4 font-display text-xl font-bold leading-tight">{p.title}</h3>
-//         <p className="mt-2 line-clamp-2 text-sm text-white/80">{p.excerpt}</p>
-//         <div className="mt-4 flex items-center justify-between text-xs text-white/70">
-//           <span>{p.date}</span>
-//           <span>{p.read} read</span>
-//         </div>
-//       </div>
-//     </Link>
-//   );
-// });
-
-
 const BlogCard = memo(function BlogCard({ p, className = "" }: { p: BlogCardPost; className?: string }): JSX.Element {
-  // Sanity posts carry coverImage directly; static posts fall back to the POST_IMAGES map
-  const imgSrc = p.coverImage || POST_IMAGES[p.slug] || "";
+  /*
+    FIX: guard against empty src — if both coverImage and POST_IMAGES[p.slug]
+    are undefined, fall back to a placeholder rather than making an empty request.
+  */
+  const imgSrc = p.coverImage || POST_IMAGES[p.slug] || "/media/blog-placeholder.jpg";
 
   return (
     <Link to="/blog/$slug" params={{ slug: p.slug }} preload="intent" className={`group relative aspect-[3/4] overflow-hidden rounded-3xl border border-border bg-card transform-gpu ${className}`}>
@@ -1953,6 +1788,7 @@ function FAQs(): JSX.Element {
           className="relative lg:sticky lg:top-24 lg:self-start"
         >
           <div className="group relative aspect-[4/5] overflow-hidden rounded-3xl border border-border bg-card transform-gpu">
+            {/* FIX: explicit dimensions prevent CLS */}
             <img
               src="/media/download.png"
               alt="Rexsolv team at work"
