@@ -51,15 +51,15 @@ const ABOUT_CARDS = [
     tag: "Vision-driven",
     t: "Built for the long game",
     d: "From brand systems to product foundations, we architect digital strategies designed for compounding growth — not vanity launches that fade.",
-    img: "/media/about-vision.jpg",
+    img: "/media/about-vision.webp",
     link: "Our vision & story",
   },
   {
     tag: "Full-stack craft",
     t: "Web, AI & Commerce unified",
     d: "Every project ships with modern tech: performant web apps, intelligent AI integrations, and conversion-optimised Shopify stores, all from one senior team.",
-    img: "/media/about-craft.jpg",
-    link: "Our full-stack approach",
+    img: "/media/about-craft.webp",
+    link: "Our mission",
   },
 ];
 
@@ -1231,11 +1231,11 @@ function CaseStudies(): JSX.Element {
           viewport={VIEWPORT_ONCE}
         >
           <motion.div variants={fadeUp} transition={{ duration: 0.5 }} className="flex items-center gap-4">
-            <div className="grid h-14 w-16 place-items-center rounded-full bg-foreground text-background font-display text-sm font-bold">80+</div>
+            <div className="grid h-14 w-16 place-items-center rounded-full bg-foreground text-background font-display text-sm font-bold">20+</div>
             <div className="text-sm text-muted-foreground">Projects completed across web, AI, commerce & growth.</div>
           </motion.div>
           <motion.p variants={fadeUp} transition={{ duration: 0.5 }} className="text-pretty text-muted-foreground md:text-lg">
-            Explore a selection of crafted work combining unique design and rich technology. We always build from scratch — creating memorable brands, high-performing websites, and digital products that convert.
+            Explore a selection of crafted work combining unique design and rich technology. We always build from scratch creating memorable brands, high-performing websites, and digital products that convert.
           </motion.p>
         </motion.div>
 

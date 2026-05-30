@@ -536,11 +536,11 @@ export const CASE_IMAGES: Record<string, string> = {
 };
 
 export const SERVICE_IMAGES: Record<string, string> = {
-  "web-development": "/media/web-dev.jpg",
-  "seo": "/media/seo.jpg",
-  "ai-solutions": "/media/ai.jpg",
-  "social-and-ads": "/media/smm.jpg",
-  "shopify-store-design": "/media/shop.jpg",
+  "web-development": "/media/web-dev.webp",
+  "seo": "/media/seo.webp",
+  "ai-solutions": "/media/ai.webp",
+  "social-and-ads": "/media/smm.webp",
+  "shopify-store-design": "/media/shop.webp",
   "ui-ux-design": "/media/ui-ux.jpg",
   "saas-development": "/media/saas.jpg",
   "website-maintenance": "/media/main.jpg",
