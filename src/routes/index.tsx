@@ -1394,9 +1394,48 @@ function WhyUs() {
 
 /* ============================== PROCESS ============================== */
 function Process(): JSX.Element {
+  const sectionRef = useRef<HTMLElement>(null);
+  const bgRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const bg = bgRef.current;
+    const section = sectionRef.current;
+    if (!bg || !section) return;
+
+    const onScroll = () => {
+      const scrollY = window.scrollY;
+      const sectionTop = section.offsetTop;
+      const offset = (scrollY - sectionTop) * 0.4;
+      bg.style.transform = `translateY(${offset}px)`;
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll(); // run once on mount to set initial position
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
-    <section className="border-t border-border bg-foreground py-20 text-background md:py-28">
-      <div className="mx-auto max-w-7xl px-4 md:px-6">
+    <section
+      ref={sectionRef}
+      className="relative overflow-hidden border-t border-border py-20 text-background md:py-28"
+    >
+      {/* ── Parallax background image ── */}
+      <div
+        ref={bgRef}
+        className="absolute will-change-transform"
+        style={{
+          inset: "-200px 0",          // extra bleed top & bottom so image never shows a gap
+          backgroundImage: "url('/media/abt.webp')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      />
+
+      {/* ── Black overlay ── */}
+      <div className="absolute inset-0 bg-black/70" />
+
+      {/* ── Content ── */}
+      <div className="relative z-10 mx-auto max-w-7xl px-4 md:px-6">
         <motion.div
           className="mb-12 text-center"
           variants={staggerContainer(0.1)}
@@ -1404,10 +1443,19 @@ function Process(): JSX.Element {
           whileInView="show"
           viewport={VIEWPORT_ONCE}
         >
-          <motion.div variants={fadeUp} transition={{ duration: 0.5 }} className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider">
-            <span className="h-1.5 w-1.5 rounded-full bg-[var(--neon)]" /> {PROCESS.length} step process
+          <motion.div
+            variants={fadeUp}
+            transition={{ duration: 0.5 }}
+            className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-white/60"
+          >
+            <span className="h-1.5 w-1.5 rounded-full bg-[var(--neon)]" />
+            {PROCESS.length} step process
           </motion.div>
-          <motion.h2 variants={fadeUp} transition={{ duration: 0.5 }} className="mt-3 font-display text-3xl font-bold leading-tight tracking-tight md:text-5xl">
+          <motion.h2
+            variants={fadeUp}
+            transition={{ duration: 0.5 }}
+            className="mt-3 font-display text-3xl font-bold leading-tight tracking-tight text-white md:text-5xl"
+          >
             Effortless Process,<br />Continuous Delivery.
           </motion.h2>
         </motion.div>
@@ -1424,11 +1472,33 @@ function Process(): JSX.Element {
               key={p.step}
               variants={fadeUp}
               transition={{ duration: 0.35 }}
-              className="rounded-2xl border border-background/10 bg-background/5 p-6"
+              whileHover={{ y: -6, transition: { duration: 0.2 } }}
+              className="rounded-2xl p-6"
+              style={{
+                background: "rgba(255, 255, 255, 0.06)",
+                border: "1px solid rgba(255, 255, 255, 0.12)",
+                backdropFilter: "blur(20px)",
+                WebkitBackdropFilter: "blur(20px)",
+                boxShadow: "inset 0 1px 0 rgba(255,255,255,0.08), 0 8px 32px rgba(0,0,0,0.3)",
+              }}
             >
-              <div className="font-display text-2xl font-bold">{p.step}.</div>
-              <h3 className="mt-3 font-display text-lg font-semibold leading-tight">{p.title}</h3>
-              <p className="mt-3 text-sm text-background/70">{p.desc}</p>
+              <div
+                className="font-display text-3xl font-bold"
+                style={{
+                  background: "linear-gradient(135deg, var(--neon), #818cf8)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                }}
+              >
+                {p.step}.
+              </div>
+              <h3 className="mt-3 font-display text-lg font-semibold leading-tight text-white">
+                {p.title}
+              </h3>
+              <p className="mt-3 text-sm leading-relaxed text-white/60">
+                {p.desc}
+              </p>
             </motion.div>
           ))}
         </motion.div>
@@ -1439,26 +1509,46 @@ function Process(): JSX.Element {
           whileInView="show"
           viewport={VIEWPORT_ONCE}
           transition={{ duration: 0.5 }}
-          className="mt-10 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-background/10 bg-background/5 p-4"
+          className="mt-10 flex flex-wrap items-center justify-between gap-4 rounded-2xl p-4"
+          style={{
+            background: "rgba(255, 255, 255, 0.05)",
+            border: "1px solid rgba(255, 255, 255, 0.10)",
+            backdropFilter: "blur(16px)",
+            WebkitBackdropFilter: "blur(16px)",
+          }}
         >
           <div className="flex items-center gap-3">
             <div className="flex -space-x-2">
               {["MC", "DP", "PS"].map((a) => (
-                <div key={a} className="grid h-8 w-8 place-items-center rounded-full bg-gradient-to-br from-[var(--neon)] to-[var(--neon-violet)] font-mono text-[10px] font-bold text-foreground ring-2 ring-foreground">{a}</div>
+                <div
+                  key={a}
+                  className="grid h-8 w-8 place-items-center rounded-full font-mono text-[10px] font-bold text-[#0f172a] ring-2 ring-black/40"
+                  style={{
+                    background: "linear-gradient(135deg, var(--neon), #818cf8)",
+                  }}
+                >
+                  {a}
+                </div>
               ))}
             </div>
-            <div className="text-sm text-background/80">Trusted by founders who choose quality.</div>
+            <div className="text-sm text-white/70">
+              Trusted by founders who choose quality.
+            </div>
           </div>
-          <Link to="/contact" className="inline-flex items-center gap-2 rounded-full bg-background px-5 py-3 text-sm font-medium text-foreground">
+          <Link
+            to="/contact"
+            className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-medium text-[#0f172a] transition hover:opacity-90"
+          >
             Start now
-            <span className="grid h-6 w-6 place-items-center rounded-full bg-foreground text-background"><ArrowRight className="h-3.5 w-3.5" /></span>
+            <span className="grid h-6 w-6 place-items-center rounded-full bg-[#0f172a] text-white">
+              <ArrowRight className="h-3.5 w-3.5" />
+            </span>
           </Link>
         </motion.div>
       </div>
     </section>
   );
 }
-
 /* ============================== STACK ============================== */
 function Stack(): JSX.Element {
   return (
